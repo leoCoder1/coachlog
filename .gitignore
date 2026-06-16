@@ -1,0 +1,7 @@
+DerivedData/
+preview/
+
+*.xcuserstate
+*.xcuserdata/
+
+.DS_Store

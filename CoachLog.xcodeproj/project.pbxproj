@@ -1,0 +1,503 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8B0000000000000000000201 /* CoachLogApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000101 /* CoachLogApp.swift */; };
+		8B0000000000000000000202 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000102 /* ContentView.swift */; };
+		8B0000000000000000000203 /* CoachEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000103 /* CoachEnums.swift */; };
+		8B0000000000000000000204 /* Exercise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000104 /* Exercise.swift */; };
+		8B0000000000000000000205 /* WorkoutSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000105 /* WorkoutSession.swift */; };
+		8B0000000000000000000206 /* CompletedExercise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000106 /* CompletedExercise.swift */; };
+		8B0000000000000000000207 /* WorkoutSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000107 /* WorkoutSet.swift */; };
+		8B0000000000000000000208 /* BodyMeasurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000108 /* BodyMeasurement.swift */; };
+		8B0000000000000000000209 /* RecoverySnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000109 /* RecoverySnapshot.swift */; };
+		8B0000000000000000000210 /* WorkoutPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000110 /* WorkoutPlan.swift */; };
+		8B0000000000000000000227 /* StrengthBaselineTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000127 /* StrengthBaselineTest.swift */; };
+		8B0000000000000000000211 /* ExerciseLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000111 /* ExerciseLibrary.swift */; };
+		8B0000000000000000000212 /* DataSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000112 /* DataSeeder.swift */; };
+		8B0000000000000000000213 /* AIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000113 /* AIService.swift */; };
+		8B0000000000000000000214 /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000114 /* HealthKitManager.swift */; };
+		8B0000000000000000000215 /* MuscleFreshnessEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000115 /* MuscleFreshnessEngine.swift */; };
+		8B0000000000000000000216 /* WorkoutGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000116 /* WorkoutGenerator.swift */; };
+		8B0000000000000000000217 /* ProgressionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000117 /* ProgressionEngine.swift */; };
+		8B0000000000000000000218 /* TodayCoachViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000118 /* TodayCoachViewModel.swift */; };
+		8B0000000000000000000219 /* WorkoutSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000119 /* WorkoutSessionViewModel.swift */; };
+		8B0000000000000000000220 /* ProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000120 /* ProgressViewModel.swift */; };
+		8B0000000000000000000221 /* SharedViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000121 /* SharedViews.swift */; };
+		8B0000000000000000000222 /* TodayCoachView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000122 /* TodayCoachView.swift */; };
+		8B0000000000000000000223 /* WorkoutSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000123 /* WorkoutSessionView.swift */; };
+		8B0000000000000000000224 /* MuscleFreshnessDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000124 /* MuscleFreshnessDashboardView.swift */; };
+		8B0000000000000000000225 /* ProgressScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000125 /* ProgressScreen.swift */; };
+		8B0000000000000000000226 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000126 /* SettingsView.swift */; };
+		8B0000000000000000000228 /* WheelPickerControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000128 /* WheelPickerControls.swift */; };
+		8B0000000000000000000229 /* BaselineTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000129 /* BaselineTestView.swift */; };
+		8B0000000000000000000302 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000301 /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		8B0000000000000000000005 /* CoachLog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoachLog.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B0000000000000000000101 /* CoachLogApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachLogApp.swift; sourceTree = "<group>"; };
+		8B0000000000000000000102 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		8B0000000000000000000103 /* CoachEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachEnums.swift; sourceTree = "<group>"; };
+		8B0000000000000000000104 /* Exercise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Exercise.swift; sourceTree = "<group>"; };
+		8B0000000000000000000105 /* WorkoutSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSession.swift; sourceTree = "<group>"; };
+		8B0000000000000000000106 /* CompletedExercise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletedExercise.swift; sourceTree = "<group>"; };
+		8B0000000000000000000107 /* WorkoutSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSet.swift; sourceTree = "<group>"; };
+		8B0000000000000000000108 /* BodyMeasurement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyMeasurement.swift; sourceTree = "<group>"; };
+		8B0000000000000000000109 /* RecoverySnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoverySnapshot.swift; sourceTree = "<group>"; };
+		8B0000000000000000000110 /* WorkoutPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutPlan.swift; sourceTree = "<group>"; };
+		8B0000000000000000000127 /* StrengthBaselineTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthBaselineTest.swift; sourceTree = "<group>"; };
+		8B0000000000000000000111 /* ExerciseLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseLibrary.swift; sourceTree = "<group>"; };
+		8B0000000000000000000112 /* DataSeeder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSeeder.swift; sourceTree = "<group>"; };
+		8B0000000000000000000113 /* AIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIService.swift; sourceTree = "<group>"; };
+		8B0000000000000000000114 /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
+		8B0000000000000000000115 /* MuscleFreshnessEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuscleFreshnessEngine.swift; sourceTree = "<group>"; };
+		8B0000000000000000000116 /* WorkoutGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutGenerator.swift; sourceTree = "<group>"; };
+		8B0000000000000000000117 /* ProgressionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressionEngine.swift; sourceTree = "<group>"; };
+		8B0000000000000000000118 /* TodayCoachViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayCoachViewModel.swift; sourceTree = "<group>"; };
+		8B0000000000000000000119 /* WorkoutSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSessionViewModel.swift; sourceTree = "<group>"; };
+		8B0000000000000000000120 /* ProgressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressViewModel.swift; sourceTree = "<group>"; };
+		8B0000000000000000000121 /* SharedViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedViews.swift; sourceTree = "<group>"; };
+		8B0000000000000000000122 /* TodayCoachView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayCoachView.swift; sourceTree = "<group>"; };
+		8B0000000000000000000123 /* WorkoutSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSessionView.swift; sourceTree = "<group>"; };
+		8B0000000000000000000124 /* MuscleFreshnessDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuscleFreshnessDashboardView.swift; sourceTree = "<group>"; };
+		8B0000000000000000000125 /* ProgressScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressScreen.swift; sourceTree = "<group>"; };
+		8B0000000000000000000126 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		8B0000000000000000000128 /* WheelPickerControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WheelPickerControls.swift; sourceTree = "<group>"; };
+		8B0000000000000000000129 /* BaselineTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaselineTestView.swift; sourceTree = "<group>"; };
+		8B0000000000000000000301 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8B0000000000000000000303 /* CoachLog.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CoachLog.entitlements; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8B0000000000000000000008 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		8B0000000000000000000002 = {
+			isa = PBXGroup;
+			children = (
+				8B0000000000000000000011 /* CoachLog */,
+				8B0000000000000000000003 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8B0000000000000000000003 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8B0000000000000000000005 /* CoachLog.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8B0000000000000000000011 /* CoachLog */ = {
+			isa = PBXGroup;
+			children = (
+				8B0000000000000000000101 /* CoachLogApp.swift */,
+				8B0000000000000000000102 /* ContentView.swift */,
+				8B0000000000000000000012 /* Models */,
+				8B0000000000000000000013 /* Services */,
+				8B0000000000000000000014 /* Engines */,
+				8B0000000000000000000015 /* ViewModels */,
+				8B0000000000000000000016 /* Views */,
+				8B0000000000000000000017 /* Support */,
+				8B0000000000000000000301 /* Assets.xcassets */,
+				8B0000000000000000000303 /* CoachLog.entitlements */,
+			);
+			path = CoachLog;
+			sourceTree = "<group>";
+		};
+		8B0000000000000000000012 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				8B0000000000000000000103 /* CoachEnums.swift */,
+				8B0000000000000000000104 /* Exercise.swift */,
+				8B0000000000000000000105 /* WorkoutSession.swift */,
+				8B0000000000000000000106 /* CompletedExercise.swift */,
+				8B0000000000000000000107 /* WorkoutSet.swift */,
+				8B0000000000000000000108 /* BodyMeasurement.swift */,
+				8B0000000000000000000109 /* RecoverySnapshot.swift */,
+				8B0000000000000000000110 /* WorkoutPlan.swift */,
+				8B0000000000000000000127 /* StrengthBaselineTest.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		8B0000000000000000000013 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				8B0000000000000000000113 /* AIService.swift */,
+				8B0000000000000000000114 /* HealthKitManager.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		8B0000000000000000000014 /* Engines */ = {
+			isa = PBXGroup;
+			children = (
+				8B0000000000000000000115 /* MuscleFreshnessEngine.swift */,
+				8B0000000000000000000116 /* WorkoutGenerator.swift */,
+				8B0000000000000000000117 /* ProgressionEngine.swift */,
+			);
+			path = Engines;
+			sourceTree = "<group>";
+		};
+		8B0000000000000000000015 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				8B0000000000000000000118 /* TodayCoachViewModel.swift */,
+				8B0000000000000000000119 /* WorkoutSessionViewModel.swift */,
+				8B0000000000000000000120 /* ProgressViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		8B0000000000000000000016 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				8B0000000000000000000128 /* WheelPickerControls.swift */,
+				8B0000000000000000000121 /* SharedViews.swift */,
+				8B0000000000000000000122 /* TodayCoachView.swift */,
+				8B0000000000000000000123 /* WorkoutSessionView.swift */,
+				8B0000000000000000000124 /* MuscleFreshnessDashboardView.swift */,
+				8B0000000000000000000125 /* ProgressScreen.swift */,
+				8B0000000000000000000129 /* BaselineTestView.swift */,
+				8B0000000000000000000126 /* SettingsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		8B0000000000000000000017 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				8B0000000000000000000111 /* ExerciseLibrary.swift */,
+				8B0000000000000000000112 /* DataSeeder.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8B0000000000000000000004 /* CoachLog */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8B0000000000000000000010 /* Build configuration list for PBXNativeTarget "CoachLog" */;
+			buildPhases = (
+				8B0000000000000000000006 /* Sources */,
+				8B0000000000000000000008 /* Frameworks */,
+				8B0000000000000000000007 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CoachLog;
+			productName = CoachLog;
+			productReference = 8B0000000000000000000005 /* CoachLog.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8B0000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2650;
+				LastUpgradeCheck = 2650;
+				TargetAttributes = {
+					8B0000000000000000000004 = {
+						CreatedOnToolsVersion = 26.5;
+					};
+				};
+			};
+			buildConfigurationList = 8B0000000000000000000009 /* Build configuration list for PBXProject "CoachLog" */;
+			compatibilityVersion = "Xcode 15.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 8B0000000000000000000002;
+			productRefGroup = 8B0000000000000000000003 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8B0000000000000000000004 /* CoachLog */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8B0000000000000000000007 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8B0000000000000000000302 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8B0000000000000000000006 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8B0000000000000000000201 /* CoachLogApp.swift in Sources */,
+				8B0000000000000000000202 /* ContentView.swift in Sources */,
+				8B0000000000000000000203 /* CoachEnums.swift in Sources */,
+				8B0000000000000000000204 /* Exercise.swift in Sources */,
+				8B0000000000000000000205 /* WorkoutSession.swift in Sources */,
+				8B0000000000000000000206 /* CompletedExercise.swift in Sources */,
+				8B0000000000000000000207 /* WorkoutSet.swift in Sources */,
+				8B0000000000000000000208 /* BodyMeasurement.swift in Sources */,
+				8B0000000000000000000209 /* RecoverySnapshot.swift in Sources */,
+				8B0000000000000000000210 /* WorkoutPlan.swift in Sources */,
+				8B0000000000000000000227 /* StrengthBaselineTest.swift in Sources */,
+				8B0000000000000000000211 /* ExerciseLibrary.swift in Sources */,
+				8B0000000000000000000212 /* DataSeeder.swift in Sources */,
+				8B0000000000000000000213 /* AIService.swift in Sources */,
+				8B0000000000000000000214 /* HealthKitManager.swift in Sources */,
+				8B0000000000000000000215 /* MuscleFreshnessEngine.swift in Sources */,
+				8B0000000000000000000216 /* WorkoutGenerator.swift in Sources */,
+				8B0000000000000000000217 /* ProgressionEngine.swift in Sources */,
+				8B0000000000000000000218 /* TodayCoachViewModel.swift in Sources */,
+				8B0000000000000000000219 /* WorkoutSessionViewModel.swift in Sources */,
+				8B0000000000000000000220 /* ProgressViewModel.swift in Sources */,
+				8B0000000000000000000228 /* WheelPickerControls.swift in Sources */,
+				8B0000000000000000000221 /* SharedViews.swift in Sources */,
+				8B0000000000000000000222 /* TodayCoachView.swift in Sources */,
+				8B0000000000000000000223 /* WorkoutSessionView.swift in Sources */,
+				8B0000000000000000000224 /* MuscleFreshnessDashboardView.swift in Sources */,
+				8B0000000000000000000225 /* ProgressScreen.swift in Sources */,
+				8B0000000000000000000229 /* BaselineTestView.swift in Sources */,
+				8B0000000000000000000226 /* SettingsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		8B0000000000000000000031 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		8B0000000000000000000032 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		8B0000000000000000000041 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CoachLog/CoachLog.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = CoachLog;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "CoachLog reads recovery and body metrics to adjust workout recommendations.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "CoachLog may save workout data when HealthKit integration is enabled.";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.logicione.CoachLog;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		8B0000000000000000000042 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CoachLog/CoachLog.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = CoachLog;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "CoachLog reads recovery and body metrics to adjust workout recommendations.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "CoachLog may save workout data when HealthKit integration is enabled.";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.logicione.CoachLog;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8B0000000000000000000009 /* Build configuration list for PBXProject "CoachLog" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8B0000000000000000000031 /* Debug */,
+				8B0000000000000000000032 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8B0000000000000000000010 /* Build configuration list for PBXNativeTarget "CoachLog" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8B0000000000000000000041 /* Debug */,
+				8B0000000000000000000042 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 8B0000000000000000000001 /* Project object */;
+}
