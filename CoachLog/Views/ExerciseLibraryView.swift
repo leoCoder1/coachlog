@@ -258,12 +258,12 @@ struct ExerciseLibraryRow: View {
 
                 Spacer(minLength: 4)
 
-                MuscleImpactMap(
+                MuscleImpactPairMap(
                     primary: exercise.primaryDetailedMuscle,
                     secondary: exercise.secondaryDetailedMuscle,
                     supporting: exercise.detailedMuscles
                 )
-                .frame(width: 44, height: 66)
+                .frame(width: 70, height: 66)
             }
         }
     }
