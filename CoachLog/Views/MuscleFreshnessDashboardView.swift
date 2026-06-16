@@ -49,6 +49,8 @@ struct MuscleFreshnessDashboardView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color.coachBackground, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+            .animation(CoachMotion.content, value: selectedPain)
+            .animation(CoachMotion.content, value: sessions.count)
         }
     }
 }

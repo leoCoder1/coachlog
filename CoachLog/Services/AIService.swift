@@ -29,14 +29,23 @@ struct MockAIService: AIService {
         let recoveringGroup = MuscleGroup.dashboardGroups.first { freshness[$0]?.status == .recovering }
 
         if context.painFlag != .none {
-            return "We are keeping today pain-aware. The workout avoids movements that could aggravate \(context.painFlag.displayName.lowercased()) discomfort, and load increases stay off the table until that flag clears."
+            return withRotationNote(
+                "We are keeping today pain-aware. The workout avoids movements that could aggravate \(context.painFlag.displayName.lowercased()) discomfort, and load increases stay off the table until that flag clears.",
+                plan: plan
+            )
         }
 
         if let dueGroup, let recoveringGroup {
-            return "We are choosing \(focus) because \(dueGroup.rawValue.lowercased()) is due and \(recoveringGroup.rawValue.lowercased()) is still recovering. Keep two good reps in reserve on most sets."
+            return withRotationNote(
+                "We are choosing \(focus) because \(dueGroup.rawValue.lowercased()) is due and \(recoveringGroup.rawValue.lowercased()) is still recovering. Keep two good reps in reserve on most sets.",
+                plan: plan
+            )
         }
 
-        return "We are choosing \(focus) because those areas are the best match for your freshness, time, and energy today. \(plan.volumeAdjustmentNote)"
+        return withRotationNote(
+            "We are choosing \(focus) because those areas are the best match for your freshness, time, and energy today. \(plan.volumeAdjustmentNote)",
+            plan: plan
+        )
     }
 
     func generateProgressSummary(
@@ -50,7 +59,7 @@ struct MockAIService: AIService {
         }
 
         if let latestMeasurement = measurements.sorted(by: { $0.date > $1.date }).first {
-            return "Latest weight is \(latestMeasurement.weight.formatted(.number.precision(.fractionLength(1)))) lb. Keep the trend slow enough that training performance stays steady."
+            return "Latest weight is \(WeightUnitPreference.current.formattedWeight(latestMeasurement.weight, fractionLength: 1...1)). Keep the trend slow enough that training performance stays steady."
         }
 
         return "Log a few sessions and CoachLog will start connecting training volume, recovery, and body measurements."
@@ -74,8 +83,15 @@ struct MockAIService: AIService {
 
         return "Repeat the strongest patterns from the last session and only add load where reps stayed clean."
     }
+
+    private func withRotationNote(_ message: String, plan: WorkoutPlan) -> String {
+        guard let weeklyRotationNote = plan.weeklyRotationNote else {
+            return message
+        }
+
+        return "\(message) \(weeklyRotationNote)"
+    }
 }
 
 // TODO: Replace MockAIService with an OpenAI/OpenRouter-backed implementation.
 // Keep ProgressionEngine and WorkoutGenerator as the source of safety decisions.
-

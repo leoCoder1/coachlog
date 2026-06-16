@@ -10,6 +10,14 @@ final class HealthKitManager {
 
     @ObservationIgnored private let healthStore = HKHealthStore()
 
+    init() {
+        guard HKHealthStore.isHealthDataAvailable() else {
+            authorizationStatusText = "Unavailable"
+            lastImportMessage = "HealthKit is not available on this device. Recovery imports will use safe defaults."
+            return
+        }
+    }
+
     var isHealthDataAvailable: Bool {
         HKHealthStore.isHealthDataAvailable()
     }
@@ -25,10 +33,10 @@ final class HealthKitManager {
 
         do {
             let success = try await requestAuthorization(readTypes: readTypes)
-            authorizationStatusText = success ? "Authorized" : "Not authorized"
+            authorizationStatusText = success ? "Requested" : "Not completed"
             lastImportMessage = success
-                ? "HealthKit access is ready."
-                : "HealthKit did not grant access. Mock recovery data remains available."
+                ? "HealthKit request completed. Apple keeps read permissions private, so imports will use any values the user allowed."
+                : "HealthKit request did not complete. Recovery imports can still use safe defaults."
             return success
         } catch {
             authorizationStatusText = "Failed"
@@ -53,12 +61,19 @@ final class HealthKitManager {
             unit: .secondUnit(with: .milli)
         )
 
-        let sleep = await sleepHours ?? RecoverySnapshot.mock.sleepHours
-        let rhr = await restingHeartRate ?? RecoverySnapshot.mock.restingHeartRate
-        let hrvValue = await hrv ?? RecoverySnapshot.mock.hrv
+        let importedSleep = await sleepHours
+        let importedRestingHeartRate = await restingHeartRate
+        let importedHRV = await hrv
+        let sleep = importedSleep ?? RecoverySnapshot.mock.sleepHours
+        let rhr = importedRestingHeartRate ?? RecoverySnapshot.mock.restingHeartRate
+        let hrvValue = importedHRV ?? RecoverySnapshot.mock.hrv
         let readiness = readinessScore(sleepHours: sleep, restingHeartRate: rhr, hrv: hrvValue)
 
-        lastImportMessage = "Imported recovery snapshot. Missing HealthKit values use safe mock defaults."
+        lastImportMessage = importMessage(
+            sleepHours: importedSleep,
+            restingHeartRate: importedRestingHeartRate,
+            hrv: importedHRV
+        )
         return RecoverySnapshot(
             sleepHours: sleep,
             restingHeartRate: rhr,
@@ -68,8 +83,16 @@ final class HealthKitManager {
     }
 
     func latestBodyWeight() async -> Double? {
-        guard HKHealthStore.isHealthDataAvailable() else { return nil }
-        return await latestQuantity(identifier: .bodyMass, unit: .pound())
+        guard HKHealthStore.isHealthDataAvailable() else {
+            lastImportMessage = "Body weight is unavailable because HealthKit is not available here."
+            return nil
+        }
+
+        let weight = await latestQuantity(identifier: .bodyMass, unit: .pound())
+        lastImportMessage = weight == nil
+            ? "No HealthKit body weight was returned. Check Apple Health permissions and whether weight data exists."
+            : "Imported latest body weight from HealthKit."
+        return weight
     }
 
     private func healthReadTypes() -> Set<HKObjectType> {
@@ -185,6 +208,34 @@ final class HealthKitManager {
         }
 
         return min(100, max(1, score))
+    }
+
+    private func importMessage(
+        sleepHours: Double?,
+        restingHeartRate: Double?,
+        hrv: Double?
+    ) -> String {
+        var missingValues: [String] = []
+
+        if sleepHours == nil {
+            missingValues.append("sleep")
+        }
+        if restingHeartRate == nil {
+            missingValues.append("resting HR")
+        }
+        if hrv == nil {
+            missingValues.append("HRV")
+        }
+
+        if missingValues.isEmpty {
+            return "Imported recovery snapshot from HealthKit."
+        }
+
+        if missingValues.count == 3 {
+            return "No HealthKit recovery values were returned. Check Apple Health permissions or sample availability; using safe defaults."
+        }
+
+        return "Imported partial HealthKit recovery. Missing \(missingValues.joined(separator: ", ")) uses safe defaults."
     }
 
     private static var asleepValues: Set<Int> {

@@ -38,6 +38,7 @@ struct PlannedExercise: Identifiable, Hashable {
     var muscleGroup: MuscleGroup
     var secondaryMuscleGroups: [MuscleGroup]
     var equipment: Equipment
+    var station: GymStation
     var targetSets: Int
     var targetRepsLower: Int
     var targetRepsUpper: Int
@@ -45,6 +46,24 @@ struct PlannedExercise: Identifiable, Hashable {
 
     var targetRepRange: String {
         "\(targetRepsLower)-\(targetRepsUpper)"
+    }
+
+    var affectedMuscleGroups: [MuscleGroup] {
+        var groups = [muscleGroup]
+
+        for group in secondaryMuscleGroups where !groups.contains(group) {
+            groups.append(group)
+        }
+
+        return groups
+    }
+
+    var muscleImpactText: String {
+        affectedMuscleGroups.map(\.rawValue).joined(separator: ", ")
+    }
+
+    var illustrationAssetName: String {
+        "exercise-\(name.slugifiedAssetName)"
     }
 }
 
@@ -54,6 +73,7 @@ struct WorkoutPlan: Identifiable, Hashable {
     var exercises: [PlannedExercise]
     var focusMuscleGroups: [MuscleGroup]
     var volumeAdjustmentNote: String
+    var weeklyRotationNote: String?
 }
 
 struct MuscleFreshnessResult: Identifiable, Hashable {
@@ -64,3 +84,12 @@ struct MuscleFreshnessResult: Identifiable, Hashable {
     var note: String
 }
 
+private extension String {
+    var slugifiedAssetName: String {
+        lowercased()
+            .replacingOccurrences(of: "&", with: "and")
+            .components(separatedBy: CharacterSet.alphanumerics.inverted)
+            .filter { !$0.isEmpty }
+            .joined(separator: "-")
+    }
+}

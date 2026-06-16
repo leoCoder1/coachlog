@@ -12,11 +12,12 @@ struct BaselineTestView: View {
     @State private var weight: Double = 0
     @State private var reps: Int = 8
     @State private var didPrepare = false
+    @AppStorage(UnitPreferenceKeys.weightUnit) private var weightUnitRaw = WeightUnitPreference.pounds.rawValue
 
     private let progressionEngine = ProgressionEngine()
 
-    private var weightOptions: [Double] {
-        stride(from: 0.0, through: 400.0, by: 2.5).map { $0 }
+    private var weightUnit: WeightUnitPreference {
+        WeightUnitPreference(rawValue: weightUnitRaw) ?? .pounds
     }
 
     private var repOptions: [Int] {
@@ -67,7 +68,7 @@ struct BaselineTestView: View {
                     .font(.headline)
 
                 if let latestTest {
-                    Text("Latest: \(latestTest.weight.formattedWeight) lb x \(latestTest.reps) · e1RM \(latestTest.estimatedOneRepMax.formattedWeight) lb")
+                    Text("Latest: \(weightUnit.formattedWeight(latestTest.weight)) x \(latestTest.reps) · e1RM \(weightUnit.formattedWeight(latestTest.estimatedOneRepMax))")
                         .font(.subheadline)
                         .foregroundStyle(Color.coachSecondaryText)
 
@@ -87,11 +88,11 @@ struct BaselineTestView: View {
         CoachCard {
             VStack(alignment: .leading, spacing: 16) {
                 HStack(spacing: 12) {
-                    WheelDoublePickerButton(
+                    WheelWeightPickerButton(
                         title: "Weight",
-                        unit: "lb",
-                        values: weightOptions,
-                        value: $weight
+                        unit: weightUnit,
+                        poundsRange: 0...400,
+                        pounds: $weight
                     )
 
                     WheelIntPickerButton(
@@ -108,7 +109,7 @@ struct BaselineTestView: View {
 
                     Spacer()
 
-                    Text("\(estimatedOneRepMax.formattedWeight) lb")
+                    Text(weightUnit.formattedWeight(estimatedOneRepMax))
                         .font(.headline)
                         .foregroundStyle(Color.coachAccent)
                 }
@@ -141,14 +142,14 @@ struct BaselineTestView: View {
                                 Text(test.date.formatted(date: .abbreviated, time: .omitted))
                                     .font(.subheadline.weight(.semibold))
 
-                                Text("\(test.weight.formattedWeight) lb x \(test.reps)")
+                                Text("\(weightUnit.formattedWeight(test.weight)) x \(test.reps)")
                                     .font(.caption)
                                     .foregroundStyle(Color.coachSecondaryText)
                             }
 
                             Spacer()
 
-                            Text("\(test.estimatedOneRepMax.formattedWeight) lb")
+                            Text(weightUnit.formattedWeight(test.estimatedOneRepMax))
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(Color.coachAccent)
                         }
@@ -187,11 +188,5 @@ struct BaselineTestView: View {
     private func nearestWeightOption(to value: Double) -> Double {
         let clamped = min(400, max(0, value))
         return (clamped / 2.5).rounded() * 2.5
-    }
-}
-
-private extension Double {
-    var formattedWeight: String {
-        formatted(.number.precision(.fractionLength(0...1)))
     }
 }

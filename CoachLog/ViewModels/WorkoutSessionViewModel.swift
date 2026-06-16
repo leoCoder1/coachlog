@@ -15,10 +15,17 @@ struct LoggedSetDraft: Identifiable, Hashable {
     var timestamp: Date = .now
 }
 
+struct ExerciseSubstitution: Identifiable, Hashable {
+    var exercise: PlannedExercise
+    var reason: String
+
+    var id: UUID { exercise.id }
+}
+
 @MainActor
 @Observable
 final class WorkoutSessionViewModel {
-    let plan: WorkoutPlan
+    var plan: WorkoutPlan
     let startedAt: Date
     var inputs: [UUID: SetInput]
     var loggedSets: [UUID: [LoggedSetDraft]]
@@ -68,19 +75,7 @@ final class WorkoutSessionViewModel {
         didPrepareFromHistory = true
 
         for exercise in plan.exercises {
-            if let lastWeight = progressionEngine.lastWeight(for: exercise.name, in: sessions) {
-                var input = input(for: exercise.id)
-                input.weight = nearestWeightOption(to: lastWeight)
-                inputs[exercise.id] = input
-            }
-
-            if let suggestion = progressionEngine.loadSuggestion(
-                for: exercise,
-                recentSessions: sessions,
-                pain: context.painFlag
-            ) {
-                loadSuggestions[exercise.id] = suggestion
-            }
+            prepareExerciseFromHistory(exercise, sessions: sessions, context: context)
         }
     }
 
@@ -129,9 +124,149 @@ final class WorkoutSessionViewModel {
         loggedSets[exerciseID, default: []].append(draft)
     }
 
+    func substitutionOptions(
+        for exercise: PlannedExercise,
+        pain: PainFlag
+    ) -> [ExerciseSubstitution] {
+        let plannedNames = Set(plan.exercises.map(\.name))
+
+        return ExerciseLibrary.definitions
+            .filter { definition in
+                definition.primaryMuscleGroup == exercise.muscleGroup
+                && definition.name != exercise.name
+                && !plannedNames.contains(definition.name)
+                && isAllowed(definition, for: pain)
+            }
+            .sorted { lhs, rhs in
+                substitutionScore(lhs, replacing: exercise) < substitutionScore(rhs, replacing: exercise)
+            }
+            .prefix(6)
+            .map { definition in
+                let replacement = plannedExercise(from: definition, replacing: exercise)
+                return ExerciseSubstitution(
+                    exercise: replacement,
+                    reason: substitutionReason(for: definition, replacing: exercise)
+                )
+            }
+    }
+
+    func replaceExercise(
+        _ exercise: PlannedExercise,
+        with replacement: PlannedExercise,
+        sessions: [WorkoutSession],
+        context: WorkoutContext
+    ) {
+        guard let index = plan.exercises.firstIndex(where: { $0.id == exercise.id }) else {
+            return
+        }
+
+        let previousInput = input(for: exercise.id)
+        plan.exercises[index] = replacement
+        inputs.removeValue(forKey: exercise.id)
+        loggedSets.removeValue(forKey: exercise.id)
+        loadSuggestions.removeValue(forKey: exercise.id)
+
+        inputs[replacement.id] = SetInput(
+            weight: 0,
+            reps: replacement.targetRepsLower,
+            rir: previousInput.rir
+        )
+        loggedSets[replacement.id] = []
+        prepareExerciseFromHistory(replacement, sessions: sessions, context: context)
+    }
+
     private func nearestWeightOption(to weight: Double) -> Double {
         let clamped = min(400, max(0, weight))
         return (clamped / 2.5).rounded() * 2.5
+    }
+
+    private func prepareExerciseFromHistory(
+        _ exercise: PlannedExercise,
+        sessions: [WorkoutSession],
+        context: WorkoutContext
+    ) {
+        if let lastWeight = progressionEngine.lastWeight(for: exercise.name, in: sessions) {
+            var input = input(for: exercise.id)
+            input.weight = nearestWeightOption(to: lastWeight)
+            inputs[exercise.id] = input
+        }
+
+        if let suggestion = progressionEngine.loadSuggestion(
+            for: exercise,
+            recentSessions: sessions,
+            pain: context.painFlag
+        ) {
+            loadSuggestions[exercise.id] = suggestion
+        }
+    }
+
+    private func plannedExercise(
+        from definition: ExerciseDefinition,
+        replacing exercise: PlannedExercise
+    ) -> PlannedExercise {
+        PlannedExercise(
+            name: definition.name,
+            muscleGroup: definition.primaryMuscleGroup,
+            secondaryMuscleGroups: definition.secondaryMuscleGroups,
+            equipment: definition.equipment,
+            station: definition.station,
+            targetSets: exercise.targetSets,
+            targetRepsLower: exercise.targetRepsLower,
+            targetRepsUpper: exercise.targetRepsUpper,
+            coachingNote: "Swap for \(exercise.name). Same \(definition.primaryMuscleGroup.rawValue.lowercased()) focus using \(definition.station.rawValue.lowercased())."
+        )
+    }
+
+    private func substitutionScore(
+        _ definition: ExerciseDefinition,
+        replacing exercise: PlannedExercise
+    ) -> Int {
+        let stationPenalty = definition.station == exercise.station ? 40 : 0
+        let equipmentScore: Int
+
+        switch definition.equipment {
+        case .bodyweight:
+            equipmentScore = 0
+        case .dumbbell:
+            equipmentScore = 6
+        case .cable:
+            equipmentScore = 12
+        case .machine:
+            equipmentScore = 18
+        }
+
+        let overlapBonus = definition.secondaryMuscleGroups
+            .filter { exercise.secondaryMuscleGroups.contains($0) }
+            .count * 3
+
+        return stationPenalty + equipmentScore - overlapBonus
+    }
+
+    private func substitutionReason(
+        for definition: ExerciseDefinition,
+        replacing exercise: PlannedExercise
+    ) -> String {
+        if definition.station != exercise.station {
+            return "\(definition.station.rawValue), same \(definition.primaryMuscleGroup.rawValue.lowercased()) focus"
+        }
+
+        return "Same station, different movement pattern"
+    }
+
+    private func isAllowed(_ definition: ExerciseDefinition, for pain: PainFlag) -> Bool {
+        switch pain {
+        case .none:
+            true
+        case .knee:
+            definition.isKneeFriendly
+        case .shoulder:
+            definition.isShoulderFriendly
+        case .back:
+            !definition.name.localizedCaseInsensitiveContains("deadlift")
+            && !definition.name.localizedCaseInsensitiveContains("row")
+        case .other:
+            true
+        }
     }
 
     func makeWorkoutSession(context: WorkoutContext) -> WorkoutSession {

@@ -4,12 +4,12 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \RecoverySnapshot.date, order: .reverse) private var recoverySnapshots: [RecoverySnapshot]
+    @Query(sort: \BodyMeasurement.date, order: .reverse) private var bodyMeasurements: [BodyMeasurement]
     @State private var healthKitManager = HealthKitManager()
-    @State private var measurementWeight: Double = 180
-    @State private var measurementWaist: Double = 34
-    @State private var measurementChest: Double = 40
-    @State private var measurementArm: Double = 14
-    @State private var measurementThigh: Double = 22
+    @State private var demoDataStatus: String?
+    @State private var isShowingMeasurementCheckIn = false
+    @AppStorage(UnitPreferenceKeys.weightUnit) private var weightUnitRaw = WeightUnitPreference.pounds.rawValue
+    @AppStorage(UnitPreferenceKeys.lengthUnit) private var lengthUnitRaw = LengthUnitPreference.inches.rawValue
 
     var body: some View {
         NavigationStack {
@@ -18,9 +18,11 @@ struct SettingsView: View {
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
+                        unitsSection
                         healthKitSection
                         recoverySection
                         measurementsSection
+                        sampleHistorySection
                         disclaimerSection
                     }
                     .padding()
@@ -31,6 +33,37 @@ struct SettingsView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color.coachBackground, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+            .sheet(isPresented: $isShowingMeasurementCheckIn) {
+                BodyMeasurementCheckInView(latestMeasurement: bodyMeasurements.first)
+            }
+        }
+    }
+
+    private var unitsSection: some View {
+        CoachCard {
+            VStack(alignment: .leading, spacing: 14) {
+                Label("Units", systemImage: "ruler")
+                    .font(.headline)
+
+                VStack(alignment: .leading, spacing: 10) {
+                    unitPicker(
+                        title: "Weight",
+                        selection: $weightUnitRaw,
+                        options: WeightUnitPreference.allCases.map { ($0.rawValue, $0.displayName, $0.unitLabel) }
+                    )
+
+                    unitPicker(
+                        title: "Measurements",
+                        selection: $lengthUnitRaw,
+                        options: LengthUnitPreference.allCases.map { ($0.rawValue, $0.displayName, $0.unitLabel) }
+                    )
+                }
+
+                Text("Existing logs stay unchanged; CoachLog only converts the values you see and enter.")
+                    .font(.caption)
+                    .foregroundStyle(Color.coachSecondaryText)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
     }
 
@@ -97,37 +130,8 @@ struct SettingsView: View {
     }
 
     private var measurementsSection: some View {
-        CoachCard {
-            VStack(alignment: .leading, spacing: 14) {
-                Text("Body Measurements")
-                    .font(.headline)
-
-                measurementStepper("Weight", value: $measurementWeight, range: 80...400, unit: "lb")
-                measurementStepper("Waist", value: $measurementWaist, range: 20...80, unit: "in")
-                measurementStepper("Chest", value: $measurementChest, range: 20...80, unit: "in")
-                measurementStepper("Arm", value: $measurementArm, range: 8...30, unit: "in")
-                measurementStepper("Thigh", value: $measurementThigh, range: 12...40, unit: "in")
-
-                HStack {
-                    Button {
-                        Task {
-                            if let weight = await healthKitManager.latestBodyWeight() {
-                                measurementWeight = weight
-                            }
-                        }
-                    } label: {
-                        Label("Use Health Weight", systemImage: "scalemass")
-                    }
-                    .buttonStyle(CoachSecondaryButtonStyle())
-
-                    Button {
-                        saveMeasurement()
-                    } label: {
-                        Label("Save", systemImage: "checkmark")
-                    }
-                    .buttonStyle(CoachPrimaryButtonStyle())
-                }
-            }
+        BodyMeasurementReminderCard(measurements: bodyMeasurements) {
+            isShowingMeasurementCheckIn = true
         }
     }
 
@@ -141,6 +145,39 @@ struct SettingsView: View {
                     .font(.subheadline)
                     .foregroundStyle(Color.coachSecondaryText)
                     .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+
+    private var sampleHistorySection: some View {
+        CoachCard {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Label("Sample History", systemImage: "chart.bar.doc.horizontal")
+                        .font(.headline)
+
+                    Spacer()
+                }
+
+                Button {
+                    let didLoad = DataSeeder.seedDemoHistoryIfNeeded(in: modelContext)
+
+                    withAnimation(CoachMotion.content) {
+                        demoDataStatus = didLoad ? "Sample history loaded" : "Sample history already loaded"
+                    }
+                } label: {
+                    Label("Load Sample History", systemImage: "square.and.arrow.down")
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                }
+                .buttonStyle(CoachSecondaryButtonStyle())
+
+                if let demoDataStatus {
+                    Text(demoDataStatus)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Color.coachSecondaryText)
+                        .transition(CoachMotion.cardTransition)
+                }
             }
         }
     }
@@ -159,35 +196,24 @@ struct SettingsView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private func measurementStepper(
-        _ title: String,
-        value: Binding<Double>,
-        range: ClosedRange<Double>,
-        unit: String
+    private func unitPicker(
+        title: String,
+        selection: Binding<String>,
+        options: [(rawValue: String, displayName: String, unitLabel: String)]
     ) -> some View {
-        Stepper(
-            value: value,
-            in: range,
-            step: title == "Weight" ? 0.5 : 0.25
-        ) {
-            HStack {
-                Text(title)
-                Spacer()
-                Text("\(value.wrappedValue.formatted(.number.precision(.fractionLength(1)))) \(unit)")
-                    .foregroundStyle(Color.coachSecondaryText)
+        VStack(alignment: .leading, spacing: 6) {
+            Text(title)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(Color.coachSecondaryText)
+
+            Picker(title, selection: selection) {
+                ForEach(options, id: \.rawValue) { option in
+                    Text("\(option.displayName) (\(option.unitLabel))")
+                        .tag(option.rawValue)
+                }
             }
+            .pickerStyle(.segmented)
         }
     }
 
-    private func saveMeasurement() {
-        let measurement = BodyMeasurement(
-            weight: measurementWeight,
-            waist: measurementWaist,
-            chest: measurementChest,
-            arm: measurementArm,
-            thigh: measurementThigh
-        )
-        modelContext.insert(measurement)
-        try? modelContext.save()
-    }
 }

@@ -6,6 +6,16 @@ struct ProgressScreen: View {
     @Query(sort: \WorkoutSession.date, order: .reverse) private var sessions: [WorkoutSession]
     @Query(sort: \BodyMeasurement.date, order: .reverse) private var measurements: [BodyMeasurement]
     @Query(sort: \StrengthBaselineTest.date, order: .reverse) private var baselineTests: [StrengthBaselineTest]
+    @AppStorage(UnitPreferenceKeys.weightUnit) private var weightUnitRaw = WeightUnitPreference.pounds.rawValue
+    @AppStorage(UnitPreferenceKeys.lengthUnit) private var lengthUnitRaw = LengthUnitPreference.inches.rawValue
+
+    private var weightUnit: WeightUnitPreference {
+        WeightUnitPreference(rawValue: weightUnitRaw) ?? .pounds
+    }
+
+    private var lengthUnit: LengthUnitPreference {
+        LengthUnitPreference(rawValue: lengthUnitRaw) ?? .inches
+    }
 
     private var weeklyVolume: [WeeklyVolumePoint] {
         ProgressViewModel.weeklyVolumeTrend(sessions)
@@ -30,6 +40,7 @@ struct ProgressScreen: View {
                         volumeTrend
                         bestLiftsSection
                         bodyTrend
+                        bodyCompositionSection
                         baselineSection
                         encouragementSection
                     }
@@ -41,6 +52,9 @@ struct ProgressScreen: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color.coachBackground, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+            .animation(CoachMotion.content, value: sessions.count)
+            .animation(CoachMotion.content, value: measurements.count)
+            .animation(CoachMotion.content, value: baselineTests.count)
         }
     }
 
@@ -69,12 +83,19 @@ struct ProgressScreen: View {
                 Chart(weeklyVolume) { point in
                     BarMark(
                         x: .value("Week", point.weekStart, unit: .weekOfYear),
-                        y: .value("Volume", point.volume)
+                        y: .value("Volume", weightUnit.displayWeight(fromPounds: point.volume))
                     )
-                    .foregroundStyle(Color.coachAccent.gradient)
+                    .foregroundStyle(CoachGradient.chartFill)
                 }
                 .frame(height: 180)
-                .chartYAxisLabel("lb")
+                .chartYAxisLabel(weightUnit.unitLabel)
+                .chartPlotStyle { plot in
+                    plot
+                        .background(
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .fill(CoachGradient.accentSoft)
+                        )
+                }
             }
         }
     }
@@ -100,13 +121,14 @@ struct ProgressScreen: View {
 
                             Spacer()
 
-                                Text("\(lift.weight.formatted(.number.precision(.fractionLength(0...1)))) lb")
+                                Text(weightUnit.formattedWeight(lift.weight))
                                     .font(.subheadline)
                                     .foregroundStyle(Color.coachSecondaryText)
                         }
                     }
                 }
             }
+            .transition(CoachMotion.cardTransition)
         }
     }
 
@@ -119,22 +141,68 @@ struct ProgressScreen: View {
                         .font(.headline)
 
                     Chart(bodyWeight) { point in
+                        AreaMark(
+                            x: .value("Date", point.date),
+                            y: .value("Weight", weightUnit.displayWeight(fromPounds: point.weight))
+                        )
+                        .interpolationMethod(.catmullRom)
+                        .foregroundStyle(CoachGradient.chartArea)
+
                         LineMark(
                             x: .value("Date", point.date),
-                            y: .value("Weight", point.weight)
+                            y: .value("Weight", weightUnit.displayWeight(fromPounds: point.weight))
                         )
-                        .foregroundStyle(Color.coachAccent)
+                        .interpolationMethod(.catmullRom)
+                        .lineStyle(StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round))
+                        .foregroundStyle(CoachGradient.chartFill)
 
                         PointMark(
                             x: .value("Date", point.date),
-                            y: .value("Weight", point.weight)
+                            y: .value("Weight", weightUnit.displayWeight(fromPounds: point.weight))
                         )
-                        .foregroundStyle(Color.coachAccent)
+                        .symbolSize(42)
+                        .foregroundStyle(Color.white)
                     }
                     .frame(height: 180)
-                    .chartYAxisLabel("lb")
+                    .chartYAxisLabel(weightUnit.unitLabel)
+                    .chartPlotStyle { plot in
+                        plot
+                        .background(
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .fill(CoachGradient.accentSoft)
+                        )
+                    }
                 }
             }
+        }
+    }
+
+    @ViewBuilder
+    private var bodyCompositionSection: some View {
+        let changes = BodyMeasurementInsights.metricChanges(from: measurements, lengthUnit: lengthUnit)
+
+        if !changes.isEmpty {
+            CoachCard {
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        Text("Body Composition")
+                            .font(.headline)
+
+                        Spacer()
+
+                        Text(BodyMeasurementInsights.isCheckInDue(measurements) ? "Check-in due" : "3-week loop")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(BodyMeasurementInsights.isCheckInDue(measurements) ? Color.coachWarm : Color.coachSecondaryText)
+                    }
+
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
+                        ForEach(changes.prefix(6)) { change in
+                            BodyMetricDeltaTile(change: change)
+                        }
+                    }
+                }
+            }
+            .transition(CoachMotion.cardTransition)
         }
     }
 
@@ -149,7 +217,7 @@ struct ProgressScreen: View {
                 NavigationLink {
                     BaselineTestView(exerciseName: exerciseName)
                 } label: {
-                    BaselineSummaryRow(summary: summary)
+                    BaselineSummaryRow(summary: summary, weightUnit: weightUnit)
                 }
                 .buttonStyle(.plain)
             }
@@ -161,7 +229,7 @@ struct ProgressScreen: View {
             Text("Coach Notes")
                 .font(.headline)
 
-            ForEach(ProgressViewModel.encouragementCards(sessions: sessions, measurements: measurements), id: \.self) { card in
+            ForEach(ProgressViewModel.encouragementCards(sessions: sessions, measurements: measurements, lengthUnit: lengthUnit), id: \.self) { card in
                 CoachCard {
                     Label(card, systemImage: "sparkles")
                         .font(.subheadline)
@@ -175,6 +243,7 @@ struct ProgressScreen: View {
 
 private struct BaselineSummaryRow: View {
     var summary: StrengthBaselineSummary
+    var weightUnit: WeightUnitPreference
 
     var body: some View {
         CoachCard {
@@ -216,7 +285,7 @@ private struct BaselineSummaryRow: View {
             return "No baseline yet"
         }
 
-        let e1RM = "\(latest.estimatedOneRepMax.formatted(.number.precision(.fractionLength(0...1)))) lb e1RM"
+        let e1RM = "\(weightUnit.formattedWeight(latest.estimatedOneRepMax)) e1RM"
 
         if summary.isRetestDue {
             return "\(e1RM) · Retest ready"

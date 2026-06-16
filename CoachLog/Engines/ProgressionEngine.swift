@@ -20,6 +20,14 @@ struct LoadSuggestion: Identifiable, Hashable {
     var lastWeight: Double
     var suggestedWeight: Double
     var message: String
+
+    func displayMessage(weightUnit: WeightUnitPreference) -> String {
+        if suggestedWeight > lastWeight {
+            return "Last time was \(weightUnit.formattedWeight(lastWeight)). Try \(weightUnit.formattedWeight(suggestedWeight)) if warm-ups feel clean."
+        }
+
+        return "Last time was \(weightUnit.formattedWeight(lastWeight)). \(message)"
+    }
 }
 
 final class ProgressionEngine {
@@ -72,7 +80,7 @@ final class ProgressionEngine {
                 exerciseName: plannedExercise.name,
                 lastWeight: lastWeight,
                 suggestedWeight: lastWeight,
-                message: "Last time was \(lastWeight.formattedWeight) lb. \(recommendation.message)"
+                message: recommendation.message
             )
         }
 
@@ -85,7 +93,7 @@ final class ProgressionEngine {
                 exerciseName: plannedExercise.name,
                 lastWeight: lastWeight,
                 suggestedWeight: lastWeight,
-                message: "Last time was \(lastWeight.formattedWeight) lb. Hold until the next jump fits the \(cap.upperBound.formatted(.number.precision(.fractionLength(0...1))))% cap."
+                message: "Hold until the next jump fits the \(cap.upperBound.formatted(.number.precision(.fractionLength(0...1))))% cap."
             )
         }
 
@@ -93,7 +101,7 @@ final class ProgressionEngine {
             exerciseName: plannedExercise.name,
             lastWeight: lastWeight,
             suggestedWeight: nextPracticalWeight,
-            message: "Last time was \(lastWeight.formattedWeight) lb. Try \(nextPracticalWeight.formattedWeight) lb if warm-ups feel clean."
+            message: "A small increase is reasonable next time."
         )
     }
 
@@ -190,11 +198,5 @@ final class ProgressionEngine {
         case .chest, .back, .shoulders, .biceps, .triceps, .core:
             2.5...5
         }
-    }
-}
-
-private extension Double {
-    var formattedWeight: String {
-        formatted(.number.precision(.fractionLength(0...1)))
     }
 }

@@ -3,6 +3,7 @@ import Foundation
 struct WorkoutGenerationResult {
     var plan: WorkoutPlan
     var freshness: [MuscleGroup: MuscleFreshnessResult]
+    var weeklyLoads: [MuscleGroup: WeeklyMuscleLoad]
 }
 
 final class WorkoutGenerator {
@@ -22,12 +23,24 @@ final class WorkoutGenerator {
             pain: context.painFlag,
             referenceDate: referenceDate
         )
+        let weeklyLoads = freshnessEngine.weeklyLoads(
+            from: sessions,
+            referenceDate: referenceDate
+        )
         let plannedCount = context.availableMinutes.exerciseCount
         let targetSets = targetSets(for: context)
         let targetRepRange = targetRepRange(for: context.goal)
 
         let rankedGroups = MuscleGroup.dashboardGroups.sorted {
-            priority(for: freshness[$0]?.status ?? .due) < priority(for: freshness[$1]?.status ?? .due)
+            groupPriority(
+                for: $0,
+                freshness: freshness,
+                weeklyLoads: weeklyLoads
+            ) < groupPriority(
+                for: $1,
+                freshness: freshness,
+                weeklyLoads: weeklyLoads
+            )
         }
 
         var chosenDefinitions: [ExerciseDefinition] = []
@@ -65,20 +78,30 @@ final class WorkoutGenerator {
                 muscleGroup: definition.primaryMuscleGroup,
                 secondaryMuscleGroups: definition.secondaryMuscleGroups,
                 equipment: definition.equipment,
+                station: definition.station,
                 targetSets: targetSets,
                 targetRepsLower: targetRepRange.lowerBound,
                 targetRepsUpper: targetRepRange.upperBound,
-                coachingNote: note(for: definition, context: context, freshness: freshness)
+                coachingNote: note(
+                    for: definition,
+                    context: context,
+                    freshness: freshness,
+                    weeklyLoads: weeklyLoads
+                )
             )
         }
 
         let plan = WorkoutPlan(
             exercises: Array(exercises),
             focusMuscleGroups: Array(Set(exercises.map(\.muscleGroup))).sorted { $0.rawValue < $1.rawValue },
-            volumeAdjustmentNote: volumeNote(for: context)
+            volumeAdjustmentNote: volumeNote(for: context),
+            weeklyRotationNote: weeklyRotationNote(
+                for: Array(exercises),
+                weeklyLoads: weeklyLoads
+            )
         )
 
-        return WorkoutGenerationResult(plan: plan, freshness: freshness)
+        return WorkoutGenerationResult(plan: plan, freshness: freshness, weeklyLoads: weeklyLoads)
     }
 
     private func firstAllowedDefinition(
@@ -112,9 +135,33 @@ final class WorkoutGenerator {
     private func priority(for status: FreshnessStatus) -> Int {
         switch status {
         case .due: 0
-        case .ready: 1
-        case .recovering: 2
-        case .caution: 3
+        case .ready: 25
+        case .recovering: 80
+        case .caution: 1_000
+        }
+    }
+
+    private func groupPriority(
+        for group: MuscleGroup,
+        freshness: [MuscleGroup: MuscleFreshnessResult],
+        weeklyLoads: [MuscleGroup: WeeklyMuscleLoad]
+    ) -> Int {
+        let status = freshness[group]?.status ?? .due
+        let setsThisWeek = weeklyLoads[group]?.setCount ?? 0
+
+        return priority(for: status) + weeklyLoadPenalty(for: setsThisWeek)
+    }
+
+    private func weeklyLoadPenalty(for setCount: Int) -> Int {
+        switch setCount {
+        case 0:
+            return 0
+        case 1...3:
+            return 8
+        case 4...7:
+            return 32
+        default:
+            return 60
         }
     }
 
@@ -142,10 +189,20 @@ final class WorkoutGenerator {
     private func note(
         for definition: ExerciseDefinition,
         context: WorkoutContext,
-        freshness: [MuscleGroup: MuscleFreshnessResult]
+        freshness: [MuscleGroup: MuscleFreshnessResult],
+        weeklyLoads: [MuscleGroup: WeeklyMuscleLoad]
     ) -> String {
         if context.painFlag != .none {
             return "Kept pain-aware and inside the safety rules."
+        }
+
+        let weeklySetCount = weeklyLoads[definition.primaryMuscleGroup]?.setCount ?? 0
+        if weeklySetCount == 0 {
+            return "No direct work logged for this area this week."
+        }
+
+        if weeklySetCount >= 6 {
+            return "Already has \(weeklySetCount) sets this week, so keep it controlled."
         }
 
         switch freshness[definition.primaryMuscleGroup]?.status {
@@ -173,5 +230,36 @@ final class WorkoutGenerator {
 
         return "Normal volume with room to stop early if form drops."
     }
+
+    private func weeklyRotationNote(
+        for exercises: [PlannedExercise],
+        weeklyLoads: [MuscleGroup: WeeklyMuscleLoad]
+    ) -> String? {
+        let trainedLoads = weeklyLoads.values
+            .filter(\.hasWork)
+            .sorted { $0.setCount > $1.setCount }
+
+        guard let heaviestLoad = trainedLoads.first else {
+            return nil
+        }
+
+        let untouchedFocus = exercises
+            .map(\.muscleGroup)
+            .filter { (weeklyLoads[$0]?.setCount ?? 0) == 0 }
+            .uniqued()
+
+        if !untouchedFocus.isEmpty {
+            let focusText = untouchedFocus.map(\.rawValue).joined(separator: ", ")
+            return "\(heaviestLoad.group.rawValue) already has \(heaviestLoad.setText) this week, so today leans toward \(focusText)."
+        }
+
+        return "Balanced against this week's logged volume, led by \(heaviestLoad.group.rawValue) at \(heaviestLoad.setText)."
+    }
 }
 
+private extension Array where Element: Hashable {
+    func uniqued() -> [Element] {
+        var seen = Set<Element>()
+        return filter { seen.insert($0).inserted }
+    }
+}

@@ -48,6 +48,7 @@ enum ProgressViewModel {
 
         for exercise in sessions.flatMap(\.completedExercises) {
             let bestWeight = exercise.sets.map(\.weight).max() ?? 0
+            guard bestWeight > 0 else { continue }
             bestByExercise[exercise.exerciseName] = max(bestByExercise[exercise.exerciseName] ?? 0, bestWeight)
         }
 
@@ -67,7 +68,8 @@ enum ProgressViewModel {
 
     static func encouragementCards(
         sessions: [WorkoutSession],
-        measurements: [BodyMeasurement]
+        measurements: [BodyMeasurement],
+        lengthUnit: LengthUnitPreference = .current
     ) -> [String] {
         var cards: [String] = []
         let weeklyCount = weeklyWorkoutCount(sessions)
@@ -83,10 +85,22 @@ enum ProgressViewModel {
         }
 
         if measurements.count >= 2,
-           let first = measurements.sorted(by: { $0.date < $1.date }).first,
-           let last = measurements.sorted(by: { $0.date < $1.date }).last,
-           last.arm > first.arm {
-            cards.append("Your arm measurement increased while training stayed consistent.")
+           let bestChange = BodyMeasurementInsights.metricChanges(from: measurements, lengthUnit: lengthUnit).first(where: \.isPositive) {
+            let directionText: String
+            switch bestChange.direction {
+            case .lowerIsBetter:
+                directionText = "down"
+            case .higherIsBetter:
+                directionText = "up"
+            case .neutral:
+                directionText = "steady"
+            }
+
+            cards.append("\(bestChange.title) is \(directionText) \(abs(bestChange.delta).formatted(.number.precision(.fractionLength(0...1)))) \(bestChange.unit) since your first check-in.")
+        }
+
+        if BodyMeasurementInsights.isCheckInDue(measurements) {
+            cards.append("Your body measurements are due. A 3-week check-in makes the progress easier to see.")
         }
 
         if cards.isEmpty {
@@ -96,4 +110,3 @@ enum ProgressViewModel {
         return cards
     }
 }
-

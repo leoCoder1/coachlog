@@ -26,6 +26,95 @@ enum CoachLayout {
     static let bottomScrollPadding: CGFloat = 128
 }
 
+enum CoachMotion {
+    static let screen = Animation.smooth(duration: 0.32)
+    static let content = Animation.snappy(duration: 0.28)
+
+    static var screenTransition: AnyTransition {
+        .asymmetric(
+            insertion: .opacity.combined(with: .move(edge: .trailing)),
+            removal: .opacity.combined(with: .move(edge: .leading))
+        )
+    }
+
+    static var cardTransition: AnyTransition {
+        .asymmetric(
+            insertion: .opacity.combined(with: .move(edge: .bottom)),
+            removal: .opacity
+        )
+    }
+}
+
+enum CoachGradient {
+    static let accent = LinearGradient(
+        colors: [
+            Color.freshness(.ready),
+            Color.coachAccent,
+            Color(red: 0.180, green: 0.520, blue: 0.980)
+        ],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+
+    static let accentSoft = LinearGradient(
+        colors: [
+            Color.coachAccent.opacity(0.28),
+            Color.freshness(.ready).opacity(0.12),
+            Color.clear
+        ],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+
+    static let chartFill = LinearGradient(
+        colors: [
+            Color.freshness(.ready),
+            Color.coachAccent,
+            Color(red: 0.220, green: 0.720, blue: 0.980)
+        ],
+        startPoint: .bottom,
+        endPoint: .top
+    )
+
+    static let chartArea = LinearGradient(
+        colors: [
+            Color.coachAccent.opacity(0.30),
+            Color.freshness(.ready).opacity(0.12),
+            Color.clear
+        ],
+        startPoint: .top,
+        endPoint: .bottom
+    )
+
+    static let surfaceSheen = LinearGradient(
+        colors: [
+            Color.white.opacity(0.045),
+            Color.clear
+        ],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+
+    static let warm = LinearGradient(
+        colors: [
+            Color.coachWarm,
+            Color(red: 1.000, green: 0.430, blue: 0.260)
+        ],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+
+    static func feedback(isPositive: Bool) -> LinearGradient {
+        LinearGradient(
+            colors: isPositive
+                ? [Color.freshness(.ready).opacity(0.24), Color.coachAccent.opacity(0.12)]
+                : [Color.coachWarm.opacity(0.24), Color(red: 1.000, green: 0.330, blue: 0.310).opacity(0.10)],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
+}
+
 struct CoachScreenBackground: View {
     var body: some View {
         Color.coachBackground
@@ -41,10 +130,13 @@ struct CoachCard<Content: View>: View {
         content
             .padding(padding)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(
+            .background {
                 RoundedRectangle(cornerRadius: 8, style: .continuous)
                     .fill(Color.coachSurface)
-            )
+
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(CoachGradient.surfaceSheen)
+            }
             .overlay {
                 RoundedRectangle(cornerRadius: 8, style: .continuous)
                     .stroke(Color.coachBorder, lineWidth: 1)
@@ -61,8 +153,15 @@ struct CoachPrimaryButtonStyle: ButtonStyle {
         configuration.label
             .foregroundStyle(Color.black.opacity(isEnabled ? 0.92 : 0.45))
             .background(
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .fill(isEnabled ? Color.coachAccent : Color.coachSurfaceMuted)
+                Group {
+                    if isEnabled {
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .fill(CoachGradient.accent)
+                    } else {
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .fill(Color.coachSurfaceMuted)
+                    }
+                }
             )
             .overlay {
                 RoundedRectangle(cornerRadius: 8, style: .continuous)
@@ -102,7 +201,7 @@ struct MetricCard: View {
             VStack(alignment: .leading, spacing: 10) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .fill(Color.coachAccent.opacity(0.16))
+                        .fill(CoachGradient.accentSoft)
                         .frame(width: 34, height: 34)
 
                     Image(systemName: iconName)

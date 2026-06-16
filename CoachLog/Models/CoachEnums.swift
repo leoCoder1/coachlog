@@ -1,5 +1,181 @@
 import Foundation
 
+enum UnitPreferenceKeys {
+    static let weightUnit = "coachlog.weightUnit"
+    static let lengthUnit = "coachlog.lengthUnit"
+}
+
+enum WeightUnitPreference: String, CaseIterable, Codable, Identifiable {
+    case pounds
+    case kilograms
+
+    private static let poundsPerKilogram = 2.2046226218
+
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .pounds: "Pounds"
+        case .kilograms: "Kilograms"
+        }
+    }
+
+    var unitLabel: String {
+        switch self {
+        case .pounds: "lb"
+        case .kilograms: "kg"
+        }
+    }
+
+    var workoutStep: Double {
+        switch self {
+        case .pounds: 2.5
+        case .kilograms: 1.0
+        }
+    }
+
+    var bodyWeightStep: Double {
+        switch self {
+        case .pounds: 0.5
+        case .kilograms: 0.5
+        }
+    }
+
+    static var current: WeightUnitPreference {
+        WeightUnitPreference(rawValue: UserDefaults.standard.string(forKey: UnitPreferenceKeys.weightUnit) ?? "") ?? .pounds
+    }
+
+    func displayWeight(fromPounds pounds: Double) -> Double {
+        switch self {
+        case .pounds:
+            pounds
+        case .kilograms:
+            pounds / Self.poundsPerKilogram
+        }
+    }
+
+    func pounds(fromDisplayWeight value: Double) -> Double {
+        switch self {
+        case .pounds:
+            value
+        case .kilograms:
+            value * Self.poundsPerKilogram
+        }
+    }
+
+    func roundedDisplayWeight(fromPounds pounds: Double, step: Double? = nil) -> Double {
+        let step = step ?? workoutStep
+        return rounded(displayWeight(fromPounds: pounds), step: step)
+    }
+
+    func displayWeightValues(
+        fromPoundsRange range: ClosedRange<Double>,
+        step: Double? = nil
+    ) -> [Double] {
+        let step = step ?? workoutStep
+        let lower = (displayWeight(fromPounds: range.lowerBound) / step).rounded(.up) * step
+        let upper = (displayWeight(fromPounds: range.upperBound) / step).rounded(.down) * step
+        return steppedValues(from: lower, through: upper, by: step)
+    }
+
+    func formattedWeight(
+        _ pounds: Double,
+        fractionLength: ClosedRange<Int> = 0...1
+    ) -> String {
+        let value = displayWeight(fromPounds: pounds)
+        return "\(value.formatted(.number.precision(.fractionLength(fractionLength)))) \(unitLabel)"
+    }
+}
+
+enum LengthUnitPreference: String, CaseIterable, Codable, Identifiable {
+    case inches
+    case centimeters
+
+    private static let centimetersPerInch = 2.54
+
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .inches: "Inches"
+        case .centimeters: "Centimeters"
+        }
+    }
+
+    var unitLabel: String {
+        switch self {
+        case .inches: "in"
+        case .centimeters: "cm"
+        }
+    }
+
+    var step: Double {
+        switch self {
+        case .inches: 0.25
+        case .centimeters: 0.5
+        }
+    }
+
+    static var current: LengthUnitPreference {
+        LengthUnitPreference(rawValue: UserDefaults.standard.string(forKey: UnitPreferenceKeys.lengthUnit) ?? "") ?? .inches
+    }
+
+    func displayLength(fromInches inches: Double) -> Double {
+        switch self {
+        case .inches:
+            inches
+        case .centimeters:
+            inches * Self.centimetersPerInch
+        }
+    }
+
+    func inches(fromDisplayLength value: Double) -> Double {
+        switch self {
+        case .inches:
+            value
+        case .centimeters:
+            value / Self.centimetersPerInch
+        }
+    }
+
+    func roundedDisplayLength(fromInches inches: Double) -> Double {
+        rounded(displayLength(fromInches: inches), step: step)
+    }
+
+    func displayLengthValues(fromInchesRange range: ClosedRange<Double>) -> [Double] {
+        let lower = (displayLength(fromInches: range.lowerBound) / step).rounded(.up) * step
+        let upper = (displayLength(fromInches: range.upperBound) / step).rounded(.down) * step
+        return steppedValues(from: lower, through: upper, by: step)
+    }
+
+    func formattedLength(
+        _ inches: Double,
+        fractionLength: ClosedRange<Int> = 0...1
+    ) -> String {
+        let value = displayLength(fromInches: inches)
+        return "\(value.formatted(.number.precision(.fractionLength(fractionLength)))) \(unitLabel)"
+    }
+}
+
+private func steppedValues(from lowerBound: Double, through upperBound: Double, by step: Double) -> [Double] {
+    guard step > 0, lowerBound <= upperBound else { return [] }
+
+    var values: [Double] = []
+    var current = lowerBound
+
+    while current <= upperBound + (step / 2) {
+        values.append(rounded(current, step: 0.01))
+        current += step
+    }
+
+    return values
+}
+
+private func rounded(_ value: Double, step: Double) -> Double {
+    guard step > 0 else { return value }
+    return ((value / step).rounded() * step * 100).rounded() / 100
+}
+
 enum MuscleGroup: String, CaseIterable, Codable, Identifiable {
     case chest = "Chest"
     case back = "Back"
@@ -41,6 +217,40 @@ enum Equipment: String, CaseIterable, Codable, Identifiable {
     case machine = "Machine"
 
     var id: String { rawValue }
+}
+
+enum GymStation: String, CaseIterable, Codable, Identifiable {
+    case bodyweight = "Bodyweight Area"
+    case dumbbellRack = "Dumbbell Rack"
+    case adjustableBench = "Adjustable Bench"
+    case cableStack = "Cable Stack"
+    case latPulldown = "Lat Pulldown"
+    case seatedRow = "Seated Row"
+    case chestPress = "Chest Press"
+    case legPress = "Leg Press"
+    case legCurl = "Leg Curl"
+    case assistedPullUp = "Assisted Pull-Up"
+    case smithMachine = "Smith Machine"
+    case mat = "Mat"
+
+    var id: String { rawValue }
+
+    var iconName: String {
+        switch self {
+        case .bodyweight: "figure.strengthtraining.traditional"
+        case .dumbbellRack: "dumbbell"
+        case .adjustableBench: "rectangle.inset.filled.and.person.filled"
+        case .cableStack: "cable.connector"
+        case .latPulldown: "figure.strengthtraining.functional"
+        case .seatedRow: "figure.rower"
+        case .chestPress: "figure.strengthtraining.traditional"
+        case .legPress: "figure.walk"
+        case .legCurl: "figure.flexibility"
+        case .assistedPullUp: "figure.pullup"
+        case .smithMachine: "square.grid.3x3"
+        case .mat: "rectangle.roundedtop"
+        }
+    }
 }
 
 enum EnergyLevel: String, CaseIterable, Codable, Identifiable {
@@ -138,4 +348,3 @@ enum FreshnessStatus: String, CaseIterable, Codable, Identifiable {
 
     var id: String { rawValue }
 }
-

@@ -4,7 +4,10 @@ import SwiftUI
 struct TodayCoachView: View {
     @Query(sort: \WorkoutSession.date, order: .reverse) private var sessions: [WorkoutSession]
     @Query(sort: \RecoverySnapshot.date, order: .reverse) private var recoverySnapshots: [RecoverySnapshot]
+    @Query(sort: \BodyMeasurement.date, order: .reverse) private var bodyMeasurements: [BodyMeasurement]
     @State private var viewModel = TodayCoachViewModel()
+    @State private var isShowingMeasurementCheckIn = false
+    private let freshnessEngine = MuscleFreshnessEngine()
 
     var body: some View {
         NavigationStack {
@@ -16,7 +19,9 @@ struct TodayCoachView: View {
                         header
                         selectors
                         recoveryCard
+                        bodyCheckInCard
                         generateButton
+                        weeklyLoadCard
                         generatedPlanCard
                     }
                     .padding()
@@ -27,6 +32,13 @@ struct TodayCoachView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color.coachBackground, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+            .animation(CoachMotion.content, value: sessions.count)
+            .animation(CoachMotion.content, value: recoverySnapshots.count)
+            .animation(CoachMotion.content, value: bodyMeasurements.count)
+            .animation(CoachMotion.content, value: viewModel.generatedPlan?.id)
+            .sheet(isPresented: $isShowingMeasurementCheckIn) {
+                BodyMeasurementCheckInView(latestMeasurement: bodyMeasurements.first)
+            }
         }
     }
 
@@ -124,6 +136,48 @@ struct TodayCoachView: View {
         }
     }
 
+    private var weeklyLoadCard: some View {
+        let loads = freshnessEngine.weeklyLoads(from: sessions)
+        let loggedSetCount = freshnessEngine.weeklyLoggedSetCount(from: sessions)
+        let activeLoads = MuscleGroup.dashboardGroups
+            .compactMap { loads[$0] }
+            .filter(\.hasWork)
+            .sorted { $0.setCount > $1.setCount }
+
+        return CoachCard {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Label("This Week", systemImage: "calendar")
+                        .font(.headline)
+
+                    Spacer()
+
+                    Text("\(loggedSetCount) \(loggedSetCount == 1 ? "set" : "sets")")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Color.coachSecondaryText)
+                }
+
+                if activeLoads.isEmpty {
+                    Text("No workouts logged this week")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.coachSecondaryText)
+                } else {
+                    VStack(spacing: 9) {
+                        ForEach(activeLoads.prefix(4)) { load in
+                            WeeklyLoadRow(load: load)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private var bodyCheckInCard: some View {
+        BodyMeasurementReminderCard(measurements: bodyMeasurements) {
+            isShowingMeasurementCheckIn = true
+        }
+    }
+
     private var generateButton: some View {
         Button {
             Task {
@@ -143,6 +197,7 @@ struct TodayCoachView: View {
         }
         .buttonStyle(CoachPrimaryButtonStyle())
         .disabled(viewModel.isGenerating)
+        .contentTransition(.opacity)
     }
 
     @ViewBuilder
@@ -161,26 +216,11 @@ struct TodayCoachView: View {
                         .overlay(Color.coachBorder)
 
                     ForEach(plan.exercises) { exercise in
-                        HStack(alignment: .top, spacing: 12) {
-                            Image(systemName: exercise.muscleGroup.iconName)
-                                .foregroundStyle(Color.coachAccent)
-                                .frame(width: 24)
-
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(exercise.name)
-                                    .font(.headline)
-
-                                Text("\(exercise.targetSets) sets · \(exercise.targetRepRange) reps · \(exercise.equipment.rawValue)")
-                                    .font(.subheadline)
-                                    .foregroundStyle(Color.coachSecondaryText)
-
-                                Text(exercise.coachingNote)
-                                    .font(.caption)
-                                    .foregroundStyle(Color.coachSecondaryText)
-                            }
-
-                            Spacer()
-                        }
+                        ExerciseVisualHeader(
+                            exercise: exercise,
+                            subtitle: "\(exercise.targetSets) sets · \(exercise.targetRepRange) reps · \(exercise.station.rawValue)",
+                            note: exercise.coachingNote
+                        )
                     }
 
                     NavigationLink {
@@ -194,6 +234,7 @@ struct TodayCoachView: View {
                     .buttonStyle(CoachPrimaryButtonStyle())
                 }
             }
+            .transition(CoachMotion.cardTransition)
         }
     }
 
@@ -205,6 +246,59 @@ struct TodayCoachView: View {
             Text(title)
                 .font(.headline)
             content()
+        }
+    }
+}
+
+private struct WeeklyLoadRow: View {
+    var load: WeeklyMuscleLoad
+
+    private var progress: Double {
+        min(1, Double(load.setCount) / 10)
+    }
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: load.group.iconName)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(Color.coachAccent)
+                .frame(width: 20)
+
+            VStack(alignment: .leading, spacing: 5) {
+                HStack {
+                    Text(load.group.rawValue)
+                        .font(.subheadline.weight(.semibold))
+
+                    Spacer()
+
+                    Text(load.setText)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Color.coachSecondaryText)
+                }
+
+                GeometryReader { proxy in
+                    ZStack(alignment: .leading) {
+                        Capsule()
+                            .fill(Color.coachSurfaceMuted)
+
+                        Capsule()
+                            .fill(loadGradient)
+                            .frame(width: proxy.size.width * progress)
+                    }
+                }
+                .frame(height: 5)
+            }
+        }
+    }
+
+    private var loadGradient: LinearGradient {
+        switch load.setCount {
+        case 0...3:
+            return CoachGradient.feedback(isPositive: true)
+        case 4...7:
+            return CoachGradient.warm
+        default:
+            return CoachGradient.chartFill
         }
     }
 }
