@@ -21,6 +21,10 @@ struct ExerciseVisualHeader: View {
                     .lineLimit(2)
 
                 MuscleChipRow(groups: exercise.affectedMuscleGroups)
+                DetailedMuscleTagRow(
+                    primary: exercise.primaryDetailedMuscle,
+                    secondary: exercise.secondaryDetailedMuscle
+                )
 
                 if let note {
                     Text(note)
@@ -33,13 +37,14 @@ struct ExerciseVisualHeader: View {
             Spacer(minLength: 4)
 
             MuscleImpactMap(
-                primary: exercise.muscleGroup,
-                secondary: exercise.secondaryMuscleGroups
+                primary: exercise.primaryDetailedMuscle,
+                secondary: exercise.secondaryDetailedMuscle,
+                supporting: exercise.detailedMuscles
             )
             .frame(width: 52, height: 76)
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(exercise.name), muscles: \(exercise.muscleImpactText)")
+        .accessibilityLabel("\(exercise.name), primary muscle: \(exercise.primaryDetailedMuscle.rawValue), secondary muscle: \(exercise.secondaryDetailedMuscle?.rawValue ?? "none")")
     }
 }
 
@@ -73,8 +78,9 @@ struct ExerciseIllustrationThumbnail: View {
     private var fallbackPreview: some View {
         ZStack {
             MuscleImpactMap(
-                primary: exercise.muscleGroup,
-                secondary: exercise.secondaryMuscleGroups
+                primary: exercise.primaryDetailedMuscle,
+                secondary: exercise.secondaryDetailedMuscle,
+                supporting: exercise.detailedMuscles
             )
             .frame(width: size * 0.44, height: size * 0.66)
             .offset(x: -size * 0.18)
@@ -94,22 +100,33 @@ struct ExerciseIllustrationThumbnail: View {
 }
 
 struct MuscleImpactMap: View {
-    var primary: MuscleGroup
-    var secondary: [MuscleGroup] = []
+    var primary: DetailedMuscleGroup
+    var secondary: DetailedMuscleGroup?
+    var supporting: [DetailedMuscleGroup] = []
 
-    private var highlightedGroups: [MuscleGroup] {
-        var groups = secondary.filter { $0 != primary }
-        groups.append(primary)
-        return groups
+    private var highlightedMuscles: [DetailedMuscleGroup] {
+        var muscles: [DetailedMuscleGroup] = []
+
+        for muscle in supporting where muscle != primary && !(secondary.map { $0 == muscle } ?? false) && !muscles.contains(muscle) {
+            muscles.append(muscle)
+        }
+
+        if let secondary, secondary != primary {
+            muscles.append(secondary)
+        }
+
+        muscles.append(primary)
+        return muscles
     }
 
     var body: some View {
         Canvas { context, size in
             drawBaseFigure(in: &context, size: size)
 
-            for group in highlightedGroups {
-                let color = group == primary ? Color.coachAccent : Color.coachAccent.opacity(0.48)
-                drawHighlight(for: group, in: &context, size: size, color: color)
+            for muscle in highlightedMuscles {
+                let isSecondary = secondary.map { $0 == muscle } ?? false
+                let opacity = muscle == primary ? 1.0 : (isSecondary ? 0.64 : 0.34)
+                drawHighlight(for: muscle, in: &context, size: size, color: Color.coachAccent.opacity(opacity))
             }
 
             drawFigureOutline(in: &context, size: size)
@@ -131,12 +148,12 @@ struct MuscleImpactMap: View {
     }
 
     private func drawHighlight(
-        for group: MuscleGroup,
+        for muscle: DetailedMuscleGroup,
         in context: inout GraphicsContext,
         size: CGSize,
         color: Color
     ) {
-        for path in highlightPaths(for: group, size: size) {
+        for path in highlightPaths(for: muscle, size: size) {
             context.fill(path, with: .color(color))
         }
     }
@@ -159,44 +176,127 @@ struct MuscleImpactMap: View {
         ]
     }
 
-    private func highlightPaths(for group: MuscleGroup, size: CGSize) -> [Path] {
-        switch group {
-        case .chest:
+    private func highlightPaths(for muscle: DetailedMuscleGroup, size: CGSize) -> [Path] {
+        switch muscle {
+        case .upperChest:
             return [
-                leftPecPath(size: size),
-                rightPecPath(size: size)
+                leftUpperPecPath(size: size),
+                rightUpperPecPath(size: size)
             ]
-        case .back:
+        case .midChest:
             return [
-                polygon([(35, 36), (48, 39), (46, 79), (36, 86), (30, 57)], size: size),
-                polygon([(65, 36), (52, 39), (54, 79), (64, 86), (70, 57)], size: size),
-                roundedRect(41, 32, 18, 12, radius: 5, size: size)
+                leftMidPecPath(size: size),
+                rightMidPecPath(size: size)
             ]
-        case .legs:
+        case .lowerChest:
+            return [
+                leftLowerPecPath(size: size),
+                rightLowerPecPath(size: size)
+            ]
+        case .latissimusDorsi:
+            return [
+                polygon([(33, 43), (46, 43), (45, 78), (36, 85), (30, 59)], size: size),
+                polygon([(67, 43), (54, 43), (55, 78), (64, 85), (70, 59)], size: size)
+            ]
+        case .upperBack:
+            return [
+                polygon([(34, 36), (48, 36), (47, 48), (35, 52), (29, 44)], size: size),
+                polygon([(66, 36), (52, 36), (53, 48), (65, 52), (71, 44)], size: size),
+                roundedRect(42, 32, 16, 9, radius: 4, size: size)
+            ]
+        case .lowerBack:
+            return [
+                polygon([(41, 67), (49, 70), (47, 88), (39, 93), (36, 80)], size: size),
+                polygon([(59, 67), (51, 70), (53, 88), (61, 93), (64, 80)], size: size)
+            ]
+        case .quadriceps:
             return [
                 leftQuadPath(size: size),
-                rightQuadPath(size: size),
-                leftCalfHighlightPath(size: size),
-                rightCalfHighlightPath(size: size)
+                rightQuadPath(size: size)
             ]
-        case .shoulders:
+        case .hamstrings:
             return [
-                leftDeltPath(size: size),
-                rightDeltPath(size: size)
+                polygon([(35, 105), (40, 101), (42, 129), (35, 130)], size: size),
+                polygon([(65, 105), (60, 101), (58, 129), (65, 130)], size: size)
+            ]
+        case .adductors:
+            return [
+                polygon([(46, 101), (50, 102), (47, 128), (43, 128)], size: size),
+                polygon([(54, 101), (50, 102), (53, 128), (57, 128)], size: size)
+            ]
+        case .gluteusMaximus:
+            return [
+                polygon([(37, 88), (49, 91), (48, 103), (39, 104), (34, 96)], size: size),
+                polygon([(63, 88), (51, 91), (52, 103), (61, 104), (66, 96)], size: size)
+            ]
+        case .gluteusMedius:
+            return [
+                polygon([(32, 83), (40, 88), (37, 99), (30, 96)], size: size),
+                polygon([(68, 83), (60, 88), (63, 99), (70, 96)], size: size)
+            ]
+        case .gluteusMinimus:
+            return [
+                ellipse(36, 91, 7, 8, size: size),
+                ellipse(57, 91, 7, 8, size: size)
+            ]
+        case .frontDeltoids:
+            return [
+                leftFrontDeltPath(size: size),
+                rightFrontDeltPath(size: size)
+            ]
+        case .sideDeltoids:
+            return [
+                leftSideDeltPath(size: size),
+                rightSideDeltPath(size: size)
+            ]
+        case .rearDeltoids:
+            return [
+                leftRearDeltPath(size: size),
+                rightRearDeltPath(size: size)
             ]
         case .biceps:
             return [
-                leftUpperArmHighlightPath(size: size),
-                rightUpperArmHighlightPath(size: size)
+                leftBicepsPath(size: size),
+                rightBicepsPath(size: size)
             ]
         case .triceps:
             return [
-                leftForearmHighlightPath(size: size),
-                rightForearmHighlightPath(size: size)
+                leftTricepsPath(size: size),
+                rightTricepsPath(size: size)
             ]
-        case .core:
+        case .forearmFlexors:
             return [
-                corePath(size: size)
+                polygon([(21, 77), (27, 79), (24, 104), (17, 104)], size: size),
+                polygon([(79, 77), (73, 79), (76, 104), (83, 104)], size: size)
+            ]
+        case .forearmExtensors:
+            return [
+                polygon([(18, 78), (22, 77), (20, 105), (15, 105)], size: size),
+                polygon([(82, 78), (78, 77), (80, 105), (85, 105)], size: size)
+            ]
+        case .brachioradialis:
+            return [
+                polygon([(24, 76), (30, 80), (26, 101), (21, 103)], size: size),
+                polygon([(76, 76), (70, 80), (74, 101), (79, 103)], size: size)
+            ]
+        case .gastrocnemius:
+            return [
+                leftCalfHighlightPath(size: size),
+                rightCalfHighlightPath(size: size)
+            ]
+        case .soleus:
+            return [
+                polygon([(37, 141), (44, 141), (45, 149), (35, 149)], size: size),
+                polygon([(56, 141), (63, 141), (65, 149), (55, 149)], size: size)
+            ]
+        case .rectusAbdominis:
+            return [
+                rectusAbdominisPath(size: size)
+            ]
+        case .obliques:
+            return [
+                leftObliquePath(size: size),
+                rightObliquePath(size: size)
             ]
         }
     }
@@ -309,6 +409,30 @@ struct MuscleImpactMap: View {
         return path
     }
 
+    private func leftUpperPecPath(size: CGSize) -> Path {
+        polygon([(34, 41), (49, 41), (49, 48), (35, 49)], size: size)
+    }
+
+    private func rightUpperPecPath(size: CGSize) -> Path {
+        polygon([(66, 41), (51, 41), (51, 48), (65, 49)], size: size)
+    }
+
+    private func leftMidPecPath(size: CGSize) -> Path {
+        polygon([(35, 48), (49, 48), (48, 56), (35, 56)], size: size)
+    }
+
+    private func rightMidPecPath(size: CGSize) -> Path {
+        polygon([(65, 48), (51, 48), (52, 56), (65, 56)], size: size)
+    }
+
+    private func leftLowerPecPath(size: CGSize) -> Path {
+        polygon([(36, 56), (48, 56), (47, 62), (38, 63)], size: size)
+    }
+
+    private func rightLowerPecPath(size: CGSize) -> Path {
+        polygon([(64, 56), (52, 56), (53, 62), (62, 63)], size: size)
+    }
+
     private func leftPecPath(size: CGSize) -> Path {
         var path = Path()
         path.move(to: point(34, 41, size: size))
@@ -329,6 +453,25 @@ struct MuscleImpactMap: View {
         return path
     }
 
+    private func rectusAbdominisPath(size: CGSize) -> Path {
+        var path = Path()
+        path.move(to: point(44, 59, size: size))
+        path.addLine(to: point(56, 59, size: size))
+        path.addCurve(to: point(57, 86, size: size), control1: point(57, 68, size: size), control2: point(57, 78, size: size))
+        path.addCurve(to: point(43, 86, size: size), control1: point(53, 88, size: size), control2: point(47, 88, size: size))
+        path.addCurve(to: point(44, 59, size: size), control1: point(43, 78, size: size), control2: point(43, 68, size: size))
+        path.closeSubpath()
+        return path
+    }
+
+    private func leftObliquePath(size: CGSize) -> Path {
+        polygon([(38, 59), (44, 62), (43, 84), (38, 88), (34, 73)], size: size)
+    }
+
+    private func rightObliquePath(size: CGSize) -> Path {
+        polygon([(62, 59), (56, 62), (57, 84), (62, 88), (66, 73)], size: size)
+    }
+
     private func corePath(size: CGSize) -> Path {
         var path = Path()
         path.move(to: point(42, 58, size: size))
@@ -338,6 +481,44 @@ struct MuscleImpactMap: View {
         path.addCurve(to: point(42, 58, size: size), control1: point(40, 77, size: size), control2: point(40, 67, size: size))
         path.closeSubpath()
         return path
+    }
+
+    private func leftFrontDeltPath(size: CGSize) -> Path {
+        polygon([(31, 38), (38, 43), (35, 51), (27, 51), (24, 45)], size: size)
+    }
+
+    private func rightFrontDeltPath(size: CGSize) -> Path {
+        polygon([(69, 38), (62, 43), (65, 51), (73, 51), (76, 45)], size: size)
+    }
+
+    private func leftSideDeltPath(size: CGSize) -> Path {
+        var path = Path()
+        path.move(to: point(29, 36, size: size))
+        path.addCurve(to: point(20, 51, size: size), control1: point(23, 39, size: size), control2: point(20, 44, size: size))
+        path.addCurve(to: point(27, 58, size: size), control1: point(20, 56, size: size), control2: point(24, 58, size: size))
+        path.addLine(to: point(32, 50, size: size))
+        path.addLine(to: point(35, 40, size: size))
+        path.closeSubpath()
+        return path
+    }
+
+    private func rightSideDeltPath(size: CGSize) -> Path {
+        var path = Path()
+        path.move(to: point(71, 36, size: size))
+        path.addCurve(to: point(80, 51, size: size), control1: point(77, 39, size: size), control2: point(80, 44, size: size))
+        path.addCurve(to: point(73, 58, size: size), control1: point(80, 56, size: size), control2: point(76, 58, size: size))
+        path.addLine(to: point(68, 50, size: size))
+        path.addLine(to: point(65, 40, size: size))
+        path.closeSubpath()
+        return path
+    }
+
+    private func leftRearDeltPath(size: CGSize) -> Path {
+        polygon([(30, 39), (36, 41), (34, 49), (28, 51), (24, 47)], size: size)
+    }
+
+    private func rightRearDeltPath(size: CGSize) -> Path {
+        polygon([(70, 39), (64, 41), (66, 49), (72, 51), (76, 47)], size: size)
     }
 
     private func leftDeltPath(size: CGSize) -> Path {
@@ -360,6 +541,22 @@ struct MuscleImpactMap: View {
         path.addCurve(to: point(70, 36, size: size), control1: point(64, 38, size: size), control2: point(67, 36, size: size))
         path.closeSubpath()
         return path
+    }
+
+    private func leftBicepsPath(size: CGSize) -> Path {
+        polygon([(22, 50), (30, 47), (31, 66), (23, 69)], size: size)
+    }
+
+    private func rightBicepsPath(size: CGSize) -> Path {
+        polygon([(78, 50), (70, 47), (69, 66), (77, 69)], size: size)
+    }
+
+    private func leftTricepsPath(size: CGSize) -> Path {
+        polygon([(27, 59), (32, 64), (29, 78), (22, 74), (22, 65)], size: size)
+    }
+
+    private func rightTricepsPath(size: CGSize) -> Path {
+        polygon([(73, 59), (68, 64), (71, 78), (78, 74), (78, 65)], size: size)
     }
 
     private func leftUpperArmHighlightPath(size: CGSize) -> Path {
@@ -480,5 +677,53 @@ struct MuscleChipRow: View {
                     .clipShape(Capsule())
             }
         }
+    }
+}
+
+struct DetailedMuscleTagRow: View {
+    var primary: DetailedMuscleGroup
+    var secondary: DetailedMuscleGroup?
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 6) {
+                detailedChip(label: "Primary", muscle: primary, isPrimary: true)
+                    .fixedSize(horizontal: true, vertical: false)
+
+                if let secondary {
+                    detailedChip(label: "Secondary", muscle: secondary, isPrimary: false)
+                        .fixedSize(horizontal: true, vertical: false)
+                }
+            }
+
+            VStack(alignment: .leading, spacing: 4) {
+                detailedChip(label: "Primary", muscle: primary, isPrimary: true)
+
+                if let secondary {
+                    detailedChip(label: "Secondary", muscle: secondary, isPrimary: false)
+                }
+            }
+        }
+    }
+
+    private func detailedChip(
+        label: String,
+        muscle: DetailedMuscleGroup,
+        isPrimary: Bool
+    ) -> some View {
+        Text(muscle.rawValue)
+        .font(.caption2.weight(.semibold))
+        .lineLimit(1)
+        .minimumScaleFactor(0.72)
+        .foregroundStyle(isPrimary ? Color.black.opacity(0.90) : Color.coachAccent)
+        .padding(.horizontal, 7)
+        .padding(.vertical, 4)
+        .background(isPrimary ? AnyShapeStyle(Color.coachAccent) : AnyShapeStyle(Color.coachAccent.opacity(0.12)))
+        .overlay {
+            Capsule()
+                .stroke(isPrimary ? Color.clear : Color.coachAccent.opacity(0.24), lineWidth: 1)
+        }
+        .clipShape(Capsule())
+        .accessibilityLabel("\(label): \(muscle.rawValue)")
     }
 }

@@ -38,6 +38,7 @@
 		8B0000000000000000000229 /* BaselineTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000129 /* BaselineTestView.swift */; };
 		8B0000000000000000000230 /* ExerciseVisuals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000130 /* ExerciseVisuals.swift */; };
 		8B0000000000000000000231 /* BodyMeasurementCheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000131 /* BodyMeasurementCheckInView.swift */; };
+		8B0000000000000000000232 /* ExerciseLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000132 /* ExerciseLibraryView.swift */; };
 		8B0000000000000000000302 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000301 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -74,6 +75,7 @@
 		8B0000000000000000000129 /* BaselineTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaselineTestView.swift; sourceTree = "<group>"; };
 		8B0000000000000000000130 /* ExerciseVisuals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseVisuals.swift; sourceTree = "<group>"; };
 		8B0000000000000000000131 /* BodyMeasurementCheckInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyMeasurementCheckInView.swift; sourceTree = "<group>"; };
+		8B0000000000000000000132 /* ExerciseLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseLibraryView.swift; sourceTree = "<group>"; };
 		8B0000000000000000000301 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8B0000000000000000000303 /* CoachLog.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CoachLog.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -176,6 +178,7 @@
 				8B0000000000000000000121 /* SharedViews.swift */,
 				8B0000000000000000000122 /* TodayCoachView.swift */,
 				8B0000000000000000000123 /* WorkoutSessionView.swift */,
+				8B0000000000000000000132 /* ExerciseLibraryView.swift */,
 				8B0000000000000000000124 /* MuscleFreshnessDashboardView.swift */,
 				8B0000000000000000000125 /* ProgressScreen.swift */,
 				8B0000000000000000000129 /* BaselineTestView.swift */,
@@ -286,6 +289,7 @@
 				8B0000000000000000000228 /* WheelPickerControls.swift in Sources */,
 				8B0000000000000000000230 /* ExerciseVisuals.swift in Sources */,
 				8B0000000000000000000231 /* BodyMeasurementCheckInView.swift in Sources */,
+				8B0000000000000000000232 /* ExerciseLibraryView.swift in Sources */,
 				8B0000000000000000000221 /* SharedViews.swift in Sources */,
 				8B0000000000000000000222 /* TodayCoachView.swift in Sources */,
 				8B0000000000000000000223 /* WorkoutSessionView.swift in Sources */,

@@ -5,12 +5,21 @@ enum DataSeeder {
     @MainActor
     static func seedExercisesIfNeeded(in modelContext: ModelContext) {
         let descriptor = FetchDescriptor<Exercise>()
-        let existingCount = (try? modelContext.fetchCount(descriptor)) ?? 0
-        guard existingCount == 0 else { return }
+        let existingExercises = (try? modelContext.fetch(descriptor)) ?? []
 
-        ExerciseLibrary.definitions
-            .map(Exercise.init(definition:))
-            .forEach(modelContext.insert)
+        if existingExercises.isEmpty {
+            ExerciseLibrary.definitions
+                .map(Exercise.init(definition:))
+                .forEach(modelContext.insert)
+        } else {
+            for definition in ExerciseLibrary.definitions {
+                if let existing = existingExercises.first(where: { $0.name == definition.name && !$0.isCustom }) {
+                    existing.apply(definition: definition)
+                } else if !existingExercises.contains(where: { $0.name == definition.name }) {
+                    modelContext.insert(Exercise(definition: definition))
+                }
+            }
+        }
 
         try? modelContext.save()
     }

@@ -7,6 +7,7 @@ struct WorkoutSessionView: View {
     @Query(sort: \WorkoutSession.date, order: .reverse) private var sessions: [WorkoutSession]
     @State private var viewModel: WorkoutSessionViewModel
     @State private var saveError: String?
+    @State private var isShowingMovementPicker = false
 
     let context: WorkoutContext
 
@@ -33,6 +34,16 @@ struct WorkoutSessionView: View {
                     }
 
                     Button {
+                        isShowingMovementPicker = true
+                    } label: {
+                        Label("Add Movement", systemImage: "plus.circle")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
+                    }
+                    .buttonStyle(CoachSecondaryButtonStyle())
+
+                    Button {
                         finishWorkout()
                     } label: {
                         Label("Finish Workout", systemImage: "checkmark.circle.fill")
@@ -54,6 +65,12 @@ struct WorkoutSessionView: View {
         .animation(CoachMotion.content, value: viewModel.hasLoggedSets)
         .task {
             viewModel.prepareFromHistory(sessions: sessions, context: context)
+        }
+        .sheet(isPresented: $isShowingMovementPicker) {
+            SessionMovementPickerSheet { exercise in
+                viewModel.addExercise(exercise, sessions: sessions, context: context)
+                isShowingMovementPicker = false
+            }
         }
         .alert("Workout could not be saved", isPresented: .constant(saveError != nil)) {
             Button("OK") { saveError = nil }
@@ -97,6 +114,88 @@ struct WorkoutSessionView: View {
         } catch {
             saveError = error.localizedDescription
         }
+    }
+}
+
+private struct SessionMovementPickerSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @Query(sort: \Exercise.name) private var exercises: [Exercise]
+
+    var onSelect: (Exercise) -> Void
+
+    @State private var searchText = ""
+    @State private var selectedKind: ExerciseKind?
+
+    private var filteredExercises: [Exercise] {
+        exercises.filter { exercise in
+            let matchesSearch = searchText.isEmpty
+                || exercise.name.localizedCaseInsensitiveContains(searchText)
+                || exercise.primaryDetailedMuscle.rawValue.localizedCaseInsensitiveContains(searchText)
+            let matchesKind = selectedKind == nil || exercise.kind == selectedKind
+            return matchesSearch && matchesKind
+        }
+    }
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                CoachScreenBackground()
+
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+                        CoachCard(padding: 12) {
+                            HStack(spacing: 10) {
+                                Image(systemName: "magnifyingglass")
+                                    .foregroundStyle(Color.coachSecondaryText)
+
+                                TextField("Search library", text: $searchText)
+                                    .textInputAutocapitalization(.words)
+                                    .autocorrectionDisabled()
+                            }
+                        }
+
+                        Picker("Type", selection: $selectedKind) {
+                            Text("All").tag(ExerciseKind?.none)
+
+                            ForEach(ExerciseKind.allCases) { kind in
+                                Text(kind.rawValue).tag(Optional(kind))
+                            }
+                        }
+                        .pickerStyle(.segmented)
+
+                        if filteredExercises.isEmpty {
+                            EmptyStateView(
+                                iconName: "list.bullet.rectangle",
+                                title: "No movements",
+                                message: "Add a custom exercise from the Library tab first."
+                            )
+                        } else {
+                            ForEach(filteredExercises) { exercise in
+                                Button {
+                                    onSelect(exercise)
+                                } label: {
+                                    ExerciseLibraryRow(exercise: exercise)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                    }
+                    .padding()
+                    .padding(.bottom, 24)
+                }
+            }
+            .navigationTitle("Add Movement")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Close") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+        .presentationDetents([.large])
+        .preferredColorScheme(.dark)
     }
 }
 
@@ -406,6 +505,10 @@ private struct ExerciseSubstitutionSheet: View {
                                         .foregroundStyle(Color.coachSecondaryText)
 
                                     MuscleChipRow(groups: option.exercise.affectedMuscleGroups)
+                                    DetailedMuscleTagRow(
+                                        primary: option.exercise.primaryDetailedMuscle,
+                                        secondary: option.exercise.secondaryDetailedMuscle
+                                    )
                                 }
 
                                 Spacer()

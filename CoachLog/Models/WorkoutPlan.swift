@@ -37,6 +37,9 @@ struct PlannedExercise: Identifiable, Hashable {
     var name: String
     var muscleGroup: MuscleGroup
     var secondaryMuscleGroups: [MuscleGroup]
+    var primaryDetailedMuscle: DetailedMuscleGroup
+    var secondaryDetailedMuscle: DetailedMuscleGroup?
+    var detailedMuscles: [DetailedMuscleGroup]
     var equipment: Equipment
     var station: GymStation
     var targetSets: Int
@@ -60,6 +63,18 @@ struct PlannedExercise: Identifiable, Hashable {
 
     var muscleImpactText: String {
         affectedMuscleGroups.map(\.rawValue).joined(separator: ", ")
+    }
+
+    var detailedMuscleImpactText: String {
+        detailedMuscles.map(\.rawValue).joined(separator: ", ")
+    }
+
+    var specificMuscleSummary: String {
+        if let secondaryDetailedMuscle {
+            return "\(primaryDetailedMuscle.rawValue) + \(secondaryDetailedMuscle.rawValue)"
+        }
+
+        return primaryDetailedMuscle.rawValue
     }
 
     var illustrationAssetName: String {

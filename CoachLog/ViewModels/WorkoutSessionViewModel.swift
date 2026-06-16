@@ -175,6 +175,35 @@ final class WorkoutSessionViewModel {
         prepareExerciseFromHistory(replacement, sessions: sessions, context: context)
     }
 
+    func addExercise(
+        _ exercise: Exercise,
+        sessions: [WorkoutSession],
+        context: WorkoutContext
+    ) {
+        let targetSets = exercise.kind == .stretch ? 2 : 3
+        let targetLower = exercise.kind == .stretch ? 20 : 8
+        let targetUpper = exercise.kind == .stretch ? 30 : 12
+        let planned = PlannedExercise(
+            name: exercise.name,
+            muscleGroup: exercise.primaryMuscleGroup,
+            secondaryMuscleGroups: exercise.secondaryMuscleGroups,
+            primaryDetailedMuscle: exercise.primaryDetailedMuscle,
+            secondaryDetailedMuscle: exercise.secondaryDetailedMuscle,
+            detailedMuscles: exercise.detailedMuscles,
+            equipment: exercise.equipment,
+            station: exercise.station,
+            targetSets: targetSets,
+            targetRepsLower: targetLower,
+            targetRepsUpper: targetUpper,
+            coachingNote: "Added from your exercise library."
+        )
+
+        plan.exercises.append(planned)
+        inputs[planned.id] = SetInput(weight: 0, reps: planned.targetRepsLower, rir: 2)
+        loggedSets[planned.id] = []
+        prepareExerciseFromHistory(planned, sessions: sessions, context: context)
+    }
+
     private func nearestWeightOption(to weight: Double) -> Double {
         let clamped = min(400, max(0, weight))
         return (clamped / 2.5).rounded() * 2.5
@@ -208,6 +237,9 @@ final class WorkoutSessionViewModel {
             name: definition.name,
             muscleGroup: definition.primaryMuscleGroup,
             secondaryMuscleGroups: definition.secondaryMuscleGroups,
+            primaryDetailedMuscle: definition.primaryDetailedMuscle,
+            secondaryDetailedMuscle: definition.secondaryDetailedMuscle,
+            detailedMuscles: definition.detailedMuscles,
             equipment: definition.equipment,
             station: definition.station,
             targetSets: exercise.targetSets,

@@ -5,10 +5,124 @@ struct ExerciseDefinition: Identifiable, Hashable {
     var name: String
     var primaryMuscleGroup: MuscleGroup
     var secondaryMuscleGroups: [MuscleGroup]
+    var primaryDetailedMuscle: DetailedMuscleGroup
+    var secondaryDetailedMuscle: DetailedMuscleGroup?
+    var detailedMuscles: [DetailedMuscleGroup]
     var equipment: Equipment
     var station: GymStation
     var isKneeFriendly: Bool
     var isShoulderFriendly: Bool
+
+    init(
+        id: UUID = UUID(),
+        name: String,
+        primaryMuscleGroup: MuscleGroup,
+        secondaryMuscleGroups: [MuscleGroup],
+        primaryDetailedMuscle: DetailedMuscleGroup? = nil,
+        secondaryDetailedMuscle: DetailedMuscleGroup? = nil,
+        detailedMuscles: [DetailedMuscleGroup]? = nil,
+        equipment: Equipment,
+        station: GymStation,
+        isKneeFriendly: Bool,
+        isShoulderFriendly: Bool
+    ) {
+        self.id = id
+        self.name = name
+        self.primaryMuscleGroup = primaryMuscleGroup
+        self.secondaryMuscleGroups = secondaryMuscleGroups
+        let defaultDetailedMuscles = detailedMuscles ?? Self.defaultDetailedMuscles(
+            for: name,
+            primary: primaryMuscleGroup,
+            secondary: secondaryMuscleGroups
+        )
+        let resolvedPrimary = primaryDetailedMuscle ?? defaultDetailedMuscles.first ?? DetailedMuscleGroup.defaults(for: primaryMuscleGroup)[0]
+        let resolvedSecondary = secondaryDetailedMuscle ?? defaultDetailedMuscles.first { $0 != resolvedPrimary }
+
+        self.primaryDetailedMuscle = resolvedPrimary
+        self.secondaryDetailedMuscle = resolvedSecondary
+        self.detailedMuscles = Self.orderedDetailedMuscles(
+            primary: resolvedPrimary,
+            secondary: resolvedSecondary,
+            all: defaultDetailedMuscles
+        )
+        self.equipment = equipment
+        self.station = station
+        self.isKneeFriendly = isKneeFriendly
+        self.isShoulderFriendly = isShoulderFriendly
+    }
+
+    private static func orderedDetailedMuscles(
+        primary: DetailedMuscleGroup,
+        secondary: DetailedMuscleGroup?,
+        all muscles: [DetailedMuscleGroup]
+    ) -> [DetailedMuscleGroup] {
+        var ordered = [primary]
+
+        if let secondary, secondary != primary {
+            ordered.append(secondary)
+        }
+
+        for muscle in muscles where !ordered.contains(muscle) {
+            ordered.append(muscle)
+        }
+
+        return ordered
+    }
+
+    private static func defaultDetailedMuscles(
+        for exerciseName: String,
+        primary: MuscleGroup,
+        secondary: [MuscleGroup]
+    ) -> [DetailedMuscleGroup] {
+        switch exerciseName {
+        case "Push-ups":
+            [.midChest, .lowerChest, .triceps, .frontDeltoids, .rectusAbdominis]
+        case "Dumbbell Bench Press", "Machine Chest Press", "Smith Machine Bench Press":
+            [.midChest, .lowerChest, .triceps, .frontDeltoids]
+        case "Incline Dumbbell Press":
+            [.upperChest, .frontDeltoids, .triceps]
+        case "Cable Chest Fly":
+            [.midChest, .lowerChest, .frontDeltoids]
+        case "Triceps Pressdown":
+            [.triceps, .forearmFlexors]
+        case "Overhead Cable Triceps Extension":
+            [.triceps, .forearmFlexors, .rectusAbdominis]
+        case "Close-Grip Push-ups":
+            [.triceps, .midChest, .frontDeltoids, .rectusAbdominis]
+        case "Lat Pulldown", "Assisted Pull-up":
+            [.latissimusDorsi, .upperBack, .biceps, .brachioradialis, .forearmFlexors]
+        case "Seated Row", "Cable Row", "Dumbbell Row":
+            [.upperBack, .latissimusDorsi, .rearDeltoids, .biceps, .brachioradialis]
+        case "Biceps Curl", "Cable Curl", "Incline Dumbbell Curl":
+            [.biceps, .brachioradialis, .forearmFlexors]
+        case "Goblet Squat", "Leg Press":
+            [.quadriceps, .gluteusMaximus, .adductors, .rectusAbdominis]
+        case "Romanian Deadlift":
+            [.hamstrings, .gluteusMaximus, .lowerBack, .forearmFlexors]
+        case "Seated Leg Curl":
+            [.hamstrings, .gastrocnemius]
+        case "Dumbbell Reverse Lunge", "Step-up":
+            [.quadriceps, .gluteusMaximus, .gluteusMedius, .hamstrings, .adductors, .obliques]
+        case "Glute Bridge":
+            [.gluteusMaximus, .gluteusMedius, .hamstrings, .rectusAbdominis]
+        case "Calf Raise":
+            [.gastrocnemius, .soleus]
+        case "Dumbbell Shoulder Press", "Machine Shoulder Press":
+            [.frontDeltoids, .sideDeltoids, .triceps]
+        case "Dumbbell Lateral Raise", "Cable Lateral Raise":
+            [.sideDeltoids, .frontDeltoids]
+        case "Plank":
+            [.rectusAbdominis, .obliques, .frontDeltoids]
+        case "Dead Bug":
+            [.rectusAbdominis, .obliques]
+        case "Side Plank":
+            [.obliques, .rectusAbdominis, .sideDeltoids]
+        case "Pallof Press":
+            [.obliques, .rectusAbdominis, .sideDeltoids]
+        default:
+            DetailedMuscleGroup.defaults(primary: primary, secondary: secondary)
+        }
+    }
 }
 
 enum ExerciseLibrary {

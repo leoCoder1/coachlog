@@ -36,6 +36,8 @@ struct ContentView: View {
             TodayCoachView()
         case .freshness:
             MuscleFreshnessDashboardView()
+        case .library:
+            ExerciseLibraryView()
         case .progress:
             ProgressScreen()
         case .settings:
@@ -47,6 +49,7 @@ struct ContentView: View {
 private enum CoachTab: String, CaseIterable, Identifiable {
     case coach = "Coach"
     case freshness = "Freshness"
+    case library = "Library"
     case progress = "Progress"
     case settings = "Settings"
 
@@ -56,6 +59,7 @@ private enum CoachTab: String, CaseIterable, Identifiable {
         switch self {
         case .coach: "sparkles"
         case .freshness: "figure.strengthtraining.traditional"
+        case .library: "list.bullet.rectangle"
         case .progress: "chart.xyaxis.line"
         case .settings: "gearshape"
         }

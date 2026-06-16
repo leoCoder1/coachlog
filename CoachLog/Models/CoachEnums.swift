@@ -210,6 +210,110 @@ enum MuscleGroup: String, CaseIterable, Codable, Identifiable {
     }
 }
 
+enum DetailedMuscleGroup: String, CaseIterable, Codable, Identifiable {
+    case gluteusMaximus = "Gluteus Maximus"
+    case gluteusMedius = "Gluteus Medius"
+    case gluteusMinimus = "Gluteus Minimus"
+    case quadriceps = "Quadriceps"
+    case hamstrings = "Hamstrings"
+    case adductors = "Adductors"
+    case forearmFlexors = "Forearm Flexors"
+    case forearmExtensors = "Forearm Extensors"
+    case brachioradialis = "Brachioradialis"
+    case upperChest = "Upper Chest"
+    case midChest = "Mid Chest"
+    case lowerChest = "Lower Chest"
+    case latissimusDorsi = "Latissimus Dorsi"
+    case upperBack = "Upper Back"
+    case lowerBack = "Lower Back"
+    case frontDeltoids = "Front Deltoids"
+    case sideDeltoids = "Side Deltoids"
+    case rearDeltoids = "Rear Deltoids"
+    case biceps = "Biceps"
+    case triceps = "Triceps"
+    case gastrocnemius = "Gastrocnemius"
+    case soleus = "Soleus"
+    case rectusAbdominis = "Rectus Abdominis"
+    case obliques = "Obliques"
+
+    var id: String { rawValue }
+
+    var category: String {
+        switch self {
+        case .gluteusMaximus, .gluteusMedius, .gluteusMinimus:
+            "Glutes"
+        case .quadriceps, .hamstrings, .adductors:
+            "Thighs"
+        case .forearmFlexors, .forearmExtensors, .brachioradialis:
+            "Hands & Forearms"
+        case .upperChest, .midChest, .lowerChest:
+            "Chest"
+        case .latissimusDorsi, .upperBack, .lowerBack:
+            "Back"
+        case .frontDeltoids, .sideDeltoids, .rearDeltoids:
+            "Shoulders"
+        case .biceps, .triceps:
+            "Arms"
+        case .gastrocnemius, .soleus:
+            "Calves"
+        case .rectusAbdominis, .obliques:
+            "Core"
+        }
+    }
+
+    var parentGroup: MuscleGroup {
+        switch self {
+        case .upperChest, .midChest, .lowerChest:
+            .chest
+        case .latissimusDorsi, .upperBack, .lowerBack:
+            .back
+        case .quadriceps, .hamstrings, .adductors,
+             .gluteusMaximus, .gluteusMedius, .gluteusMinimus,
+             .gastrocnemius, .soleus:
+            .legs
+        case .frontDeltoids, .sideDeltoids, .rearDeltoids:
+            .shoulders
+        case .biceps, .brachioradialis, .forearmFlexors, .forearmExtensors:
+            .biceps
+        case .triceps:
+            .triceps
+        case .rectusAbdominis, .obliques:
+            .core
+        }
+    }
+
+    static func defaults(for group: MuscleGroup) -> [DetailedMuscleGroup] {
+        switch group {
+        case .chest:
+            [.upperChest, .midChest, .lowerChest]
+        case .back:
+            [.latissimusDorsi, .upperBack, .lowerBack]
+        case .legs:
+            [.quadriceps, .hamstrings, .gluteusMaximus, .gastrocnemius]
+        case .shoulders:
+            [.frontDeltoids, .sideDeltoids, .rearDeltoids]
+        case .biceps:
+            [.biceps, .brachioradialis, .forearmFlexors]
+        case .triceps:
+            [.triceps]
+        case .core:
+            [.rectusAbdominis, .obliques]
+        }
+    }
+
+    static func defaults(primary: MuscleGroup, secondary: [MuscleGroup]) -> [DetailedMuscleGroup] {
+        var muscles = defaults(for: primary)
+
+        for group in secondary {
+            for muscle in defaults(for: group) where !muscles.contains(muscle) {
+                muscles.append(muscle)
+            }
+        }
+
+        return muscles
+    }
+}
+
 enum Equipment: String, CaseIterable, Codable, Identifiable {
     case bodyweight = "Bodyweight"
     case dumbbell = "Dumbbell"
@@ -217,6 +321,20 @@ enum Equipment: String, CaseIterable, Codable, Identifiable {
     case machine = "Machine"
 
     var id: String { rawValue }
+}
+
+enum ExerciseKind: String, CaseIterable, Codable, Identifiable {
+    case strength = "Strength"
+    case stretch = "Stretch"
+
+    var id: String { rawValue }
+
+    var iconName: String {
+        switch self {
+        case .strength: "dumbbell"
+        case .stretch: "figure.flexibility"
+        }
+    }
 }
 
 enum GymStation: String, CaseIterable, Codable, Identifiable {
