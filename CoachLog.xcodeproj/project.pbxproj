@@ -39,6 +39,8 @@
 		8B0000000000000000000230 /* ExerciseVisuals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000130 /* ExerciseVisuals.swift */; };
 		8B0000000000000000000231 /* BodyMeasurementCheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000131 /* BodyMeasurementCheckInView.swift */; };
 		8B0000000000000000000232 /* ExerciseLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000132 /* ExerciseLibraryView.swift */; };
+		8B0000000000000000000233 /* WorkoutTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000133 /* WorkoutTemplate.swift */; };
+		8B0000000000000000000234 /* SavedWorkoutsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000134 /* SavedWorkoutsView.swift */; };
 		8B0000000000000000000302 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000301 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -76,6 +78,8 @@
 		8B0000000000000000000130 /* ExerciseVisuals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseVisuals.swift; sourceTree = "<group>"; };
 		8B0000000000000000000131 /* BodyMeasurementCheckInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyMeasurementCheckInView.swift; sourceTree = "<group>"; };
 		8B0000000000000000000132 /* ExerciseLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseLibraryView.swift; sourceTree = "<group>"; };
+		8B0000000000000000000133 /* WorkoutTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutTemplate.swift; sourceTree = "<group>"; };
+		8B0000000000000000000134 /* SavedWorkoutsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedWorkoutsView.swift; sourceTree = "<group>"; };
 		8B0000000000000000000301 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8B0000000000000000000303 /* CoachLog.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CoachLog.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -135,6 +139,7 @@
 				8B0000000000000000000108 /* BodyMeasurement.swift */,
 				8B0000000000000000000109 /* RecoverySnapshot.swift */,
 				8B0000000000000000000110 /* WorkoutPlan.swift */,
+				8B0000000000000000000133 /* WorkoutTemplate.swift */,
 				8B0000000000000000000127 /* StrengthBaselineTest.swift */,
 			);
 			path = Models;
@@ -177,6 +182,7 @@
 				8B0000000000000000000131 /* BodyMeasurementCheckInView.swift */,
 				8B0000000000000000000121 /* SharedViews.swift */,
 				8B0000000000000000000122 /* TodayCoachView.swift */,
+				8B0000000000000000000134 /* SavedWorkoutsView.swift */,
 				8B0000000000000000000123 /* WorkoutSessionView.swift */,
 				8B0000000000000000000132 /* ExerciseLibraryView.swift */,
 				8B0000000000000000000124 /* MuscleFreshnessDashboardView.swift */,
@@ -275,6 +281,7 @@
 				8B0000000000000000000208 /* BodyMeasurement.swift in Sources */,
 				8B0000000000000000000209 /* RecoverySnapshot.swift in Sources */,
 				8B0000000000000000000210 /* WorkoutPlan.swift in Sources */,
+				8B0000000000000000000233 /* WorkoutTemplate.swift in Sources */,
 				8B0000000000000000000227 /* StrengthBaselineTest.swift in Sources */,
 				8B0000000000000000000211 /* ExerciseLibrary.swift in Sources */,
 				8B0000000000000000000212 /* DataSeeder.swift in Sources */,
@@ -290,6 +297,7 @@
 				8B0000000000000000000230 /* ExerciseVisuals.swift in Sources */,
 				8B0000000000000000000231 /* BodyMeasurementCheckInView.swift in Sources */,
 				8B0000000000000000000232 /* ExerciseLibraryView.swift in Sources */,
+				8B0000000000000000000234 /* SavedWorkoutsView.swift in Sources */,
 				8B0000000000000000000221 /* SharedViews.swift in Sources */,
 				8B0000000000000000000222 /* TodayCoachView.swift in Sources */,
 				8B0000000000000000000223 /* WorkoutSessionView.swift in Sources */,

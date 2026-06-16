@@ -6,6 +6,8 @@ struct CoachLogApp: App {
     private let modelContainer: ModelContainer = {
         let schema = Schema([
             Exercise.self,
+            WorkoutTemplate.self,
+            WorkoutTemplateExercise.self,
             WorkoutSession.self,
             CompletedExercise.self,
             WorkoutSet.self,

@@ -2,11 +2,14 @@ import SwiftData
 import SwiftUI
 
 struct TodayCoachView: View {
+    @Environment(\.modelContext) private var modelContext
     @Query(sort: \WorkoutSession.date, order: .reverse) private var sessions: [WorkoutSession]
     @Query(sort: \RecoverySnapshot.date, order: .reverse) private var recoverySnapshots: [RecoverySnapshot]
     @Query(sort: \BodyMeasurement.date, order: .reverse) private var bodyMeasurements: [BodyMeasurement]
+    @Query(sort: \WorkoutTemplate.updatedAt, order: .reverse) private var workoutTemplates: [WorkoutTemplate]
     @State private var viewModel = TodayCoachViewModel()
     @State private var isShowingMeasurementCheckIn = false
+    @State private var workoutBuilderRoute: WorkoutBuilderRoute?
     private let freshnessEngine = MuscleFreshnessEngine()
 
     var body: some View {
@@ -20,6 +23,7 @@ struct TodayCoachView: View {
                         selectors
                         recoveryCard
                         bodyCheckInCard
+                        savedWorkoutsCard
                         generateButton
                         weeklyLoadCard
                         generatedPlanCard
@@ -35,11 +39,25 @@ struct TodayCoachView: View {
             .animation(CoachMotion.content, value: sessions.count)
             .animation(CoachMotion.content, value: recoverySnapshots.count)
             .animation(CoachMotion.content, value: bodyMeasurements.count)
+            .animation(CoachMotion.content, value: workoutTemplates.map(\.id))
             .animation(CoachMotion.content, value: viewModel.generatedPlan?.id)
             .sheet(isPresented: $isShowingMeasurementCheckIn) {
                 BodyMeasurementCheckInView(latestMeasurement: bodyMeasurements.first)
             }
+            .sheet(item: $workoutBuilderRoute) { route in
+                SavedWorkoutBuilderView(template: route.template)
+            }
         }
+    }
+
+    private var currentWorkoutContext: WorkoutContext {
+        WorkoutContext(
+            availableMinutes: viewModel.selectedMinutes,
+            energyLevel: viewModel.selectedEnergy,
+            painFlag: viewModel.selectedPain,
+            goal: viewModel.selectedGoal,
+            recovery: recoverySnapshots.first.map(RecoverySnapshotSummary.init(snapshot:))
+        )
     }
 
     private var header: some View {
@@ -178,6 +196,20 @@ struct TodayCoachView: View {
         }
     }
 
+    private var savedWorkoutsCard: some View {
+        SavedWorkoutTemplateSection(
+            templates: workoutTemplates,
+            context: currentWorkoutContext,
+            onCreate: {
+                workoutBuilderRoute = WorkoutBuilderRoute(template: nil)
+            },
+            onEdit: { template in
+                workoutBuilderRoute = WorkoutBuilderRoute(template: template)
+            },
+            onDelete: deleteTemplate
+        )
+    }
+
     private var generateButton: some View {
         Button {
             Task {
@@ -248,6 +280,16 @@ struct TodayCoachView: View {
             content()
         }
     }
+
+    private func deleteTemplate(_ template: WorkoutTemplate) {
+        modelContext.delete(template)
+        try? modelContext.save()
+    }
+}
+
+private struct WorkoutBuilderRoute: Identifiable {
+    let id = UUID()
+    var template: WorkoutTemplate?
 }
 
 private struct WeeklyLoadRow: View {
