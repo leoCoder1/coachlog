@@ -4,6 +4,12 @@ build/
 .history/
 .lh/
 .env
+node_modules/
+lib/
+.runtimeconfig.json
+backend/firebase/functions/.env
+backend/firebase/functions/.env.*
+!backend/firebase/functions/.env.example
 
 *.xcuserstate
 *.xcuserdata/
