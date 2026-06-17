@@ -15,6 +15,8 @@ struct SettingsView: View {
     @AppStorage(CoachAuthKeys.isSignedIn) private var isSignedIn = false
     @AppStorage(CoachAuthKeys.displayName) private var accountDisplayName = ""
     @AppStorage(CoachAuthKeys.email) private var accountEmail = ""
+    @AppStorage(AICoachPreferenceKeys.isPremiumEnabled) private var aiPremiumEnabled = false
+    @AppStorage(AICoachPreferenceKeys.endpointURL) private var aiCoachEndpointURL = ""
     @AppStorage(UnitPreferenceKeys.weightUnit) private var weightUnitRaw = WeightUnitPreference.pounds.rawValue
     @AppStorage(UnitPreferenceKeys.lengthUnit) private var lengthUnitRaw = LengthUnitPreference.inches.rawValue
     @AppStorage(HealthKitRecoverySync.autoImportEnabledKey) private var healthKitAutoImportEnabled = false
@@ -28,6 +30,7 @@ struct SettingsView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
                         accountSection
+                        aiPremiumSection
                         unitsSection
                         healthKitSection
                         recoverySection
@@ -56,6 +59,68 @@ struct SettingsView: View {
                 Button("Cancel", role: .cancel) {}
             } message: {
                 Text("This removes workouts, measurements, recovery snapshots, saved workouts, custom exercises, settings, and the local Apple sign-in record from this device.")
+            }
+        }
+    }
+
+    private var aiPremiumSection: some View {
+        CoachCard {
+            VStack(alignment: .leading, spacing: 14) {
+                HStack {
+                    Label("AI Premium", systemImage: "sparkles")
+                        .font(.headline)
+
+                    Spacer()
+
+                    Text(aiPremiumStatusText)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(aiPremiumStatusColor)
+                }
+
+                Text("Premium coaching sends workout, recovery, and progress summaries to your backend endpoint. LLM API keys stay server-side and are never bundled in CoachLog.")
+                    .font(.subheadline)
+                    .foregroundStyle(Color.coachSecondaryText)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Toggle(isOn: $aiPremiumEnabled) {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("Use AI coach")
+                            .font(.subheadline.weight(.semibold))
+
+                        Text(aiPremiumEnabled ? "Remote AI will personalize coaching when an endpoint is configured." : "CoachLog will use local rule-based coaching.")
+                            .font(.caption)
+                            .foregroundStyle(Color.coachSecondaryText)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                .tint(Color.coachAccent)
+
+                #if DEBUG
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Developer endpoint")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Color.coachSecondaryText)
+
+                    TextField("https://api.example.com/coachlog/ai", text: $aiCoachEndpointURL)
+                        .textInputAutocapitalization(.never)
+                        .keyboardType(.URL)
+                        .autocorrectionDisabled()
+                        .font(.footnote)
+                        .padding(10)
+                        .background(Color.coachSurfaceElevated)
+                        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .stroke(Color.coachBorder, lineWidth: 1)
+                        }
+                }
+                #else
+                if aiPremiumEnabled && !isAIEndpointConfigured {
+                    Text("AI backend is not configured for this build yet.")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Color.coachWarm)
+                }
+                #endif
             }
         }
     }
@@ -339,6 +404,39 @@ struct SettingsView: View {
         return isSignedIn
             ? "Your workout data currently stays on this device."
             : "Sign in with Apple to use CoachLog."
+    }
+
+    private var isAIEndpointConfigured: Bool {
+        guard let url = URL(string: aiCoachEndpointURL),
+              let scheme = url.scheme else {
+            return false
+        }
+
+        return scheme == "https" || scheme == "http"
+    }
+
+    private var aiPremiumStatusText: String {
+        if aiPremiumEnabled && isAIEndpointConfigured {
+            return "Enabled"
+        }
+
+        if aiPremiumEnabled {
+            return "Needs endpoint"
+        }
+
+        return "Local"
+    }
+
+    private var aiPremiumStatusColor: Color {
+        if aiPremiumEnabled && isAIEndpointConfigured {
+            return Color.coachAccent
+        }
+
+        if aiPremiumEnabled {
+            return Color.coachWarm
+        }
+
+        return Color.coachSecondaryText
     }
 
     private var lastHealthKitImportText: String {
