@@ -224,6 +224,7 @@ final class WorkoutTemplateExercise {
             detailedMuscles: detailedMuscles,
             equipment: equipment,
             station: station,
+            kind: kind,
             targetSets: targetSets,
             targetRepsLower: targetRepsLower,
             targetRepsUpper: targetRepsUpper,

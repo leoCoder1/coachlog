@@ -180,6 +180,7 @@ enum MuscleGroup: String, CaseIterable, Codable, Identifiable {
     case chest = "Chest"
     case back = "Back"
     case legs = "Legs"
+    case glutes = "Glutes"
     case shoulders = "Shoulders"
     case biceps = "Biceps"
     case triceps = "Triceps"
@@ -191,6 +192,7 @@ enum MuscleGroup: String, CaseIterable, Codable, Identifiable {
         .chest,
         .back,
         .legs,
+        .glutes,
         .shoulders,
         .biceps,
         .triceps,
@@ -199,12 +201,13 @@ enum MuscleGroup: String, CaseIterable, Codable, Identifiable {
 
     var iconName: String {
         switch self {
-        case .chest: "figure.strengthtraining.traditional"
+        case .chest: "lungs"
         case .back: "figure.rower"
         case .legs: "figure.walk"
-        case .shoulders: "figure.arms.open"
-        case .biceps: "dumbbell"
-        case .triceps: "bolt"
+        case .glutes: "figure.stair.stepper"
+        case .shoulders: "figure.strengthtraining.functional"
+        case .biceps: "figure.strengthtraining.traditional"
+        case .triceps: "figure.boxing"
         case .core: "figure.core.training"
         }
     }
@@ -268,9 +271,10 @@ enum DetailedMuscleGroup: String, CaseIterable, Codable, Identifiable {
         case .latissimusDorsi, .upperBack, .lowerBack:
             .back
         case .quadriceps, .hamstrings, .adductors,
-             .gluteusMaximus, .gluteusMedius, .gluteusMinimus,
              .gastrocnemius, .soleus:
             .legs
+        case .gluteusMaximus, .gluteusMedius, .gluteusMinimus:
+            .glutes
         case .frontDeltoids, .sideDeltoids, .rearDeltoids:
             .shoulders
         case .biceps, .brachioradialis, .forearmFlexors, .forearmExtensors:
@@ -289,7 +293,9 @@ enum DetailedMuscleGroup: String, CaseIterable, Codable, Identifiable {
         case .back:
             [.latissimusDorsi, .upperBack, .lowerBack]
         case .legs:
-            [.quadriceps, .hamstrings, .gluteusMaximus, .gastrocnemius]
+            [.quadriceps, .hamstrings, .adductors, .gastrocnemius]
+        case .glutes:
+            [.gluteusMaximus, .gluteusMedius, .gluteusMinimus]
         case .shoulders:
             [.frontDeltoids, .sideDeltoids, .rearDeltoids]
         case .biceps:
@@ -411,11 +417,11 @@ enum PainFlag: String, CaseIterable, Codable, Identifiable {
         case .none:
             []
         case .knee:
-            [.legs]
+            [.legs, .glutes]
         case .shoulder:
             [.chest, .shoulders, .triceps]
         case .back:
-            [.back, .legs]
+            [.back, .legs, .glutes]
         case .other:
             []
         }

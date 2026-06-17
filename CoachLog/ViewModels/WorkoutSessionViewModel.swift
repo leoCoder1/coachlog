@@ -133,6 +133,7 @@ final class WorkoutSessionViewModel {
         return ExerciseLibrary.definitions
             .filter { definition in
                 definition.primaryMuscleGroup == exercise.muscleGroup
+                && definition.kind == exercise.kind
                 && definition.name != exercise.name
                 && !plannedNames.contains(definition.name)
                 && isAllowed(definition, for: pain)
@@ -192,6 +193,7 @@ final class WorkoutSessionViewModel {
             detailedMuscles: exercise.detailedMuscles,
             equipment: exercise.equipment,
             station: exercise.station,
+            kind: exercise.kind,
             targetSets: targetSets,
             targetRepsLower: targetLower,
             targetRepsUpper: targetUpper,
@@ -242,6 +244,7 @@ final class WorkoutSessionViewModel {
             detailedMuscles: definition.detailedMuscles,
             equipment: definition.equipment,
             station: definition.station,
+            kind: definition.kind,
             targetSets: exercise.targetSets,
             targetRepsLower: exercise.targetRepsLower,
             targetRepsUpper: exercise.targetRepsUpper,

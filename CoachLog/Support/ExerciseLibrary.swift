@@ -10,6 +10,7 @@ struct ExerciseDefinition: Identifiable, Hashable {
     var detailedMuscles: [DetailedMuscleGroup]
     var equipment: Equipment
     var station: GymStation
+    var kind: ExerciseKind
     var isKneeFriendly: Bool
     var isShoulderFriendly: Bool
 
@@ -23,6 +24,7 @@ struct ExerciseDefinition: Identifiable, Hashable {
         detailedMuscles: [DetailedMuscleGroup]? = nil,
         equipment: Equipment,
         station: GymStation,
+        kind: ExerciseKind = .strength,
         isKneeFriendly: Bool,
         isShoulderFriendly: Bool
     ) {
@@ -47,6 +49,7 @@ struct ExerciseDefinition: Identifiable, Hashable {
         )
         self.equipment = equipment
         self.station = station
+        self.kind = kind
         self.isKneeFriendly = isKneeFriendly
         self.isShoulderFriendly = isShoulderFriendly
     }
@@ -103,8 +106,12 @@ struct ExerciseDefinition: Identifiable, Hashable {
             [.hamstrings, .gastrocnemius]
         case "Dumbbell Reverse Lunge", "Step-up":
             [.quadriceps, .gluteusMaximus, .gluteusMedius, .hamstrings, .adductors, .obliques]
-        case "Glute Bridge":
+        case "Glute Bridge", "Dumbbell Hip Thrust":
             [.gluteusMaximus, .gluteusMedius, .hamstrings, .rectusAbdominis]
+        case "Cable Glute Kickback":
+            [.gluteusMaximus, .gluteusMedius, .hamstrings]
+        case "Side-Lying Hip Abduction":
+            [.gluteusMedius, .gluteusMinimus, .obliques]
         case "Calf Raise":
             [.gastrocnemius, .soleus]
         case "Dumbbell Shoulder Press", "Machine Shoulder Press":
@@ -119,6 +126,32 @@ struct ExerciseDefinition: Identifiable, Hashable {
             [.obliques, .rectusAbdominis, .sideDeltoids]
         case "Pallof Press":
             [.obliques, .rectusAbdominis, .sideDeltoids]
+        case "Child's Pose", "Lat Prayer Stretch":
+            [.latissimusDorsi, .lowerBack, .rectusAbdominis]
+        case "Thread the Needle":
+            [.upperBack, .rearDeltoids, .latissimusDorsi, .obliques]
+        case "Doorway Chest Stretch":
+            [.midChest, .upperChest, .frontDeltoids]
+        case "Cross-Body Shoulder Stretch":
+            [.rearDeltoids, .sideDeltoids, .upperBack]
+        case "Wrist Flexor Stretch":
+            [.forearmFlexors, .brachioradialis]
+        case "Hip Flexor Lunge Stretch":
+            [.quadriceps, .gluteusMaximus, .rectusAbdominis]
+        case "Seated Hamstring Stretch":
+            [.hamstrings, .gastrocnemius, .lowerBack]
+        case "Figure Four Glute Stretch":
+            [.gluteusMaximus, .gluteusMedius, .hamstrings]
+        case "Standing Quad Stretch":
+            [.quadriceps, .rectusAbdominis]
+        case "Calf Wall Stretch":
+            [.gastrocnemius, .soleus, .hamstrings]
+        case "Cobra Press-Up":
+            [.rectusAbdominis, .upperChest, .frontDeltoids]
+        case "Cat-Cow":
+            [.lowerBack, .rectusAbdominis, .upperBack]
+        case "World's Greatest Stretch":
+            [.gluteusMaximus, .quadriceps, .obliques, .hamstrings, .upperBack]
         default:
             DetailedMuscleGroup.defaults(primary: primary, secondary: secondary)
         }
@@ -283,7 +316,7 @@ enum ExerciseLibrary {
         ExerciseDefinition(
             name: "Goblet Squat",
             primaryMuscleGroup: .legs,
-            secondaryMuscleGroups: [.core],
+            secondaryMuscleGroups: [.glutes, .core],
             equipment: .dumbbell,
             station: .dumbbellRack,
             isKneeFriendly: false,
@@ -292,7 +325,7 @@ enum ExerciseLibrary {
         ExerciseDefinition(
             name: "Romanian Deadlift",
             primaryMuscleGroup: .legs,
-            secondaryMuscleGroups: [.back],
+            secondaryMuscleGroups: [.glutes, .back],
             equipment: .dumbbell,
             station: .dumbbellRack,
             isKneeFriendly: true,
@@ -319,7 +352,7 @@ enum ExerciseLibrary {
         ExerciseDefinition(
             name: "Dumbbell Reverse Lunge",
             primaryMuscleGroup: .legs,
-            secondaryMuscleGroups: [.core],
+            secondaryMuscleGroups: [.glutes, .core],
             equipment: .dumbbell,
             station: .dumbbellRack,
             isKneeFriendly: false,
@@ -327,7 +360,34 @@ enum ExerciseLibrary {
         ),
         ExerciseDefinition(
             name: "Glute Bridge",
-            primaryMuscleGroup: .legs,
+            primaryMuscleGroup: .glutes,
+            secondaryMuscleGroups: [.legs, .core],
+            equipment: .bodyweight,
+            station: .mat,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Dumbbell Hip Thrust",
+            primaryMuscleGroup: .glutes,
+            secondaryMuscleGroups: [.legs, .core],
+            equipment: .dumbbell,
+            station: .adjustableBench,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Cable Glute Kickback",
+            primaryMuscleGroup: .glutes,
+            secondaryMuscleGroups: [.legs],
+            equipment: .cable,
+            station: .cableStack,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Side-Lying Hip Abduction",
+            primaryMuscleGroup: .glutes,
             secondaryMuscleGroups: [.core],
             equipment: .bodyweight,
             station: .mat,
@@ -346,7 +406,7 @@ enum ExerciseLibrary {
         ExerciseDefinition(
             name: "Step-up",
             primaryMuscleGroup: .legs,
-            secondaryMuscleGroups: [.core],
+            secondaryMuscleGroups: [.glutes, .core],
             equipment: .bodyweight,
             station: .bodyweight,
             isKneeFriendly: false,
@@ -422,6 +482,146 @@ enum ExerciseLibrary {
             equipment: .cable,
             station: .cableStack,
             isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Child's Pose",
+            primaryMuscleGroup: .back,
+            secondaryMuscleGroups: [.core],
+            equipment: .bodyweight,
+            station: .mat,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Lat Prayer Stretch",
+            primaryMuscleGroup: .back,
+            secondaryMuscleGroups: [.shoulders],
+            equipment: .bodyweight,
+            station: .mat,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Thread the Needle",
+            primaryMuscleGroup: .back,
+            secondaryMuscleGroups: [.shoulders, .core],
+            equipment: .bodyweight,
+            station: .mat,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Doorway Chest Stretch",
+            primaryMuscleGroup: .chest,
+            secondaryMuscleGroups: [.shoulders],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Cross-Body Shoulder Stretch",
+            primaryMuscleGroup: .shoulders,
+            secondaryMuscleGroups: [.back],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Wrist Flexor Stretch",
+            primaryMuscleGroup: .biceps,
+            secondaryMuscleGroups: [],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Hip Flexor Lunge Stretch",
+            primaryMuscleGroup: .legs,
+            secondaryMuscleGroups: [.core],
+            equipment: .bodyweight,
+            station: .mat,
+            kind: .stretch,
+            isKneeFriendly: false,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Seated Hamstring Stretch",
+            primaryMuscleGroup: .legs,
+            secondaryMuscleGroups: [.back],
+            equipment: .bodyweight,
+            station: .mat,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Figure Four Glute Stretch",
+            primaryMuscleGroup: .glutes,
+            secondaryMuscleGroups: [.legs],
+            equipment: .bodyweight,
+            station: .mat,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Standing Quad Stretch",
+            primaryMuscleGroup: .legs,
+            secondaryMuscleGroups: [.core],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            kind: .stretch,
+            isKneeFriendly: false,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Calf Wall Stretch",
+            primaryMuscleGroup: .legs,
+            secondaryMuscleGroups: [],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Cobra Press-Up",
+            primaryMuscleGroup: .core,
+            secondaryMuscleGroups: [.chest, .shoulders],
+            equipment: .bodyweight,
+            station: .mat,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: false
+        ),
+        ExerciseDefinition(
+            name: "Cat-Cow",
+            primaryMuscleGroup: .core,
+            secondaryMuscleGroups: [.back],
+            equipment: .bodyweight,
+            station: .mat,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "World's Greatest Stretch",
+            primaryMuscleGroup: .legs,
+            secondaryMuscleGroups: [.glutes, .core, .back],
+            equipment: .bodyweight,
+            station: .mat,
+            kind: .stretch,
+            isKneeFriendly: false,
             isShoulderFriendly: true
         )
     ]

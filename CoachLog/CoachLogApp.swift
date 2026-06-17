@@ -3,6 +3,8 @@ import SwiftUI
 
 @main
 struct CoachLogApp: App {
+    @Environment(\.scenePhase) private var scenePhase
+
     private let modelContainer: ModelContainer = {
         let schema = Schema([
             Exercise.self,
@@ -27,7 +29,15 @@ struct CoachLogApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .onChange(of: scenePhase) { _, newPhase in
+                    guard newPhase == .background else { return }
+                    HealthKitRecoverySync.scheduleBackgroundRefresh()
+                }
         }
         .modelContainer(modelContainer)
+        .backgroundTask(.appRefresh(HealthKitRecoverySync.backgroundRefreshTaskIdentifier)) {
+            await HealthKitRecoverySync.performAutoImportIfNeeded(in: modelContainer)
+            HealthKitRecoverySync.scheduleBackgroundRefresh()
+        }
     }
 }

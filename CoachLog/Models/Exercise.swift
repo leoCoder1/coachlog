@@ -111,7 +111,7 @@ extension Exercise {
             station: definition.station,
             primaryDetailedMuscle: definition.primaryDetailedMuscle,
             secondaryDetailedMuscle: definition.secondaryDetailedMuscle,
-            kind: .strength,
+            kind: definition.kind,
             isCustom: false,
             isKneeFriendly: definition.isKneeFriendly,
             isShoulderFriendly: definition.isShoulderFriendly
@@ -125,7 +125,7 @@ extension Exercise {
         station = definition.station
         primaryDetailedMuscle = definition.primaryDetailedMuscle
         secondaryDetailedMuscle = definition.secondaryDetailedMuscle
-        kind = .strength
+        kind = definition.kind
         isCustom = false
         isKneeFriendly = definition.isKneeFriendly
         isShoulderFriendly = definition.isShoulderFriendly

@@ -75,15 +75,24 @@ enum DataSeeder {
 
     @MainActor
     private static func insertMissingDemoRecoverySnapshots(in modelContext: ModelContext) -> Bool {
-        let existingIDs = Set(((try? modelContext.fetch(FetchDescriptor<RecoverySnapshot>())) ?? []).map(\.id))
-        var inserted = false
+        let existingSnapshots = (try? modelContext.fetch(FetchDescriptor<RecoverySnapshot>())) ?? []
+        var existingByID = Dictionary(uniqueKeysWithValues: existingSnapshots.map { ($0.id, $0) })
+        var changed = false
 
-        for snapshot in demoRecoverySnapshots where !existingIDs.contains(snapshot.id) {
-            modelContext.insert(snapshot)
-            inserted = true
+        for snapshot in demoRecoverySnapshots {
+            if let existing = existingByID[snapshot.id] {
+                if existing.source != RecoverySnapshotSource.sample {
+                    existing.source = RecoverySnapshotSource.sample
+                    changed = true
+                }
+            } else {
+                modelContext.insert(snapshot)
+                existingByID[snapshot.id] = snapshot
+                changed = true
+            }
         }
 
-        return inserted
+        return changed
     }
 
     @MainActor
@@ -195,7 +204,8 @@ enum DataSeeder {
                 sleepHours: 6.8,
                 restingHeartRate: 61,
                 hrv: 54,
-                readinessScore: 70
+                readinessScore: 70,
+                source: RecoverySnapshotSource.sample
             ),
             RecoverySnapshot(
                 id: uuid("D7D55145-B1EF-4E4B-94AE-F86F5321489C"),
@@ -203,7 +213,8 @@ enum DataSeeder {
                 sleepHours: 7.5,
                 restingHeartRate: 58,
                 hrv: 63,
-                readinessScore: 82
+                readinessScore: 82,
+                source: RecoverySnapshotSource.sample
             )
         ]
     }

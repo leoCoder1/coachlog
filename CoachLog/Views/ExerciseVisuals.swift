@@ -1,10 +1,186 @@
+import AVKit
 import SwiftUI
 import UIKit
+
+struct ExerciseMediaAsset: Hashable {
+    var imageAssetName: String?
+    var videoResourceName: String?
+
+    var videoURL: URL? {
+        guard let videoResourceName else { return nil }
+        return Bundle.main.url(forResource: videoResourceName, withExtension: "mp4")
+    }
+
+    var hasVideo: Bool {
+        videoURL != nil
+    }
+}
+
+enum ExerciseMediaLibrary {
+    static let representativeExercisesByGroup: [MuscleGroup: String] = [
+        .chest: "Cable Chest Fly",
+        .back: "Lat Pulldown",
+        .legs: "Goblet Squat",
+        .glutes: "Glute Bridge",
+        .shoulders: "Dumbbell Shoulder Press",
+        .biceps: "Biceps Curl",
+        .triceps: "Triceps Pressdown",
+        .core: "Plank"
+    ]
+
+    private static let mediaByExerciseName: [String: ExerciseMediaAsset] = [
+        "Cable Chest Fly": ExerciseMediaAsset(
+            imageAssetName: "exercise-cable-chest-fly",
+            videoResourceName: "exercise-cable-chest-fly"
+        ),
+        "Lat Pulldown": ExerciseMediaAsset(
+            imageAssetName: "exercise-lat-pulldown",
+            videoResourceName: "exercise-lat-pulldown"
+        ),
+        "Goblet Squat": ExerciseMediaAsset(
+            imageAssetName: "exercise-goblet-squat",
+            videoResourceName: "exercise-goblet-squat"
+        ),
+        "Glute Bridge": ExerciseMediaAsset(
+            imageAssetName: "exercise-glute-bridge",
+            videoResourceName: "exercise-glute-bridge"
+        ),
+        "Dumbbell Hip Thrust": ExerciseMediaAsset(
+            imageAssetName: "exercise-dumbbell-hip-thrust",
+            videoResourceName: "exercise-dumbbell-hip-thrust"
+        ),
+        "Cable Glute Kickback": ExerciseMediaAsset(
+            imageAssetName: "exercise-cable-glute-kickback",
+            videoResourceName: "exercise-cable-glute-kickback"
+        ),
+        "Side-Lying Hip Abduction": ExerciseMediaAsset(
+            imageAssetName: "exercise-side-lying-hip-abduction",
+            videoResourceName: "exercise-side-lying-hip-abduction"
+        ),
+        "Figure Four Glute Stretch": ExerciseMediaAsset(
+            imageAssetName: "exercise-figure-four-glute-stretch",
+            videoResourceName: "exercise-figure-four-glute-stretch"
+        ),
+        "Romanian Deadlift": ExerciseMediaAsset(
+            imageAssetName: "exercise-romanian-deadlift",
+            videoResourceName: "exercise-romanian-deadlift"
+        ),
+        "Dumbbell Reverse Lunge": ExerciseMediaAsset(
+            imageAssetName: "exercise-dumbbell-reverse-lunge",
+            videoResourceName: "exercise-dumbbell-reverse-lunge"
+        ),
+        "Step-up": ExerciseMediaAsset(
+            imageAssetName: "exercise-step-up",
+            videoResourceName: "exercise-step-up"
+        ),
+        "World's Greatest Stretch": ExerciseMediaAsset(
+            imageAssetName: "exercise-world-s-greatest-stretch",
+            videoResourceName: "exercise-world-s-greatest-stretch"
+        ),
+        "Dumbbell Shoulder Press": ExerciseMediaAsset(
+            imageAssetName: "exercise-dumbbell-shoulder-press",
+            videoResourceName: "exercise-dumbbell-shoulder-press"
+        ),
+        "Biceps Curl": ExerciseMediaAsset(
+            imageAssetName: "exercise-biceps-curl",
+            videoResourceName: "exercise-biceps-curl"
+        ),
+        "Triceps Pressdown": ExerciseMediaAsset(
+            imageAssetName: "exercise-triceps-pressdown",
+            videoResourceName: "exercise-triceps-pressdown"
+        ),
+        "Plank": ExerciseMediaAsset(
+            imageAssetName: "exercise-plank",
+            videoResourceName: "exercise-plank"
+        )
+    ]
+
+    static func media(for exerciseName: String) -> ExerciseMediaAsset {
+        mediaByExerciseName[exerciseName] ?? ExerciseMediaAsset(imageAssetName: nil, videoResourceName: nil)
+    }
+}
+
+enum ExerciseMuscleTargetLibrary {
+    private static let assetByExerciseName: [String: String] = [
+        "Biceps Curl": "muscle-target-biceps-curl",
+        "Cable Curl": "muscle-target-biceps-curl",
+        "Incline Dumbbell Curl": "muscle-target-biceps-curl",
+        "Lat Pulldown": "muscle-target-lat-pulldown",
+        "Assisted Pull-up": "muscle-target-lat-pulldown",
+        "Goblet Squat": "muscle-target-goblet-squat",
+        "Leg Press": "muscle-target-goblet-squat",
+        "Glute Bridge": "muscle-target-gluteus-maximus",
+        "Dumbbell Hip Thrust": "muscle-target-gluteus-maximus",
+        "Cable Glute Kickback": "muscle-target-gluteus-maximus",
+        "Side-Lying Hip Abduction": "muscle-target-gluteus-maximus",
+        "Figure Four Glute Stretch": "muscle-target-gluteus-maximus",
+        "Plank": "muscle-target-plank",
+        "Dead Bug": "muscle-target-plank",
+        "Side Plank": "muscle-target-plank",
+        "Pallof Press": "muscle-target-plank",
+        "Calf Raise": "muscle-target-calf-raise",
+        "Calf Wall Stretch": "muscle-target-calf-raise"
+    ]
+
+    static func assetName(
+        for exerciseName: String,
+        primary: DetailedMuscleGroup
+    ) -> String? {
+        if let assetName = assetByExerciseName[exerciseName] {
+            return assetName
+        }
+
+        return assetName(for: primary)
+    }
+
+    private static func assetName(for muscle: DetailedMuscleGroup) -> String? {
+        switch muscle {
+        case .upperChest:
+            "muscle-target-upper-chest"
+        case .midChest, .lowerChest:
+            "muscle-target-mid-chest"
+        case .triceps:
+            "muscle-target-triceps"
+        case .biceps:
+            "muscle-target-biceps-curl"
+        case .latissimusDorsi:
+            "muscle-target-lat-pulldown"
+        case .upperBack:
+            "muscle-target-upper-back"
+        case .lowerBack:
+            "muscle-target-lower-back"
+        case .quadriceps:
+            "muscle-target-goblet-squat"
+        case .hamstrings:
+            "muscle-target-hamstrings"
+        case .gluteusMaximus, .gluteusMedius, .gluteusMinimus:
+            "muscle-target-gluteus-maximus"
+        case .frontDeltoids:
+            "muscle-target-front-deltoids"
+        case .sideDeltoids:
+            "muscle-target-side-deltoids"
+        case .rearDeltoids:
+            "muscle-target-rear-deltoids"
+        case .forearmFlexors, .brachioradialis:
+            "muscle-target-forearm-flexors"
+        case .rectusAbdominis, .obliques:
+            "muscle-target-plank"
+        case .gastrocnemius, .soleus:
+            "muscle-target-calf-raise"
+        default:
+            nil
+        }
+    }
+}
 
 struct ExerciseVisualHeader: View {
     var exercise: PlannedExercise
     var subtitle: String
     var note: String?
+
+    private var media: ExerciseMediaAsset {
+        ExerciseMediaLibrary.media(for: exercise.name)
+    }
 
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
@@ -25,6 +201,7 @@ struct ExerciseVisualHeader: View {
                     primary: exercise.primaryDetailedMuscle,
                     secondary: exercise.secondaryDetailedMuscle
                 )
+                ExerciseMediaStatusBadge(media: media)
 
                 if let note {
                     Text(note)
@@ -36,12 +213,13 @@ struct ExerciseVisualHeader: View {
 
             Spacer(minLength: 4)
 
-            MuscleImpactPairMap(
+            ExerciseMuscleTargetBadge(
+                exerciseName: exercise.name,
                 primary: exercise.primaryDetailedMuscle,
                 secondary: exercise.secondaryDetailedMuscle,
                 supporting: exercise.detailedMuscles
             )
-            .frame(width: 78, height: 76)
+            .frame(width: 78, height: 78)
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(exercise.name), primary muscle: \(exercise.primaryDetailedMuscle.rawValue), secondary muscle: \(exercise.secondaryDetailedMuscle?.rawValue ?? "none")")
@@ -52,19 +230,25 @@ struct ExerciseIllustrationThumbnail: View {
     var exercise: PlannedExercise
     var size: CGFloat
 
+    @State private var isShowingVideo = false
+
+    private var media: ExerciseMediaAsset {
+        ExerciseMediaLibrary.media(for: exercise.name)
+    }
+
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 8, style: .continuous)
                 .fill(Color.coachSurfaceElevated)
 
-            if let image = UIImage(named: exercise.illustrationAssetName) {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: size, height: size)
-                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+            if let image = resolvedImage {
+                thumbnailImage(image)
             } else {
                 fallbackPreview
+            }
+
+            if media.hasVideo {
+                playOverlay
             }
         }
         .frame(width: size, height: size)
@@ -73,6 +257,52 @@ struct ExerciseIllustrationThumbnail: View {
                 .stroke(Color.coachBorder, lineWidth: 1)
         }
         .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .contentShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .onTapGesture {
+            if media.videoURL != nil {
+                isShowingVideo = true
+            }
+        }
+        .sheet(isPresented: $isShowingVideo) {
+            if let videoURL = media.videoURL {
+                ExerciseVideoPlayerSheet(exerciseName: exercise.name, url: videoURL)
+            }
+        }
+    }
+
+    private var resolvedImage: UIImage? {
+        if let imageAssetName = media.imageAssetName, let image = UIImage(named: imageAssetName) {
+            return image
+        }
+
+        return UIImage(named: exercise.illustrationAssetName)
+    }
+
+    private func thumbnailImage(_ image: UIImage) -> some View {
+        Image(uiImage: image)
+            .resizable()
+            .scaledToFill()
+            .frame(width: size, height: size)
+            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+    }
+
+    private var playOverlay: some View {
+        VStack {
+            Spacer()
+
+            HStack {
+                Spacer()
+
+                Image(systemName: "play.fill")
+                    .font(.system(size: size * 0.18, weight: .bold))
+                    .foregroundStyle(Color.black.opacity(0.84))
+                    .frame(width: size * 0.34, height: size * 0.34)
+                    .background(CoachGradient.accent)
+                    .clipShape(Circle())
+                    .shadow(color: Color.black.opacity(0.28), radius: 6, y: 3)
+                    .padding(size * 0.08)
+            }
+        }
     }
 
     private var fallbackPreview: some View {
@@ -97,6 +327,89 @@ struct ExerciseIllustrationThumbnail: View {
                 .offset(x: size * 0.16, y: size * 0.24)
         }
         .padding(8)
+    }
+}
+
+struct ExerciseMediaStatusBadge: View {
+    var media: ExerciseMediaAsset
+
+    var body: some View {
+        HStack(spacing: 5) {
+            Image(systemName: media.hasVideo ? "play.fill" : "video.slash")
+                .font(.caption2.weight(.bold))
+
+            Text(media.hasVideo ? "Video" : "Video coming soon")
+                .font(.caption2.weight(.semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.78)
+        }
+        .foregroundStyle(media.hasVideo ? Color.black.opacity(0.86) : Color.coachSecondaryText)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
+        .background(media.hasVideo ? AnyShapeStyle(CoachGradient.accent) : AnyShapeStyle(Color.coachSurfaceElevated))
+        .clipShape(Capsule())
+    }
+}
+
+private struct ExerciseVideoPlayerSheet: View {
+    @Environment(\.dismiss) private var dismiss
+
+    var exerciseName: String
+    var url: URL
+
+    @State private var player: AVQueuePlayer?
+    @State private var looper: AVPlayerLooper?
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                CoachScreenBackground()
+
+                VStack(alignment: .leading, spacing: 16) {
+                    Text(exerciseName)
+                        .font(.title3.weight(.bold))
+
+                    VideoPlayer(player: player)
+                        .aspectRatio(1, contentMode: .fit)
+                        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .stroke(Color.coachBorder, lineWidth: 1)
+                        }
+
+                    Text("Instructional loop")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Color.coachSecondaryText)
+                }
+                .padding()
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            }
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Close") {
+                        dismiss()
+                    }
+                }
+            }
+            .onAppear(perform: startPlayback)
+            .onDisappear(perform: stopPlayback)
+        }
+        .preferredColorScheme(.dark)
+    }
+
+    private func startPlayback() {
+        let queuePlayer = AVQueuePlayer()
+        queuePlayer.isMuted = true
+        let item = AVPlayerItem(url: url)
+        looper = AVPlayerLooper(player: queuePlayer, templateItem: item)
+        player = queuePlayer
+        queuePlayer.play()
+    }
+
+    private func stopPlayback() {
+        player?.pause()
+        player = nil
+        looper = nil
     }
 }
 
@@ -153,6 +466,135 @@ struct MuscleImpactPairMap: View {
             .frame(width: proxy.size.width, height: proxy.size.height)
         }
         .accessibilityHidden(true)
+    }
+}
+
+struct FocusedMuscleImpactMap: View {
+    var primary: DetailedMuscleGroup
+    var secondary: DetailedMuscleGroup?
+    var supporting: [DetailedMuscleGroup] = []
+
+    private var focus: MuscleMapFocus {
+        primary.compactMapFocus
+    }
+
+    var body: some View {
+        GeometryReader { proxy in
+            let diameter = min(proxy.size.width, proxy.size.height)
+            let baseHeight = diameter * 1.22
+            let baseWidth = baseHeight * 0.64
+
+            ZStack {
+                Circle()
+                    .fill(Color.coachSurfaceElevated)
+
+                MuscleImpactMap(
+                    primary: primary,
+                    secondary: secondary,
+                    supporting: supporting,
+                    orientation: primary.preferredMapOrientation
+                )
+                .frame(width: baseWidth, height: baseHeight)
+                .scaleEffect(focus.scale, anchor: .center)
+                .offset(x: diameter * focus.offsetX, y: diameter * focus.offsetY)
+            }
+            .frame(width: diameter, height: diameter)
+            .clipShape(Circle())
+            .overlay {
+                Circle()
+                    .stroke(Color.coachBorder, lineWidth: 1)
+            }
+            .shadow(color: Color.black.opacity(0.18), radius: 8, y: 4)
+            .frame(width: proxy.size.width, height: proxy.size.height)
+        }
+        .accessibilityHidden(true)
+    }
+}
+
+struct ExerciseMuscleTargetBadge: View {
+    var exerciseName: String
+    var primary: DetailedMuscleGroup
+    var secondary: DetailedMuscleGroup?
+    var supporting: [DetailedMuscleGroup] = []
+
+    private var targetImage: UIImage? {
+        guard let assetName = ExerciseMuscleTargetLibrary.assetName(
+            for: exerciseName,
+            primary: primary
+        ) else {
+            return nil
+        }
+
+        return UIImage(named: assetName)
+    }
+
+    var body: some View {
+        if let targetImage {
+            GeneratedMuscleTargetBadge(image: targetImage)
+        } else {
+            FocusedMuscleImpactMap(
+                primary: primary,
+                secondary: secondary,
+                supporting: supporting
+            )
+        }
+    }
+}
+
+private struct GeneratedMuscleTargetBadge: View {
+    var image: UIImage
+
+    var body: some View {
+        GeometryReader { proxy in
+            let diameter = min(proxy.size.width, proxy.size.height)
+
+            ZStack {
+                Circle()
+                    .fill(Color.coachSurfaceElevated)
+
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: diameter, height: diameter)
+            }
+            .frame(width: diameter, height: diameter)
+            .clipShape(Circle())
+            .overlay {
+                Circle()
+                    .stroke(Color.coachBorder, lineWidth: 1)
+            }
+            .shadow(color: Color.black.opacity(0.18), radius: 8, y: 4)
+            .frame(width: proxy.size.width, height: proxy.size.height)
+        }
+        .accessibilityHidden(true)
+    }
+}
+
+private struct MuscleMapFocus {
+    var scale: CGFloat
+    var offsetX: CGFloat
+    var offsetY: CGFloat
+}
+
+private extension DetailedMuscleGroup {
+    var compactMapFocus: MuscleMapFocus {
+        switch self {
+        case .upperChest, .midChest, .lowerChest,
+             .latissimusDorsi, .upperBack, .lowerBack,
+             .frontDeltoids, .sideDeltoids, .rearDeltoids:
+            MuscleMapFocus(scale: 1.58, offsetX: 0, offsetY: 0.20)
+        case .biceps, .triceps,
+             .forearmFlexors, .forearmExtensors, .brachioradialis:
+            MuscleMapFocus(scale: 1.45, offsetX: 0, offsetY: 0.12)
+        case .rectusAbdominis, .obliques:
+            MuscleMapFocus(scale: 1.55, offsetX: 0, offsetY: -0.02)
+        case .gluteusMaximus, .gluteusMedius, .gluteusMinimus:
+            MuscleMapFocus(scale: 1.70, offsetX: 0, offsetY: -0.18)
+        case .quadriceps, .hamstrings, .adductors:
+            MuscleMapFocus(scale: 1.76, offsetX: 0, offsetY: -0.28)
+        case .gastrocnemius, .soleus:
+            MuscleMapFocus(scale: 1.88, offsetX: 0, offsetY: -0.55)
+        }
     }
 }
 

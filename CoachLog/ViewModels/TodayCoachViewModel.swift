@@ -18,7 +18,7 @@ final class TodayCoachViewModel {
 
     init(
         generator: WorkoutGenerator = WorkoutGenerator(),
-        aiService: AIService = MockAIService()
+        aiService: AIService = RuleBasedCoachService()
     ) {
         self.generator = generator
         self.aiService = aiService
@@ -55,4 +55,3 @@ final class TodayCoachViewModel {
         explanation = ""
     }
 }
-

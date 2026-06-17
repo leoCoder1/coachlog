@@ -495,7 +495,9 @@ private struct SavedWorkoutExercisePickerSheet: View {
                 || exercise.primaryDetailedMuscle.rawValue.localizedCaseInsensitiveContains(searchText)
                 || (exercise.secondaryDetailedMuscle?.rawValue.localizedCaseInsensitiveContains(searchText) ?? false)
             let matchesKind = selectedKind == nil || exercise.kind == selectedKind
-            let matchesGroup = selectedGroup == nil || exercise.primaryMuscleGroup == selectedGroup
+            let matchesGroup = selectedGroup == nil
+                || exercise.primaryMuscleGroup == selectedGroup
+                || exercise.secondaryMuscleGroups.contains { $0 == selectedGroup }
 
             return matchesSearch && matchesKind && matchesGroup
         }
@@ -683,6 +685,7 @@ private struct WorkoutTemplateExerciseDraft: Identifiable, Hashable {
             detailedMuscles: detailedMuscles,
             equipment: equipment,
             station: station,
+            kind: kind,
             targetSets: targetSets,
             targetRepsLower: targetRepsLower,
             targetRepsUpper: targetRepsUpper,

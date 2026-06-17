@@ -1,5 +1,9 @@
 DerivedData/
 preview/
+build/
+.history/
+.lh/
+.env
 
 *.xcuserstate
 *.xcuserdata/

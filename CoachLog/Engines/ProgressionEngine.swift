@@ -84,7 +84,7 @@ final class ProgressionEngine {
             )
         }
 
-        let smallestPracticalJump = plannedExercise.muscleGroup == .legs ? 5.0 : 2.5
+        let smallestPracticalJump = [.legs, .glutes].contains(plannedExercise.muscleGroup) ? 5.0 : 2.5
         let maxAllowedWeight = lastWeight * (1 + cap.upperBound / 100)
         let nextPracticalWeight = lastWeight + smallestPracticalJump
 
@@ -193,7 +193,7 @@ final class ProgressionEngine {
 
     private func increaseCap(for muscleGroup: MuscleGroup) -> ClosedRange<Double> {
         switch muscleGroup {
-        case .legs:
+        case .legs, .glutes:
             5...10
         case .chest, .back, .shoulders, .biceps, .triceps, .core:
             2.5...5

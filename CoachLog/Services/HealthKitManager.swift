@@ -2,6 +2,12 @@ import Foundation
 import HealthKit
 import Observation
 
+struct RecoveryImportResult {
+    var snapshot: RecoverySnapshot?
+    var message: String
+    var importedMetricCount: Int
+}
+
 @MainActor
 @Observable
 final class HealthKitManager {
@@ -45,10 +51,10 @@ final class HealthKitManager {
         }
     }
 
-    func importRecoverySnapshot() async -> RecoverySnapshot {
+    func importRecoverySnapshot() async -> RecoveryImportResult {
         guard HKHealthStore.isHealthDataAvailable() else {
             lastImportMessage = "Using mock recovery because HealthKit is unavailable."
-            return .mock
+            return RecoveryImportResult(snapshot: nil, message: lastImportMessage, importedMetricCount: 0)
         }
 
         async let sleepHours = latestSleepHours()
@@ -64,6 +70,17 @@ final class HealthKitManager {
         let importedSleep = await sleepHours
         let importedRestingHeartRate = await restingHeartRate
         let importedHRV = await hrv
+        let importedMetricKeys = importedMetricKeys(
+            sleepHours: importedSleep,
+            restingHeartRate: importedRestingHeartRate,
+            hrv: importedHRV
+        )
+
+        guard !importedMetricKeys.isEmpty else {
+            lastImportMessage = "No HealthKit recovery samples were returned. Check Apple Health > Sharing > Apps > CoachLog and confirm Sleep, Resting Heart Rate, and HRV are enabled."
+            return RecoveryImportResult(snapshot: nil, message: lastImportMessage, importedMetricCount: 0)
+        }
+
         let sleep = importedSleep ?? RecoverySnapshot.mock.sleepHours
         let rhr = importedRestingHeartRate ?? RecoverySnapshot.mock.restingHeartRate
         let hrvValue = importedHRV ?? RecoverySnapshot.mock.hrv
@@ -74,11 +91,22 @@ final class HealthKitManager {
             restingHeartRate: importedRestingHeartRate,
             hrv: importedHRV
         )
-        return RecoverySnapshot(
+        let snapshot = RecoverySnapshot(
             sleepHours: sleep,
             restingHeartRate: rhr,
             hrv: hrvValue,
-            readinessScore: readiness
+            readinessScore: readiness,
+            source: importedMetricKeys.count == RecoveryMetricKey.allCases.count
+                ? RecoverySnapshotSource.healthKit
+                : RecoverySnapshotSource.partialHealthKit,
+            importedMetricKeys: importedMetricKeys.map(\.rawValue).joined(separator: ","),
+            importNote: lastImportMessage
+        )
+
+        return RecoveryImportResult(
+            snapshot: snapshot,
+            message: lastImportMessage,
+            importedMetricCount: importedMetricKeys.count
         )
     }
 
@@ -139,10 +167,13 @@ final class HealthKitManager {
         }
 
         return await withCheckedContinuation { continuation in
+            let calendar = Calendar.current
+            let startDate = calendar.date(byAdding: .day, value: -14, to: .now) ?? .now
+            let predicate = HKQuery.predicateForSamples(withStart: startDate, end: .now, options: .strictEndDate)
             let sort = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
             let query = HKSampleQuery(
                 sampleType: quantityType,
-                predicate: nil,
+                predicate: predicate,
                 limit: 1,
                 sortDescriptors: [sort]
             ) { _, samples, _ in
@@ -160,8 +191,9 @@ final class HealthKitManager {
         }
 
         let calendar = Calendar.current
-        let startDate = calendar.date(byAdding: .hour, value: -36, to: .now) ?? .now
-        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: .now)
+        let now = Date()
+        let startDate = calendar.date(byAdding: .day, value: -7, to: now) ?? now
+        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: now, options: .strictEndDate)
         let asleepValues = Self.asleepValues
 
         return await withCheckedContinuation { continuation in
@@ -171,13 +203,13 @@ final class HealthKitManager {
                 limit: HKObjectQueryNoLimit,
                 sortDescriptors: nil
             ) { _, samples, _ in
-                let sleepSeconds = (samples as? [HKCategorySample])?
+                let intervals = (samples as? [HKCategorySample])?
                     .filter { sample in
-                        asleepValues.contains(sample.value)
+                        asleepValues.contains(sample.value) && sample.endDate > sample.startDate
                     }
-                    .reduce(0) { total, sample in
-                        total + sample.endDate.timeIntervalSince(sample.startDate)
-                    } ?? 0
+                    .map { SleepInterval(startDate: $0.startDate, endDate: $0.endDate) } ?? []
+
+                let sleepSeconds = Self.latestMainSleepDuration(from: intervals, now: now)
 
                 continuation.resume(returning: sleepSeconds > 0 ? sleepSeconds / 3600 : nil)
             }
@@ -210,6 +242,26 @@ final class HealthKitManager {
         return min(100, max(1, score))
     }
 
+    private func importedMetricKeys(
+        sleepHours: Double?,
+        restingHeartRate: Double?,
+        hrv: Double?
+    ) -> [RecoveryMetricKey] {
+        var keys: [RecoveryMetricKey] = []
+
+        if sleepHours != nil {
+            keys.append(.sleep)
+        }
+        if restingHeartRate != nil {
+            keys.append(.restingHeartRate)
+        }
+        if hrv != nil {
+            keys.append(.hrv)
+        }
+
+        return keys
+    }
+
     private func importMessage(
         sleepHours: Double?,
         restingHeartRate: Double?,
@@ -232,10 +284,82 @@ final class HealthKitManager {
         }
 
         if missingValues.count == 3 {
-            return "No HealthKit recovery values were returned. Check Apple Health permissions or sample availability; using safe defaults."
+            return "No HealthKit recovery values were returned. Check Apple Health permissions or sample availability."
         }
 
-        return "Imported partial HealthKit recovery. Missing \(missingValues.joined(separator: ", ")) uses safe defaults."
+        return "Imported partial HealthKit recovery. Missing \(missingValues.joined(separator: ", ")) will show as unavailable."
+    }
+
+    private nonisolated struct SleepInterval {
+        var startDate: Date
+        var endDate: Date
+
+        var duration: TimeInterval {
+            max(0, endDate.timeIntervalSince(startDate))
+        }
+    }
+
+    private nonisolated static func latestMainSleepDuration(
+        from intervals: [SleepInterval],
+        now: Date
+    ) -> TimeInterval {
+        let mergedIntervals = mergedSleepIntervals(from: intervals)
+        let sessions = sleepSessions(from: mergedIntervals)
+        let recentStart = now.addingTimeInterval(-36 * 60 * 60)
+        let recentSessions = sessions.filter { $0.endDate >= recentStart }
+        let candidateSessions = recentSessions.isEmpty ? sessions : recentSessions
+
+        if let substantial = candidateSessions
+            .filter({ $0.duration >= 2 * 60 * 60 })
+            .max(by: { $0.duration < $1.duration }) {
+            return substantial.duration
+        }
+
+        return candidateSessions.max(by: { $0.endDate < $1.endDate })?.duration ?? 0
+    }
+
+    private nonisolated static func mergedSleepIntervals(from intervals: [SleepInterval]) -> [SleepInterval] {
+        let sortedIntervals = intervals.sorted { $0.startDate < $1.startDate }
+        var mergedIntervals: [SleepInterval] = []
+
+        for interval in sortedIntervals {
+            guard var last = mergedIntervals.popLast() else {
+                mergedIntervals.append(interval)
+                continue
+            }
+
+            if interval.startDate <= last.endDate {
+                last.endDate = max(last.endDate, interval.endDate)
+                mergedIntervals.append(last)
+            } else {
+                mergedIntervals.append(last)
+                mergedIntervals.append(interval)
+            }
+        }
+
+        return mergedIntervals
+    }
+
+    private nonisolated static func sleepSessions(from intervals: [SleepInterval]) -> [SleepInterval] {
+        let sessionGap: TimeInterval = 3 * 60 * 60
+        var sessions: [SleepInterval] = []
+
+        for interval in intervals {
+            guard var currentSession = sessions.popLast() else {
+                sessions.append(interval)
+                continue
+            }
+
+            if interval.startDate.timeIntervalSince(currentSession.endDate) <= sessionGap {
+                currentSession.endDate = max(currentSession.endDate, interval.endDate)
+                sessions.append(currentSession)
+            } else {
+                sessions.append(currentSession)
+                sessions.append(interval)
+            }
+        }
+
+        return sessions
     }
 
     private static var asleepValues: Set<Int> {

@@ -42,6 +42,7 @@ struct PlannedExercise: Identifiable, Hashable {
     var detailedMuscles: [DetailedMuscleGroup]
     var equipment: Equipment
     var station: GymStation
+    var kind: ExerciseKind = .strength
     var targetSets: Int
     var targetRepsLower: Int
     var targetRepsUpper: Int

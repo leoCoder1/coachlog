@@ -4,9 +4,49 @@ import SwiftUI
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var didSeed = false
+    @State private var didValidateAppleCredential = false
+    @State private var healthKitManager = HealthKitManager()
     @State private var selectedTab: CoachTab = .coach
+    @AppStorage(CoachAuthKeys.isSignedIn) private var isSignedIn = false
+    @AppStorage(CoachAuthKeys.appleUserID) private var appleUserID = ""
+    @AppStorage(HealthKitRecoverySync.autoImportEnabledKey) private var healthKitAutoImportEnabled = false
+    @AppStorage(HealthKitRecoverySync.lastAutoImportDateKey) private var lastHealthKitAutoImportTime = 0.0
 
     var body: some View {
+        Group {
+            if isSignedIn {
+                mainAppView
+                    .transition(.opacity.combined(with: .scale(scale: 0.985)))
+            } else {
+                SignInView()
+                    .transition(.opacity)
+            }
+        }
+        .animation(CoachMotion.screen, value: isSignedIn)
+        .task(id: isSignedIn) {
+            guard isSignedIn else {
+                didSeed = false
+                didValidateAppleCredential = false
+                return
+            }
+
+            await validateAppleCredentialIfNeeded()
+            guard isSignedIn else { return }
+
+            if !didSeed {
+                didSeed = true
+                DataSeeder.seedExercisesIfNeeded(in: modelContext)
+            }
+
+            await autoImportHealthKitRecoveryIfNeeded()
+
+            if healthKitAutoImportEnabled {
+                HealthKitRecoverySync.scheduleBackgroundRefresh()
+            }
+        }
+    }
+
+    private var mainAppView: some View {
         ZStack(alignment: .bottom) {
             CoachScreenBackground()
 
@@ -22,11 +62,41 @@ struct ContentView: View {
         .tint(Color.coachAccent)
         .fontDesign(.rounded)
         .preferredColorScheme(.dark)
-        .task {
-            guard !didSeed else { return }
-            didSeed = true
-            DataSeeder.seedExercisesIfNeeded(in: modelContext)
+    }
+
+    private func validateAppleCredentialIfNeeded() async {
+        guard !didValidateAppleCredential, !appleUserID.isEmpty else {
+            return
         }
+
+        didValidateAppleCredential = true
+        let state = await CoachAuthSession.credentialState(for: appleUserID)
+
+        if state == .revoked || state == .notFound {
+            CoachAuthSession.signOut()
+        }
+    }
+
+    private func autoImportHealthKitRecoveryIfNeeded() async {
+        guard healthKitAutoImportEnabled, healthKitManager.isHealthDataAvailable else {
+            return
+        }
+
+        let lastImportDate = lastHealthKitAutoImportTime > 0
+            ? Date(timeIntervalSince1970: lastHealthKitAutoImportTime)
+            : nil
+
+        guard HealthKitRecoverySync.shouldAutoImport(lastImportDate: lastImportDate) else {
+            return
+        }
+
+        let result = await healthKitManager.importRecoverySnapshot()
+        guard let snapshot = result.snapshot else {
+            return
+        }
+
+        HealthKitRecoverySync.save(snapshot, in: modelContext)
+        lastHealthKitAutoImportTime = Date().timeIntervalSince1970
     }
 
     @ViewBuilder

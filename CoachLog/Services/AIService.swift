@@ -18,7 +18,7 @@ protocol AIService {
     ) async -> String
 }
 
-struct MockAIService: AIService {
+struct RuleBasedCoachService: AIService {
     func generateWorkoutExplanation(
         plan: WorkoutPlan,
         context: WorkoutContext,
@@ -92,6 +92,3 @@ struct MockAIService: AIService {
         return "\(message) \(weeklyRotationNote)"
     }
 }
-
-// TODO: Replace MockAIService with an OpenAI/OpenRouter-backed implementation.
-// Keep ProgressionEngine and WorkoutGenerator as the source of safety decisions.

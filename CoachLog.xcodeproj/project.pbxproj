@@ -41,6 +41,27 @@
 		8B0000000000000000000232 /* ExerciseLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000132 /* ExerciseLibraryView.swift */; };
 		8B0000000000000000000233 /* WorkoutTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000133 /* WorkoutTemplate.swift */; };
 		8B0000000000000000000234 /* SavedWorkoutsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000134 /* SavedWorkoutsView.swift */; };
+		8B0000000000000000000235 /* HealthKitRecoverySync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000135 /* HealthKitRecoverySync.swift */; };
+		8B0000000000000000000236 /* CoachAuthSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000136 /* CoachAuthSession.swift */; };
+		8B0000000000000000000237 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000137 /* SignInView.swift */; };
+		8B0000000000000000000238 /* LocalAccountDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000138 /* LocalAccountDataStore.swift */; };
+		8B0000000000000000000306 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000305 /* PrivacyInfo.xcprivacy */; };
+		8B0000000000000000000401 /* exercise-biceps-curl.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000411 /* exercise-biceps-curl.mp4 */; };
+		8B0000000000000000000402 /* exercise-cable-chest-fly.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000412 /* exercise-cable-chest-fly.mp4 */; };
+		8B0000000000000000000403 /* exercise-dumbbell-shoulder-press.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000413 /* exercise-dumbbell-shoulder-press.mp4 */; };
+		8B0000000000000000000404 /* exercise-goblet-squat.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000414 /* exercise-goblet-squat.mp4 */; };
+		8B0000000000000000000405 /* exercise-lat-pulldown.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000415 /* exercise-lat-pulldown.mp4 */; };
+		8B0000000000000000000406 /* exercise-plank.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000416 /* exercise-plank.mp4 */; };
+		8B0000000000000000000407 /* exercise-triceps-pressdown.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000417 /* exercise-triceps-pressdown.mp4 */; };
+		8B0000000000000000000408 /* exercise-glute-bridge.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000418 /* exercise-glute-bridge.mp4 */; };
+		8B0000000000000000000409 /* exercise-dumbbell-hip-thrust.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000419 /* exercise-dumbbell-hip-thrust.mp4 */; };
+		8B000000000000000000040A /* exercise-cable-glute-kickback.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B000000000000000000041A /* exercise-cable-glute-kickback.mp4 */; };
+		8B000000000000000000040B /* exercise-side-lying-hip-abduction.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B000000000000000000041B /* exercise-side-lying-hip-abduction.mp4 */; };
+		8B000000000000000000040C /* exercise-figure-four-glute-stretch.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B000000000000000000041C /* exercise-figure-four-glute-stretch.mp4 */; };
+		8B0000000000000000000421 /* exercise-romanian-deadlift.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B000000000000000000041D /* exercise-romanian-deadlift.mp4 */; };
+		8B0000000000000000000422 /* exercise-dumbbell-reverse-lunge.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B000000000000000000041E /* exercise-dumbbell-reverse-lunge.mp4 */; };
+		8B0000000000000000000423 /* exercise-step-up.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B000000000000000000041F /* exercise-step-up.mp4 */; };
+		8B0000000000000000000424 /* exercise-world-s-greatest-stretch.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000420 /* exercise-world-s-greatest-stretch.mp4 */; };
 		8B0000000000000000000302 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000301 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -80,8 +101,30 @@
 		8B0000000000000000000132 /* ExerciseLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseLibraryView.swift; sourceTree = "<group>"; };
 		8B0000000000000000000133 /* WorkoutTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutTemplate.swift; sourceTree = "<group>"; };
 		8B0000000000000000000134 /* SavedWorkoutsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedWorkoutsView.swift; sourceTree = "<group>"; };
+		8B0000000000000000000135 /* HealthKitRecoverySync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitRecoverySync.swift; sourceTree = "<group>"; };
+		8B0000000000000000000136 /* CoachAuthSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachAuthSession.swift; sourceTree = "<group>"; };
+		8B0000000000000000000137 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
+		8B0000000000000000000138 /* LocalAccountDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAccountDataStore.swift; sourceTree = "<group>"; };
 		8B0000000000000000000301 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8B0000000000000000000303 /* CoachLog.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CoachLog.entitlements; sourceTree = "<group>"; };
+		8B0000000000000000000304 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8B0000000000000000000305 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		8B0000000000000000000411 /* exercise-biceps-curl.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "exercise-biceps-curl.mp4"; sourceTree = "<group>"; };
+		8B0000000000000000000412 /* exercise-cable-chest-fly.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "exercise-cable-chest-fly.mp4"; sourceTree = "<group>"; };
+		8B0000000000000000000413 /* exercise-dumbbell-shoulder-press.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "exercise-dumbbell-shoulder-press.mp4"; sourceTree = "<group>"; };
+		8B0000000000000000000414 /* exercise-goblet-squat.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "exercise-goblet-squat.mp4"; sourceTree = "<group>"; };
+		8B0000000000000000000415 /* exercise-lat-pulldown.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "exercise-lat-pulldown.mp4"; sourceTree = "<group>"; };
+		8B0000000000000000000416 /* exercise-plank.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "exercise-plank.mp4"; sourceTree = "<group>"; };
+		8B0000000000000000000417 /* exercise-triceps-pressdown.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "exercise-triceps-pressdown.mp4"; sourceTree = "<group>"; };
+		8B0000000000000000000418 /* exercise-glute-bridge.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "exercise-glute-bridge.mp4"; sourceTree = "<group>"; };
+		8B0000000000000000000419 /* exercise-dumbbell-hip-thrust.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "exercise-dumbbell-hip-thrust.mp4"; sourceTree = "<group>"; };
+		8B000000000000000000041A /* exercise-cable-glute-kickback.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "exercise-cable-glute-kickback.mp4"; sourceTree = "<group>"; };
+		8B000000000000000000041B /* exercise-side-lying-hip-abduction.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "exercise-side-lying-hip-abduction.mp4"; sourceTree = "<group>"; };
+		8B000000000000000000041C /* exercise-figure-four-glute-stretch.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "exercise-figure-four-glute-stretch.mp4"; sourceTree = "<group>"; };
+		8B000000000000000000041D /* exercise-romanian-deadlift.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "exercise-romanian-deadlift.mp4"; sourceTree = "<group>"; };
+		8B000000000000000000041E /* exercise-dumbbell-reverse-lunge.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "exercise-dumbbell-reverse-lunge.mp4"; sourceTree = "<group>"; };
+		8B000000000000000000041F /* exercise-step-up.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "exercise-step-up.mp4"; sourceTree = "<group>"; };
+		8B0000000000000000000420 /* exercise-world-s-greatest-stretch.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "exercise-world-s-greatest-stretch.mp4"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,10 +165,36 @@
 				8B0000000000000000000015 /* ViewModels */,
 				8B0000000000000000000016 /* Views */,
 				8B0000000000000000000017 /* Support */,
+				8B0000000000000000000410 /* ExerciseMedia */,
 				8B0000000000000000000301 /* Assets.xcassets */,
 				8B0000000000000000000303 /* CoachLog.entitlements */,
+				8B0000000000000000000304 /* Info.plist */,
+				8B0000000000000000000305 /* PrivacyInfo.xcprivacy */,
 			);
 			path = CoachLog;
+			sourceTree = "<group>";
+		};
+		8B0000000000000000000410 /* ExerciseMedia */ = {
+			isa = PBXGroup;
+			children = (
+				8B0000000000000000000411 /* exercise-biceps-curl.mp4 */,
+				8B0000000000000000000412 /* exercise-cable-chest-fly.mp4 */,
+				8B0000000000000000000413 /* exercise-dumbbell-shoulder-press.mp4 */,
+				8B0000000000000000000414 /* exercise-goblet-squat.mp4 */,
+				8B0000000000000000000415 /* exercise-lat-pulldown.mp4 */,
+				8B0000000000000000000416 /* exercise-plank.mp4 */,
+				8B0000000000000000000417 /* exercise-triceps-pressdown.mp4 */,
+				8B0000000000000000000418 /* exercise-glute-bridge.mp4 */,
+				8B0000000000000000000419 /* exercise-dumbbell-hip-thrust.mp4 */,
+				8B000000000000000000041A /* exercise-cable-glute-kickback.mp4 */,
+				8B000000000000000000041B /* exercise-side-lying-hip-abduction.mp4 */,
+				8B000000000000000000041C /* exercise-figure-four-glute-stretch.mp4 */,
+				8B000000000000000000041D /* exercise-romanian-deadlift.mp4 */,
+				8B000000000000000000041E /* exercise-dumbbell-reverse-lunge.mp4 */,
+				8B000000000000000000041F /* exercise-step-up.mp4 */,
+				8B0000000000000000000420 /* exercise-world-s-greatest-stretch.mp4 */,
+			);
+			path = Resources/ExerciseMedia;
 			sourceTree = "<group>";
 		};
 		8B0000000000000000000012 /* Models */ = {
@@ -149,6 +218,7 @@
 			isa = PBXGroup;
 			children = (
 				8B0000000000000000000113 /* AIService.swift */,
+				8B0000000000000000000136 /* CoachAuthSession.swift */,
 				8B0000000000000000000114 /* HealthKitManager.swift */,
 			);
 			path = Services;
@@ -180,6 +250,7 @@
 				8B0000000000000000000128 /* WheelPickerControls.swift */,
 				8B0000000000000000000130 /* ExerciseVisuals.swift */,
 				8B0000000000000000000131 /* BodyMeasurementCheckInView.swift */,
+				8B0000000000000000000137 /* SignInView.swift */,
 				8B0000000000000000000121 /* SharedViews.swift */,
 				8B0000000000000000000122 /* TodayCoachView.swift */,
 				8B0000000000000000000134 /* SavedWorkoutsView.swift */,
@@ -198,6 +269,8 @@
 			children = (
 				8B0000000000000000000111 /* ExerciseLibrary.swift */,
 				8B0000000000000000000112 /* DataSeeder.swift */,
+				8B0000000000000000000135 /* HealthKitRecoverySync.swift */,
+				8B0000000000000000000138 /* LocalAccountDataStore.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -260,7 +333,24 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B0000000000000000000401 /* exercise-biceps-curl.mp4 in Resources */,
+				8B0000000000000000000402 /* exercise-cable-chest-fly.mp4 in Resources */,
+				8B0000000000000000000403 /* exercise-dumbbell-shoulder-press.mp4 in Resources */,
+				8B0000000000000000000404 /* exercise-goblet-squat.mp4 in Resources */,
+				8B0000000000000000000405 /* exercise-lat-pulldown.mp4 in Resources */,
+				8B0000000000000000000406 /* exercise-plank.mp4 in Resources */,
+				8B0000000000000000000407 /* exercise-triceps-pressdown.mp4 in Resources */,
+				8B0000000000000000000408 /* exercise-glute-bridge.mp4 in Resources */,
+				8B0000000000000000000409 /* exercise-dumbbell-hip-thrust.mp4 in Resources */,
+				8B000000000000000000040A /* exercise-cable-glute-kickback.mp4 in Resources */,
+				8B000000000000000000040B /* exercise-side-lying-hip-abduction.mp4 in Resources */,
+				8B000000000000000000040C /* exercise-figure-four-glute-stretch.mp4 in Resources */,
+				8B0000000000000000000421 /* exercise-romanian-deadlift.mp4 in Resources */,
+				8B0000000000000000000422 /* exercise-dumbbell-reverse-lunge.mp4 in Resources */,
+				8B0000000000000000000423 /* exercise-step-up.mp4 in Resources */,
+				8B0000000000000000000424 /* exercise-world-s-greatest-stretch.mp4 in Resources */,
 				8B0000000000000000000302 /* Assets.xcassets in Resources */,
+				8B0000000000000000000306 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,6 +388,10 @@
 				8B0000000000000000000231 /* BodyMeasurementCheckInView.swift in Sources */,
 				8B0000000000000000000232 /* ExerciseLibraryView.swift in Sources */,
 				8B0000000000000000000234 /* SavedWorkoutsView.swift in Sources */,
+				8B0000000000000000000235 /* HealthKitRecoverySync.swift in Sources */,
+				8B0000000000000000000236 /* CoachAuthSession.swift in Sources */,
+				8B0000000000000000000237 /* SignInView.swift in Sources */,
+				8B0000000000000000000238 /* LocalAccountDataStore.swift in Sources */,
 				8B0000000000000000000221 /* SharedViews.swift in Sources */,
 				8B0000000000000000000222 /* TodayCoachView.swift in Sources */,
 				8B0000000000000000000223 /* WorkoutSessionView.swift in Sources */,
@@ -431,28 +525,23 @@
 		8B0000000000000000000041 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = CoachLog/CoachLog.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+					ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+					ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+					CODE_SIGN_ENTITLEMENTS = CoachLog/CoachLog.entitlements;
+					CODE_SIGN_STYLE = Automatic;
+					CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 9TTW8MV993;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = CoachLog;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "CoachLog reads recovery and body metrics to adjust workout recommendations.";
-				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "CoachLog may save workout data when HealthKit integration is enabled.";
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CoachLog/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.logicione.CoachLog;
+				PRODUCT_BUNDLE_IDENTIFIER = com.machvect.CoachLog;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -466,28 +555,24 @@
 		8B0000000000000000000042 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = CoachLog/CoachLog.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+					ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+					ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+					CODE_SIGN_ENTITLEMENTS = CoachLog/CoachLog.entitlements;
+					CODE_SIGN_IDENTITY = "Apple Distribution";
+					CODE_SIGN_STYLE = Automatic;
+					CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 9TTW8MV993;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = CoachLog;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "CoachLog reads recovery and body metrics to adjust workout recommendations.";
-				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "CoachLog may save workout data when HealthKit integration is enabled.";
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CoachLog/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.logicione.CoachLog;
+				PRODUCT_BUNDLE_IDENTIFIER = com.machvect.CoachLog;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;

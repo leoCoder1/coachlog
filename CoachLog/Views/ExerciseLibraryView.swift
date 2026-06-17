@@ -16,7 +16,9 @@ struct ExerciseLibraryView: View {
                 || exercise.name.localizedCaseInsensitiveContains(searchText)
                 || exercise.primaryDetailedMuscle.rawValue.localizedCaseInsensitiveContains(searchText)
                 || (exercise.secondaryDetailedMuscle?.rawValue.localizedCaseInsensitiveContains(searchText) ?? false)
-            let matchesGroup = selectedGroup == nil || exercise.primaryMuscleGroup == selectedGroup
+            let matchesGroup = selectedGroup == nil
+                || exercise.primaryMuscleGroup == selectedGroup
+                || exercise.secondaryMuscleGroups.contains { $0 == selectedGroup }
             let matchesKind = selectedKind == nil || exercise.kind == selectedKind
 
             return matchesSearch && matchesGroup && matchesKind
@@ -216,11 +218,16 @@ struct ExerciseLibraryRow: View {
             detailedMuscles: exercise.detailedMuscles,
             equipment: exercise.equipment,
             station: exercise.station,
+            kind: exercise.kind,
             targetSets: 3,
             targetRepsLower: 8,
             targetRepsUpper: 12,
             coachingNote: ""
         )
+    }
+
+    private var media: ExerciseMediaAsset {
+        ExerciseMediaLibrary.media(for: exercise.name)
     }
 
     var body: some View {
@@ -254,16 +261,18 @@ struct ExerciseLibraryRow: View {
 
                     MuscleChipRow(groups: [exercise.primaryMuscleGroup] + exercise.secondaryMuscleGroups)
                     DetailedMuscleTagRow(primary: exercise.primaryDetailedMuscle, secondary: exercise.secondaryDetailedMuscle)
+                    ExerciseMediaStatusBadge(media: media)
                 }
 
                 Spacer(minLength: 4)
 
-                MuscleImpactPairMap(
+                ExerciseMuscleTargetBadge(
+                    exerciseName: exercise.name,
                     primary: exercise.primaryDetailedMuscle,
                     secondary: exercise.secondaryDetailedMuscle,
                     supporting: exercise.detailedMuscles
                 )
-                .frame(width: 70, height: 66)
+                .frame(width: 70, height: 70)
             }
         }
     }

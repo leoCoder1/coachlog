@@ -55,7 +55,9 @@ final class WorkoutGenerator {
 
         if chosenDefinitions.count < plannedCount {
             let fallback = ExerciseLibrary.definitions.filter { definition in
-                !chosenDefinitions.contains(definition) && isAllowed(definition, for: context.painFlag)
+                definition.kind == .strength
+                && !chosenDefinitions.contains(definition)
+                && isAllowed(definition, for: context.painFlag)
             }
 
             for definition in fallback {
@@ -67,7 +69,7 @@ final class WorkoutGenerator {
 
         if chosenDefinitions.isEmpty {
             chosenDefinitions = ExerciseLibrary.definitions
-                .filter { $0.primaryMuscleGroup == .core }
+                .filter { $0.primaryMuscleGroup == .core && $0.kind == .strength }
                 .prefix(plannedCount)
                 .map { $0 }
         }
@@ -82,6 +84,7 @@ final class WorkoutGenerator {
                 detailedMuscles: definition.detailedMuscles,
                 equipment: definition.equipment,
                 station: definition.station,
+                kind: definition.kind,
                 targetSets: targetSets,
                 targetRepsLower: targetRepRange.lowerBound,
                 targetRepsUpper: targetRepRange.upperBound,
@@ -114,6 +117,7 @@ final class WorkoutGenerator {
     ) -> ExerciseDefinition? {
         ExerciseLibrary.definitions.first { definition in
             definition.primaryMuscleGroup == group
+            && definition.kind == .strength
             && !chosen.contains(definition)
             && isAllowed(definition, for: context.painFlag)
         }
