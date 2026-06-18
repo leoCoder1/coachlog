@@ -151,6 +151,8 @@ enum ExerciseMuscleTargetLibrary {
             "muscle-target-lower-back"
         case .quadriceps:
             "muscle-target-goblet-squat"
+        case .adductors:
+            "muscle-target-goblet-squat"
         case .hamstrings:
             "muscle-target-hamstrings"
         case .gluteusMaximus, .gluteusMedius, .gluteusMinimus:
@@ -161,14 +163,12 @@ enum ExerciseMuscleTargetLibrary {
             "muscle-target-side-deltoids"
         case .rearDeltoids:
             "muscle-target-rear-deltoids"
-        case .forearmFlexors, .brachioradialis:
+        case .forearmFlexors, .forearmExtensors, .brachioradialis:
             "muscle-target-forearm-flexors"
         case .rectusAbdominis, .obliques:
             "muscle-target-plank"
         case .gastrocnemius, .soleus:
             "muscle-target-calf-raise"
-        default:
-            nil
         }
     }
 }
