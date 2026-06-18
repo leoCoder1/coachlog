@@ -178,6 +178,8 @@ struct ExerciseVisualHeader: View {
     var subtitle: String
     var note: String?
 
+    @State private var isShowingInstructions = false
+
     private var media: ExerciseMediaAsset {
         ExerciseMediaLibrary.media(for: exercise.name)
     }
@@ -207,7 +209,14 @@ struct ExerciseVisualHeader: View {
                     primary: exercise.primaryDetailedMuscle,
                     secondary: exercise.secondaryDetailedMuscle
                 )
-                ExerciseMediaStatusBadge(media: media)
+
+                Button {
+                    isShowingInstructions = true
+                } label: {
+                    ExerciseMediaStatusBadge(media: media)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Open instructions for \(exercise.name)")
 
                 if let note {
                     Text(note)
@@ -232,6 +241,9 @@ struct ExerciseVisualHeader: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(exercise.name), primary muscle: \(exercise.primaryDetailedMuscle.rawValue), secondary muscle: \(exercise.secondaryDetailedMuscle?.rawValue ?? "none")")
+        .sheet(isPresented: $isShowingInstructions) {
+            ExerciseInstructionSheet(exercise: exercise, media: media)
+        }
     }
 }
 
@@ -743,6 +755,240 @@ private enum ExerciseGuidanceLibrary {
             ],
             proTip: "Push the floor away slightly to keep the upper back active.",
             avoid: "Avoid sagging hips, hiking hips high, or holding your breath."
+        ),
+        "Jog, side shuffle, back pedal": ExerciseGuidance(
+            steps: [
+                "Start with an easy jog for 10 to 15 seconds to raise temperature.",
+                "Switch to short side shuffles with hips low and feet light.",
+                "Finish with controlled back pedals, keeping eyes forward and steps short."
+            ],
+            proTip: "Change direction smoothly every few steps so ankles and hips warm up together.",
+            avoid: "Avoid crossing feet during shuffles or leaning back during back pedals."
+        ),
+        "Arm circles to scapular hugs": ExerciseGuidance(
+            steps: [
+                "Stand tall and make small arm circles forward and backward.",
+                "Gradually widen the circles while keeping ribs stacked over the pelvis.",
+                "Open the arms wide, then wrap them across the chest and alternate the top arm."
+            ],
+            proTip: "Let the shoulder blades glide instead of forcing the arms behind you.",
+            avoid: "Avoid shrugging, arching the back, or swinging past a comfortable range."
+        ),
+        "Front and lateral leg swings": ExerciseGuidance(
+            steps: [
+                "Hold a post or wall lightly and stand tall on one leg.",
+                "Swing the free leg forward and back under control for half the time.",
+                "Turn slightly and swing side to side, then switch legs."
+            ],
+            proTip: "Use a range you can control without the torso rocking.",
+            avoid: "Avoid kicking aggressively or twisting the standing knee."
+        ),
+        "Walking lunge, reach, calf raise": ExerciseGuidance(
+            steps: [
+                "Step into a long lunge and reach both arms overhead.",
+                "Keep the front foot flat while the back hip opens.",
+                "Drive up, rise briefly onto the front toes, then step into the next rep."
+            ],
+            proTip: "Move slowly enough to feel hip extension before the calf raise.",
+            avoid: "Avoid a short step, knee collapse, or bouncing out of the lunge."
+        ),
+        "High knees, butt kicks, pogo hops": ExerciseGuidance(
+            steps: [
+                "Run in place with high knees and a tall chest for the first segment.",
+                "Switch to butt kicks, keeping knees pointed down and cadence quick.",
+                "Finish with small pogo hops from the ankles with soft knees."
+            ],
+            proTip: "Stay springy and relaxed; this should prime speed, not drain you.",
+            avoid: "Avoid stomping, leaning back, or turning the pogo hops into deep squats."
+        ),
+        "Shadow bat, throw, bowl ramp": ExerciseGuidance(
+            steps: [
+                "Rehearse a smooth batting swing at easy effort.",
+                "Flow into a light throwing pattern with the shoulder relaxed.",
+                "Finish with a bowling walk-through, building effort gradually."
+            ],
+            proTip: "Use 50, 70, then 80 percent effort so the nervous system ramps up cleanly.",
+            avoid: "Avoid max-speed swings or throws before the body is warm."
+        ),
+        "Wrist rolls and finger pumps": ExerciseGuidance(
+            steps: [
+                "Open and close the hands quickly for several reps.",
+                "Circle both wrists in each direction with relaxed shoulders.",
+                "Turn palms up and down slowly to warm pronation and supination."
+            ],
+            proTip: "Keep the grip loose so the forearms feel warm rather than pumped.",
+            avoid: "Avoid forcing wrist range or clenching hard for the whole interval."
+        ),
+        "Shadow batting hip turn": ExerciseGuidance(
+            steps: [
+                "Set a batting stance with knees soft and head steady.",
+                "Step and rotate the hips as if initiating a controlled shot.",
+                "Reset the stance between reps and alternate easy swing patterns."
+            ],
+            proTip: "Let the hips lead while the head stays quiet over the base.",
+            avoid: "Avoid spinning on a locked knee or over-rotating through the lower back."
+        ),
+        "Crease shuffle to sprint start": ExerciseGuidance(
+            steps: [
+                "Shuffle laterally two to three quick steps with hips low.",
+                "Plant the outside foot under control.",
+                "Drive into two short sprint-start steps, then reset."
+            ],
+            proTip: "Keep the first sprint steps short and sharp like running between wickets.",
+            avoid: "Avoid crossing feet, landing tall, or letting knees cave inward."
+        ),
+        "Standing thoracic openers": ExerciseGuidance(
+            steps: [
+                "Stand tall with hands lightly across the chest or behind the head.",
+                "Rotate the rib cage to one side while hips stay mostly square.",
+                "Return through center and rotate the other way with steady breathing."
+            ],
+            proTip: "Think ribs turning over hips, not the lower back twisting hard.",
+            avoid: "Avoid forcing the neck or letting the pelvis spin with every rep."
+        ),
+        "Wrist rolls and bat grip pulses": ExerciseGuidance(
+            steps: [
+                "Hold an imaginary bat or light handle with relaxed shoulders.",
+                "Pulse the grip open and closed without squeezing hard.",
+                "Finish with slow wrist circles in both directions."
+            ],
+            proTip: "Keep the pulses quick but light so bat control feels responsive.",
+            avoid: "Avoid fatiguing the forearms before batting."
+        ),
+        "Bowling walk-through build-ups": ExerciseGuidance(
+            steps: [
+                "Start with a walking bowling action and easy arm speed.",
+                "Progress to a smooth walk-through with trunk rotation and hip drive.",
+                "Finish near match rhythm without going all-out."
+            ],
+            proTip: "Build effort in small jumps so shoulder, trunk, and front leg sync up.",
+            avoid: "Avoid abrupt max-effort deliveries or collapsing through the front knee."
+        ),
+        "Thoracic rotations with reach": ExerciseGuidance(
+            steps: [
+                "Set a stable half-kneeling or split stance with hips square.",
+                "Rotate the chest toward the working side and reach the arm long.",
+                "Return to center slowly, then repeat with control."
+            ],
+            proTip: "Exhale as you rotate to find upper-back range without forcing it.",
+            avoid: "Avoid twisting through the low back or letting the front knee drift inward."
+        ),
+        "Single-leg balance to calf pop": ExerciseGuidance(
+            steps: [
+                "Balance on one foot with a slight bend in the knee.",
+                "Hinge forward a little while keeping hips level.",
+                "Return tall and pop into a small controlled calf raise."
+            ],
+            proTip: "Own the balance first; the calf pop should be short and crisp.",
+            avoid: "Avoid rushing, wobbling through the ankle, or locking the knee."
+        ),
+        "Scapular wall slides or swimmers": ExerciseGuidance(
+            steps: [
+                "Stand against a wall for slides or lie face down for swimmers.",
+                "Move the arms slowly while shoulder blades glide down and around the ribs.",
+                "Pause where control is hardest, then return without shrugging."
+            ],
+            proTip: "Choose the version that keeps the neck relaxed and ribs down.",
+            avoid: "Avoid forcing overhead range or pinching the front of the shoulder."
+        ),
+        "Slow walk with nasal breathing": ExerciseGuidance(
+            steps: [
+                "Walk at an easy pace after play with shoulders relaxed.",
+                "Breathe in through the nose and lengthen each exhale.",
+                "Let the heart rate settle before moving into longer holds."
+            ],
+            proTip: "Use this as the bridge from competition intensity to recovery work.",
+            avoid: "Avoid stopping abruptly if you are still breathing hard."
+        ),
+        "Calf Wall Stretch": ExerciseGuidance(
+            steps: [
+                "Place both hands on a wall and step one foot back.",
+                "Keep the back heel down and toes pointing straight ahead.",
+                "Lean forward until the calf stretches, hold, then switch sides."
+            ],
+            proTip: "Slightly bend the back knee on a second hold to bias the soleus.",
+            avoid: "Avoid turning the back foot outward or bouncing into the wall."
+        ),
+        "Half-kneeling hip flexor and quad": ExerciseGuidance(
+            steps: [
+                "Set a half-kneeling stance with the back knee padded on the mat.",
+                "Tuck the pelvis slightly and squeeze the back-side glute.",
+                "Shift forward gently until the front of the hip and quad stretch."
+            ],
+            proTip: "Keep ribs down so the stretch stays in the hip instead of the low back.",
+            avoid: "Avoid arching the lower back or driving the front knee far past control."
+        ),
+        "Seated Hamstring Stretch": ExerciseGuidance(
+            steps: [
+                "Sit tall with one leg extended and the other leg relaxed.",
+                "Hinge forward from the hips with a long spine.",
+                "Hold mild hamstring tension, then switch sides."
+            ],
+            proTip: "Reach the chest forward rather than rounding down toward the knee.",
+            avoid: "Avoid locking the knee aggressively or pulling on the toes."
+        ),
+        "Child's Pose": ExerciseGuidance(
+            steps: [
+                "Kneel on the mat and sit hips back toward the heels.",
+                "Reach both arms forward and let the chest soften toward the floor.",
+                "Walk hands to each side to bias the lats, then return to center."
+            ],
+            proTip: "Breathe into the ribs and upper back on each long exhale.",
+            avoid: "Avoid forcing hips to heels if knees feel irritated."
+        ),
+        "Cross-Body Shoulder Stretch": ExerciseGuidance(
+            steps: [
+                "Stand tall and bring one arm across the chest.",
+                "Use the opposite arm to gently draw it closer without lifting the shoulder.",
+                "Hold with the neck relaxed, then switch sides."
+            ],
+            proTip: "Keep the stretched shoulder down away from the ear.",
+            avoid: "Avoid pulling directly on the elbow joint or twisting the torso."
+        ),
+        "Forearm flexor and extensor stretch": ExerciseGuidance(
+            steps: [
+                "Extend one arm with palm up and gently draw fingers back.",
+                "Hold briefly, then turn palm down and gently flex the wrist.",
+                "Repeat on the other side with relaxed shoulders."
+            ],
+            proTip: "Use light pressure; forearm tissue responds better to patience than force.",
+            avoid: "Avoid numbness, tingling, or aggressive finger pulling."
+        ),
+        "Open-book trunk rotation": ExerciseGuidance(
+            steps: [
+                "Lie on one side with knees stacked and bent.",
+                "Reach the top arm forward, then open it across the body toward the floor.",
+                "Breathe into the open position, return slowly, then switch sides."
+            ],
+            proTip: "Let the upper back rotate while knees stay stacked.",
+            avoid: "Avoid forcing the shoulder to the floor or rolling the hips open."
+        ),
+        "Bat grip forearm release": ExerciseGuidance(
+            steps: [
+                "Bring palms together in a gentle prayer stretch.",
+                "Lower the hands until the forearms feel light tension.",
+                "Switch to the back-of-hands position briefly, then shake the hands loose."
+            ],
+            proTip: "Keep pressure mild so grip feels restored after batting.",
+            avoid: "Avoid collapsing the wrists sharply or stretching into tingling."
+        ),
+        "Overhead lat and triceps side stretch": ExerciseGuidance(
+            steps: [
+                "Reach one arm overhead and bend the elbow so the hand moves behind the head.",
+                "Hold the elbow lightly and side bend away from the stretching side.",
+                "Breathe into the ribs and lat, then switch sides."
+            ],
+            proTip: "Keep both feet grounded so the side body lengthens evenly.",
+            avoid: "Avoid cranking the neck or arching the lower back."
+        ),
+        "Adductor rock-back hold": ExerciseGuidance(
+            steps: [
+                "Start on hands and knees, then extend one knee wide to the side.",
+                "Keep the spine long and rock hips back until the inner thigh stretches.",
+                "Hold mild tension, return forward, then switch sides."
+            ],
+            proTip: "Point the extended-side toes forward or slightly up based on comfort.",
+            avoid: "Avoid sinking into knee pain or rounding hard through the back."
         )
     ]
 }
