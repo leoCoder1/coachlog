@@ -34,7 +34,6 @@ struct SportsPrepView: View {
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
-                        header
                         selectors
 
                         if let plan {
@@ -73,33 +72,39 @@ struct SportsPrepView: View {
         }
     }
 
-    private var header: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Sports Training")
-                .font(.system(size: 40, weight: .black, design: .rounded))
-                .lineLimit(1)
-                .minimumScaleFactor(0.78)
-
-            Text("Sport-specific prep, cool-down and strength work that logs into your muscle freshness.")
-                .font(.title3)
-                .foregroundStyle(Color.coachSecondaryText)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.top, 8)
-    }
-
     private var selectors: some View {
-        CoachCard {
-            VStack(alignment: .leading, spacing: 18) {
-                selectorSection("Sport") {
-                    Picker("Sport", selection: $selectedSport) {
+        CoachCard(padding: 12) {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 10) {
+                    SportsCompactMenu(
+                        title: "Sport",
+                        value: selectedSport.displayName,
+                        iconName: selectedSport.iconName
+                    ) {
                         ForEach(CoachSport.allCases) { sport in
-                            Text(sport.displayName).tag(sport)
+                            Button {
+                                selectedSport = sport
+                            } label: {
+                                Label(sport.displayName, systemImage: selectedSport == sport ? "checkmark" : sport.iconName)
+                            }
                         }
                     }
-                    .pickerStyle(.segmented)
-                    .tint(Color.coachAccent)
+
+                    if selectedSport == .cricket {
+                        SportsCompactMenu(
+                            title: "Role",
+                            value: selectedRole.displayName,
+                            iconName: "figure.cricket"
+                        ) {
+                            ForEach(CricketRole.allCases) { role in
+                                Button {
+                                    selectedRole = role
+                                } label: {
+                                    Label(role.displayName, systemImage: selectedRole == role ? "checkmark" : "person.fill")
+                                }
+                            }
+                        }
+                    }
                 }
 
                 selectorSection("Program") {
@@ -134,38 +139,37 @@ struct SportsPrepView: View {
                     .tint(Color.coachAccent)
                 }
 
-                selectorSection("Cricket role") {
-                    Picker("Cricket role", selection: $selectedRole) {
-                        ForEach(CricketRole.allCases) { role in
-                            Text(role.displayName).tag(role)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                    .tint(Color.coachAccent)
-                }
             }
         }
     }
 
     private func summary(_ plan: SportsTrainingPlan) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 12) {
-                MetricCard(title: "Routine", value: plan.formattedTotalTime, iconName: "timer")
-                MetricCard(title: selectedProgram == .mobility ? "Cap" : "Session", value: selectedProgram == .mobility ? "10 min" : plan.availableMinutes.displayName, iconName: "stopwatch")
-            }
-
-            CoachCard {
-                VStack(alignment: .leading, spacing: 12) {
+        CoachCard(padding: 12) {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(alignment: .top, spacing: 10) {
                     Label(plan.title, systemImage: planIconName(plan))
                         .font(.headline)
-
-                    Text(plan.intent)
-                        .font(.subheadline)
-                        .foregroundStyle(Color.coachSecondaryText)
+                        .lineLimit(2)
                         .fixedSize(horizontal: false, vertical: true)
 
-                    FlowTagRow(values: plan.focusAreas, tint: tintColor(for: plan))
+                    Spacer(minLength: 8)
+
+                    VStack(alignment: .trailing, spacing: 6) {
+                        SportsSummaryBadge(value: plan.formattedTotalTime, iconName: "timer", tint: tintColor(for: plan))
+                        SportsSummaryBadge(
+                            value: selectedProgram == .mobility ? "10 min" : plan.availableMinutes.displayName,
+                            iconName: "stopwatch",
+                            tint: tintColor(for: plan)
+                        )
+                    }
                 }
+
+                Text(plan.intent)
+                    .font(.subheadline)
+                    .foregroundStyle(Color.coachSecondaryText)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                FlowTagRow(values: plan.focusAreas, tint: tintColor(for: plan))
             }
         }
     }
@@ -307,10 +311,11 @@ struct SportsPrepView: View {
         _ title: String,
         @ViewBuilder content: () -> Content
     ) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        HStack(alignment: .center, spacing: 10) {
             Text(title)
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(Color.coachSecondaryText)
+                .frame(width: 56, alignment: .leading)
 
             content()
         }
@@ -378,6 +383,88 @@ struct SportsPrepView: View {
         case .mobility:
             plan.phase?.iconName ?? "figure.flexibility"
         }
+    }
+}
+
+private struct SportsCompactMenu<Content: View>: View {
+    var title: String
+    var value: String
+    var iconName: String
+    private let content: Content
+
+    init(
+        title: String,
+        value: String,
+        iconName: String,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.title = title
+        self.value = value
+        self.iconName = iconName
+        self.content = content()
+    }
+
+    var body: some View {
+        Menu {
+            content
+        } label: {
+            HStack(spacing: 8) {
+                Image(systemName: iconName)
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(Color.coachAccent)
+                    .frame(width: 18)
+
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(title)
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(Color.coachSecondaryText)
+
+                    Text(value)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Color.white)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.75)
+                }
+
+                Spacer(minLength: 4)
+
+                Image(systemName: "chevron.down")
+                    .font(.caption2.weight(.bold))
+                    .foregroundStyle(Color.coachTertiaryText)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 8)
+            .frame(maxWidth: .infinity, minHeight: 48, alignment: .leading)
+            .background(Color.coachSurfaceElevated)
+            .overlay {
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .stroke(Color.coachBorder, lineWidth: 1)
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+private struct SportsSummaryBadge: View {
+    var value: String
+    var iconName: String
+    var tint: Color
+
+    var body: some View {
+        Label(value, systemImage: iconName)
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(tint)
+            .lineLimit(1)
+            .minimumScaleFactor(0.82)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 5)
+            .background(tint.opacity(0.12))
+            .overlay {
+                Capsule()
+                    .stroke(tint.opacity(0.20), lineWidth: 1)
+            }
+            .clipShape(Capsule())
     }
 }
 

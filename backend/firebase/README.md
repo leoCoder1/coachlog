@@ -12,13 +12,15 @@ The iOS app sends structured workout, recovery, freshness, progress, and measure
 ```json
 {
   "message": "Short coaching message",
-  "provider": "openai",
-  "model": "gpt-5.5",
+  "provider": "anthropic",
+  "model": "claude-sonnet-4-6",
   "source": "premium"
 }
 ```
 
 If the provider fails, the function returns the app's local fallback message with `source: "fallback"`.
+
+Claude Sonnet is the default provider. The Anthropic request uses an explicit prompt-cache breakpoint on CoachLog's static coaching rubric so repeated requests can reuse the stable prefix. User workout, recovery, and measurement data stays outside that cached block.
 
 ## Local Setup
 
@@ -58,10 +60,10 @@ firebase functions:secrets:set XAI_API_KEY
 Set non-secret params during deploy when prompted, or place non-sensitive values in `functions/.env`:
 
 ```bash
-LLM_PROVIDER=openai
+LLM_PROVIDER=anthropic
 OPENAI_MODEL=gpt-5.5
-CLAUDE_MODEL=
-XAI_MODEL=
+CLAUDE_MODEL=claude-sonnet-4-6
+XAI_MODEL=grok-4.3
 ```
 
 Deploy:

@@ -59,7 +59,7 @@ enum ExerciseMediaLibrary {
         ),
         "Figure Four Glute Stretch": ExerciseMediaAsset(
             imageAssetName: "exercise-figure-four-glute-stretch",
-            videoResourceName: "exercise-figure-four-glute-stretch"
+            videoResourceName: nil
         ),
         "Romanian Deadlift": ExerciseMediaAsset(
             imageAssetName: "exercise-romanian-deadlift",
@@ -182,11 +182,17 @@ struct ExerciseVisualHeader: View {
         ExerciseMediaLibrary.media(for: exercise.name)
     }
 
-    var body: some View {
-        HStack(alignment: .center, spacing: 12) {
-            ExerciseIllustrationThumbnail(exercise: exercise, size: 74)
+    private var hasMediaPreview: Bool {
+        media.imageAssetName != nil || media.hasVideo
+    }
 
-            VStack(alignment: .leading, spacing: 7) {
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            if hasMediaPreview {
+                ExerciseIllustrationThumbnail(exercise: exercise, size: 58)
+            }
+
+            VStack(alignment: .leading, spacing: 6) {
                 Text(exercise.name)
                     .font(.headline)
                     .lineLimit(2)
@@ -210,8 +216,8 @@ struct ExerciseVisualHeader: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
-
-            Spacer(minLength: 4)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .layoutPriority(1)
 
             ExerciseMuscleTargetBadge(
                 exerciseName: exercise.name,
@@ -219,7 +225,10 @@ struct ExerciseVisualHeader: View {
                 secondary: exercise.secondaryDetailedMuscle,
                 supporting: exercise.detailedMuscles
             )
-            .frame(width: 78, height: 78)
+            .frame(
+                width: hasMediaPreview ? 64 : 82,
+                height: hasMediaPreview ? 64 : 82
+            )
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(exercise.name), primary muscle: \(exercise.primaryDetailedMuscle.rawValue), secondary muscle: \(exercise.secondaryDetailedMuscle?.rawValue ?? "none")")
@@ -230,7 +239,7 @@ struct ExerciseIllustrationThumbnail: View {
     var exercise: PlannedExercise
     var size: CGFloat
 
-    @State private var isShowingVideo = false
+    @State private var isShowingInstructions = false
 
     private var media: ExerciseMediaAsset {
         ExerciseMediaLibrary.media(for: exercise.name)
@@ -259,14 +268,10 @@ struct ExerciseIllustrationThumbnail: View {
         .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         .contentShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         .onTapGesture {
-            if media.videoURL != nil {
-                isShowingVideo = true
-            }
+            isShowingInstructions = true
         }
-        .sheet(isPresented: $isShowingVideo) {
-            if let videoURL = media.videoURL {
-                ExerciseVideoPlayerSheet(exerciseName: exercise.name, url: videoURL)
-            }
+        .sheet(isPresented: $isShowingInstructions) {
+            ExerciseInstructionSheet(exercise: exercise, media: media)
         }
     }
 
@@ -316,9 +321,8 @@ struct ExerciseIllustrationThumbnail: View {
             .frame(width: size * 0.44, height: size * 0.66)
             .offset(x: -size * 0.18)
 
-            Image(systemName: exercise.muscleGroup.iconName)
-                .font(.system(size: size * 0.26, weight: .semibold))
-                .foregroundStyle(Color.coachAccent)
+            MuscleGroupGlyph(group: exercise.muscleGroup)
+                .frame(width: size * 0.32, height: size * 0.32)
                 .offset(x: size * 0.20, y: -size * 0.10)
 
             Capsule()
@@ -335,54 +339,63 @@ struct ExerciseMediaStatusBadge: View {
 
     var body: some View {
         HStack(spacing: 5) {
-            Image(systemName: media.hasVideo ? "play.fill" : "video.slash")
+            Image(systemName: "list.bullet.rectangle")
                 .font(.caption2.weight(.bold))
 
-            Text(media.hasVideo ? "Video" : "Video coming soon")
+            Text("Instructions")
                 .font(.caption2.weight(.semibold))
                 .lineLimit(1)
                 .minimumScaleFactor(0.78)
         }
-        .foregroundStyle(media.hasVideo ? Color.black.opacity(0.86) : Color.coachSecondaryText)
+        .foregroundStyle(media.hasVideo ? Color.black.opacity(0.86) : Color.coachAccent)
         .padding(.horizontal, 8)
         .padding(.vertical, 4)
-        .background(media.hasVideo ? AnyShapeStyle(CoachGradient.accent) : AnyShapeStyle(Color.coachSurfaceElevated))
+        .background(media.hasVideo ? AnyShapeStyle(CoachGradient.accent) : AnyShapeStyle(Color.coachAccent.opacity(0.12)))
         .clipShape(Capsule())
     }
 }
 
-private struct ExerciseVideoPlayerSheet: View {
+private struct ExerciseInstructionSheet: View {
     @Environment(\.dismiss) private var dismiss
 
-    var exerciseName: String
-    var url: URL
+    var exercise: PlannedExercise
+    var media: ExerciseMediaAsset
 
     @State private var player: AVQueuePlayer?
     @State private var looper: AVPlayerLooper?
+
+    private var guidance: ExerciseGuidance {
+        ExerciseGuidanceLibrary.guidance(for: exercise.name, exercise: exercise)
+    }
 
     var body: some View {
         NavigationStack {
             ZStack {
                 CoachScreenBackground()
 
-                VStack(alignment: .leading, spacing: 16) {
-                    Text(exerciseName)
-                        .font(.title3.weight(.bold))
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text(exercise.name)
+                            .font(.title3.weight(.bold))
 
-                    VideoPlayer(player: player)
-                        .aspectRatio(1, contentMode: .fit)
-                        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                .stroke(Color.coachBorder, lineWidth: 1)
+                        if media.hasVideo {
+                            VideoPlayer(player: player)
+                                .aspectRatio(1, contentMode: .fit)
+                                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                        .stroke(Color.coachBorder, lineWidth: 1)
+                                }
+                        } else {
+                            ExerciseInstructionMuscleMapCard(exercise: exercise)
                         }
 
-                    Text("Instructional loop")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(Color.coachSecondaryText)
+                        ExerciseGuidanceView(guidance: guidance)
+                    }
+                    .padding()
+                    .padding(.bottom, 24)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
                 }
-                .padding()
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -398,6 +411,8 @@ private struct ExerciseVideoPlayerSheet: View {
     }
 
     private func startPlayback() {
+        guard let url = media.videoURL else { return }
+
         let queuePlayer = AVQueuePlayer()
         queuePlayer.isMuted = true
         let item = AVPlayerItem(url: url)
@@ -411,6 +426,325 @@ private struct ExerciseVideoPlayerSheet: View {
         player = nil
         looper = nil
     }
+}
+
+private struct ExerciseVideoMetaBadge: View {
+    var title: String
+    var systemImage: String
+
+    var body: some View {
+        Label(title, systemImage: systemImage)
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(Color.coachSecondaryText)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(Color.coachSurfaceElevated)
+            .clipShape(Capsule())
+            .overlay {
+                Capsule()
+                    .stroke(Color.coachBorder, lineWidth: 1)
+            }
+    }
+}
+
+private struct ExerciseInstructionMuscleMapCard: View {
+    var exercise: PlannedExercise
+
+    var body: some View {
+        HStack(spacing: 14) {
+            ExerciseMuscleTargetBadge(
+                exerciseName: exercise.name,
+                primary: exercise.primaryDetailedMuscle,
+                secondary: exercise.secondaryDetailedMuscle,
+                supporting: exercise.detailedMuscles
+            )
+            .frame(width: 104, height: 104)
+
+            VStack(alignment: .leading, spacing: 8) {
+                ExerciseVideoMetaBadge(title: "Instructions", systemImage: "list.bullet.rectangle")
+
+                Text("Target map")
+                    .font(.headline.weight(.semibold))
+                    .foregroundStyle(Color.coachAccent)
+
+                Text(exercise.specificMuscleSummary)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(Color.white.opacity(0.88))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Spacer(minLength: 0)
+        }
+        .padding(14)
+        .background(Color.coachSurfaceElevated)
+        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .stroke(Color.coachBorder, lineWidth: 1)
+        }
+    }
+}
+
+private struct ExerciseGuidanceView: View {
+    var guidance: ExerciseGuidance
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            ExerciseGuidanceStepsCard(steps: guidance.steps)
+
+            HStack(alignment: .top, spacing: 10) {
+                ExerciseGuidanceCallout(
+                    title: "Pro tip",
+                    message: guidance.proTip,
+                    systemImage: "sparkles",
+                    tint: Color.freshness(.ready)
+                )
+
+                ExerciseGuidanceCallout(
+                    title: "Avoid",
+                    message: guidance.avoid,
+                    systemImage: "exclamationmark.triangle.fill",
+                    tint: Color.coachWarm
+                )
+            }
+        }
+    }
+}
+
+private struct ExerciseGuidanceStepsCard: View {
+    var steps: [String]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Label("How to move", systemImage: "list.number")
+                .font(.headline.weight(.semibold))
+                .foregroundStyle(Color.coachAccent)
+
+            VStack(alignment: .leading, spacing: 10) {
+                ForEach(Array(steps.enumerated()), id: \.offset) { index, step in
+                    HStack(alignment: .top, spacing: 10) {
+                        Text("\(index + 1)")
+                            .font(.caption.weight(.bold))
+                            .foregroundStyle(Color.black.opacity(0.86))
+                            .frame(width: 22, height: 22)
+                            .background(CoachGradient.accent)
+                            .clipShape(Circle())
+
+                        Text(step)
+                            .font(.subheadline.weight(.medium))
+                            .foregroundStyle(Color.white.opacity(0.90))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
+        }
+        .padding(14)
+        .background(Color.coachSurfaceElevated)
+        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .stroke(Color.coachAccent.opacity(0.22), lineWidth: 1)
+        }
+    }
+}
+
+private struct ExerciseGuidanceCallout: View {
+    var title: String
+    var message: String
+    var systemImage: String
+    var tint: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label(title, systemImage: systemImage)
+                .font(.caption.weight(.bold))
+                .foregroundStyle(tint)
+
+            Text(message)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(Color.white.opacity(0.84))
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .padding(12)
+        .background(tint.opacity(0.12))
+        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .stroke(tint.opacity(0.24), lineWidth: 1)
+        }
+    }
+}
+
+private struct ExerciseGuidance: Hashable {
+    var steps: [String]
+    var proTip: String
+    var avoid: String
+}
+
+private enum ExerciseGuidanceLibrary {
+    static func guidance(for exerciseName: String, exercise: PlannedExercise) -> ExerciseGuidance {
+        guidanceByExerciseName[exerciseName] ?? ExerciseGuidance(
+            steps: [
+                "Set up at the \(exercise.station.rawValue.lowercased()) with \(exercise.equipment.rawValue.lowercased()) and brace before moving.",
+                exercise.kind == .stretch
+                    ? "Ease into the stretch until you feel the target area without forcing range."
+                    : "Move through a smooth controlled rep while keeping tension on \(exercise.primaryDetailedMuscle.rawValue.lowercased()).",
+                exercise.kind == .stretch
+                    ? "Breathe slowly, hold the position, then release back to the start under control."
+                    : "Return to the starting position under control before the next rep."
+            ],
+            proTip: "Keep the movement strict enough that \(exercise.primaryDetailedMuscle.rawValue.lowercased()) stays the main target.",
+            avoid: "Do not chase range by twisting, bouncing, or losing posture."
+        )
+    }
+
+    private static let guidanceByExerciseName: [String: ExerciseGuidance] = [
+        "Cable Chest Fly": ExerciseGuidance(
+            steps: [
+                "Set both pulleys around chest height and stand centered with a staggered stance.",
+                "Keep a soft bend in the elbows and bring the handles together in front of the chest.",
+                "Return slowly until the chest opens without letting the shoulders roll forward."
+            ],
+            proTip: "Think about hugging a wide barrel so the chest does the work.",
+            avoid: "Avoid locking the elbows or letting the cables pull your shoulders into a shrug."
+        ),
+        "Lat Pulldown": ExerciseGuidance(
+            steps: [
+                "Grip the bar slightly wider than shoulder width and sit tall with thighs secured.",
+                "Pull elbows down toward your ribs while keeping the chest lifted.",
+                "Control the bar back overhead until the arms are long without losing posture."
+            ],
+            proTip: "Start each rep by pulling the shoulder blades down before bending the elbows.",
+            avoid: "Avoid leaning far back or yanking the bar behind your neck."
+        ),
+        "Goblet Squat": ExerciseGuidance(
+            steps: [
+                "Hold one dumbbell close to the chest and set feet about shoulder width.",
+                "Sit hips down and back until thighs reach at least parallel.",
+                "Drive through the whole foot and stand tall with knees tracking over toes."
+            ],
+            proTip: "Keep elbows pointed down so the dumbbell stays close and your torso stays upright.",
+            avoid: "Avoid heels lifting, knees collapsing inward, or rounding the lower back."
+        ),
+        "Glute Bridge": ExerciseGuidance(
+            steps: [
+                "Lie on your back with knees bent, feet flat, and heels close to the glutes.",
+                "Press through both heels and lift hips until shoulders, hips, and knees align.",
+                "Squeeze briefly at the top, then lower the hips back to the mat with control."
+            ],
+            proTip: "Keep ribs down and pelvis neutral so the squeeze comes from the glutes.",
+            avoid: "Avoid arching the lower back or letting the knees cave inward."
+        ),
+        "Dumbbell Hip Thrust": ExerciseGuidance(
+            steps: [
+                "Set shoulder blades against the bench and hold the dumbbell across the hip crease.",
+                "Drive through the heels and lift until the torso is parallel to the floor.",
+                "Pause with glutes squeezed, then lower until the hips return near the floor."
+            ],
+            proTip: "Tuck the chin slightly and keep ribs down at the top.",
+            avoid: "Avoid overextending the lower back or letting the dumbbell shift."
+        ),
+        "Cable Glute Kickback": ExerciseGuidance(
+            steps: [
+                "Attach the ankle strap low and hold the cable machine lightly for balance.",
+                "Hinge forward slightly with hips square and the working leg under the hip.",
+                "Kick back by squeezing the glute, then return under control with cable tension."
+            ],
+            proTip: "Stop the kick before your low back arches; small clean range beats a high swing.",
+            avoid: "Avoid rotating the hips open, leaning sideways, or using momentum."
+        ),
+        "Side-Lying Hip Abduction": ExerciseGuidance(
+            steps: [
+                "Lie on your side with hips stacked and the top leg straight.",
+                "Point the top toes slightly down and lift the leg with the side glute.",
+                "Pause briefly, then lower without rolling your torso backward."
+            ],
+            proTip: "Keep the pelvis still; the top leg should move, not your whole body.",
+            avoid: "Avoid turning toes upward or kicking the leg forward."
+        ),
+        "Figure Four Glute Stretch": ExerciseGuidance(
+            steps: [
+                "Lie on your back with both knees bent and feet flat on the mat.",
+                "Cross one ankle over the opposite thigh just above the knee.",
+                "Pull the uncrossed thigh toward the chest until you feel a glute stretch."
+            ],
+            proTip: "Relax your head and shoulders so the stretch stays in the hip.",
+            avoid: "Avoid pulling directly on the knee or twisting the pelvis."
+        ),
+        "Romanian Deadlift": ExerciseGuidance(
+            steps: [
+                "Stand tall with dumbbells in front of the thighs and knees softly bent.",
+                "Push hips back and slide the dumbbells close down the legs.",
+                "Stop around mid-shin or at a hamstring stretch, then drive hips forward to stand."
+            ],
+            proTip: "Keep shins nearly vertical and think hips back, not knees forward.",
+            avoid: "Avoid rounding the back or letting the dumbbells drift away from your legs."
+        ),
+        "Dumbbell Reverse Lunge": ExerciseGuidance(
+            steps: [
+                "Stand tall with dumbbells at your sides and feet hip-width apart.",
+                "Step one leg back into a long lunge and lower with the front foot flat.",
+                "Push through the front heel and midfoot to return to the starting stance."
+            ],
+            proTip: "Keep the front knee tracking over the toes and the pelvis square.",
+            avoid: "Avoid a short step, knee collapse, or swinging the dumbbells."
+        ),
+        "Step-up": ExerciseGuidance(
+            steps: [
+                "Place one full foot on a stable box with the chest tall.",
+                "Drive through the foot on the box and stand all the way up.",
+                "Step down slowly to the exact starting position before repeating."
+            ],
+            proTip: "Make the top leg do the lift; the floor leg should not jump you up.",
+            avoid: "Avoid pushing hard off the back foot or letting the knee cave inward."
+        ),
+        "World's Greatest Stretch": ExerciseGuidance(
+            steps: [
+                "Start in a strong high plank with hands under shoulders.",
+                "Step one foot outside the same-side hand into a runner's lunge.",
+                "Lower the elbow toward the foot, rotate open, then return to plank."
+            ],
+            proTip: "Move slowly enough to keep the hips low and the spine long.",
+            avoid: "Avoid rushing the transition or collapsing into the shoulders."
+        ),
+        "Dumbbell Shoulder Press": ExerciseGuidance(
+            steps: [
+                "Start with dumbbells at shoulder height and wrists stacked over elbows.",
+                "Brace the core and press both dumbbells overhead until arms are long.",
+                "Lower to shoulder height with control before the next rep."
+            ],
+            proTip: "Keep ribs down so the press stays in the shoulders, not the lower back.",
+            avoid: "Avoid flaring the ribs, shrugging, or letting the dumbbells drift forward."
+        ),
+        "Biceps Curl": ExerciseGuidance(
+            steps: [
+                "Stand tall with dumbbells at your sides and palms facing forward.",
+                "Curl the weights by bending the elbows while keeping upper arms still.",
+                "Squeeze at the top, then lower fully with control."
+            ],
+            proTip: "Control the lowering phase; that is where a lot of the training effect happens.",
+            avoid: "Avoid swinging the torso or letting elbows travel far forward."
+        ),
+        "Triceps Pressdown": ExerciseGuidance(
+            steps: [
+                "Stand tall at the cable stack with elbows pinned near your ribs.",
+                "Press the handle down until elbows fully extend without locking aggressively.",
+                "Return to about forearm-parallel while keeping the upper arms still."
+            ],
+            proTip: "Imagine pushing the handle through the floor while shoulders stay relaxed.",
+            avoid: "Avoid leaning your body weight into the cable or letting elbows flare."
+        ),
+        "Plank": ExerciseGuidance(
+            steps: [
+                "Set elbows under shoulders and extend legs with feet about hip-width.",
+                "Brace abs and glutes so the body forms a straight line.",
+                "Hold steady while breathing slowly through the full interval."
+            ],
+            proTip: "Push the floor away slightly to keep the upper back active.",
+            avoid: "Avoid sagging hips, hiking hips high, or holding your breath."
+        )
+    ]
 }
 
 enum MuscleMapOrientation {
@@ -517,6 +851,8 @@ struct ExerciseMuscleTargetBadge: View {
     var secondary: DetailedMuscleGroup?
     var supporting: [DetailedMuscleGroup] = []
 
+    @State private var isShowingExpandedMap = false
+
     private var targetImage: UIImage? {
         guard let assetName = ExerciseMuscleTargetLibrary.assetName(
             for: exerciseName,
@@ -529,22 +865,6 @@ struct ExerciseMuscleTargetBadge: View {
     }
 
     var body: some View {
-        if let targetImage {
-            GeneratedMuscleTargetBadge(image: targetImage)
-        } else {
-            FocusedMuscleImpactMap(
-                primary: primary,
-                secondary: secondary,
-                supporting: supporting
-            )
-        }
-    }
-}
-
-private struct GeneratedMuscleTargetBadge: View {
-    var image: UIImage
-
-    var body: some View {
         GeometryReader { proxy in
             let diameter = min(proxy.size.width, proxy.size.height)
 
@@ -552,10 +872,19 @@ private struct GeneratedMuscleTargetBadge: View {
                 Circle()
                     .fill(Color.coachSurfaceElevated)
 
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: diameter, height: diameter)
+                if let targetImage {
+                    Image(uiImage: targetImage)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: diameter, height: diameter)
+                } else {
+                    MuscleImpactPairMap(
+                        primary: primary,
+                        secondary: secondary,
+                        supporting: supporting
+                    )
+                    .padding(diameter * 0.14)
+                }
             }
             .frame(width: diameter, height: diameter)
             .clipShape(Circle())
@@ -565,8 +894,347 @@ private struct GeneratedMuscleTargetBadge: View {
             }
             .shadow(color: Color.black.opacity(0.18), radius: 8, y: 4)
             .frame(width: proxy.size.width, height: proxy.size.height)
+            .contentShape(Rectangle())
+            .onTapGesture {
+                isShowingExpandedMap = true
+            }
+        }
+        .accessibilityLabel("Open muscle diagram for \(exerciseName)")
+        .accessibilityHint("Shows a larger front and back muscle map")
+        .accessibilityAddTraits(.isButton)
+        .sheet(isPresented: $isShowingExpandedMap) {
+            ExerciseMuscleTargetSheet(
+                exerciseName: exerciseName,
+                primary: primary,
+                secondary: secondary,
+                supporting: supporting,
+                targetImage: targetImage
+            )
+            .presentationDetents([.large])
+            .presentationDragIndicator(.visible)
+        }
+    }
+}
+
+private struct ExerciseMuscleTargetSheet: View {
+    @Environment(\.dismiss) private var dismiss
+
+    var exerciseName: String
+    var primary: DetailedMuscleGroup
+    var secondary: DetailedMuscleGroup?
+    var supporting: [DetailedMuscleGroup]
+    var targetImage: UIImage?
+
+    private var uniqueSupportingMuscles: [DetailedMuscleGroup] {
+        supporting.reduce(into: [DetailedMuscleGroup]()) { muscles, muscle in
+            let isPrimary = muscle == primary
+            let isSecondary = secondary.map { $0 == muscle } ?? false
+
+            if !isPrimary && !isSecondary && !muscles.contains(muscle) {
+                muscles.append(muscle)
+            }
+        }
+    }
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                CoachScreenBackground()
+
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 18) {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(exerciseName)
+                                .font(.title2.weight(.bold))
+                                .lineLimit(2)
+
+                            Text("Target muscles")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(Color.coachSecondaryText)
+                        }
+
+                        expandedMap
+
+                        VStack(alignment: .leading, spacing: 10) {
+                            MuscleTargetLegendRow(title: "Primary", muscle: primary, opacity: 1.0)
+
+                            if let secondary {
+                                MuscleTargetLegendRow(title: "Secondary", muscle: secondary, opacity: 0.64)
+                            }
+
+                            ForEach(uniqueSupportingMuscles) { muscle in
+                                MuscleTargetLegendRow(title: "Supporting", muscle: muscle, opacity: 0.34)
+                            }
+                        }
+                    }
+                    .padding()
+                    .padding(.bottom, 24)
+                }
+            }
+            .navigationTitle("Muscle Map")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Close") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+
+    private var expandedMap: some View {
+        Group {
+            if let targetImage {
+                GeneratedMuscleTargetExpandedCard(image: targetImage)
+            } else {
+                VStack(spacing: 12) {
+                    LargeMuscleMapPanel(
+                        title: "Front",
+                        primary: primary,
+                        secondary: secondary,
+                        supporting: supporting,
+                        orientation: .front
+                    )
+
+                    LargeMuscleMapPanel(
+                        title: "Back",
+                        primary: primary,
+                        secondary: secondary,
+                        supporting: supporting,
+                        orientation: .back
+                    )
+                }
+            }
+        }
+    }
+}
+
+private struct GeneratedMuscleTargetExpandedCard: View {
+    var image: UIImage
+
+    var body: some View {
+        CoachCard(padding: 14) {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFit()
+                .frame(maxWidth: .infinity)
+                .frame(minHeight: 430)
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        }
+    }
+}
+
+private struct LargeMuscleMapPanel: View {
+    var title: String
+    var primary: DetailedMuscleGroup
+    var secondary: DetailedMuscleGroup?
+    var supporting: [DetailedMuscleGroup]
+    var orientation: MuscleMapOrientation
+
+    var body: some View {
+        CoachCard(padding: 14) {
+            VStack(alignment: .leading, spacing: 10) {
+                Label(title, systemImage: "figure.stand")
+                    .font(.headline.weight(.semibold))
+                    .foregroundStyle(Color.coachAccent)
+
+                MuscleImpactMap(
+                    primary: primary,
+                    secondary: secondary,
+                    supporting: supporting,
+                    orientation: orientation
+                )
+                .padding(.horizontal, 32)
+                .padding(.vertical, 12)
+                .frame(maxWidth: .infinity)
+                .frame(height: 430)
+            }
+        }
+    }
+}
+
+private struct MuscleTargetLegendRow: View {
+    var title: String
+    var muscle: DetailedMuscleGroup
+    var opacity: Double
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Circle()
+                .fill(Color.coachAccent.opacity(opacity))
+                .frame(width: 12, height: 12)
+
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Color.coachSecondaryText)
+                .frame(width: 86, alignment: .leading)
+
+            Text(muscle.rawValue)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.primary)
+
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .background(Color.coachSurfaceElevated)
+        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .stroke(Color.coachBorder, lineWidth: 1)
+        }
+    }
+}
+
+struct MuscleGroupGlyph: View {
+    var group: MuscleGroup
+
+    var body: some View {
+        GeometryReader { proxy in
+            let size = min(proxy.size.width, proxy.size.height)
+
+            ZStack {
+                MiniBodyBase()
+                    .stroke(Color.coachSecondaryText, lineWidth: max(1, size * 0.065))
+                    .opacity(0.78)
+
+                glyphHighlight
+            }
+            .frame(width: size, height: size)
+            .frame(width: proxy.size.width, height: proxy.size.height)
         }
         .accessibilityHidden(true)
+    }
+
+    @ViewBuilder
+    private var glyphHighlight: some View {
+        switch group {
+        case .chest:
+            ChestGlyphHighlight()
+                .fill(Color.coachAccent)
+        case .back:
+            BackGlyphHighlight()
+                .fill(Color.coachAccent)
+        case .legs:
+            LegsGlyphHighlight()
+                .fill(Color.coachAccent)
+        case .glutes:
+            GlutesGlyphHighlight()
+                .fill(Color.coachAccent)
+        case .shoulders:
+            ShouldersGlyphHighlight()
+                .fill(Color.coachAccent)
+        case .biceps:
+            BicepsGlyphHighlight()
+                .fill(Color.coachAccent)
+        case .triceps:
+            TricepsGlyphHighlight()
+                .fill(Color.coachAccent)
+        case .core:
+            CoreGlyphHighlight()
+                .fill(Color.coachAccent)
+        }
+    }
+}
+
+private struct MiniBodyBase: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        let w = rect.width
+        let h = rect.height
+        let x = rect.minX
+        let y = rect.minY
+
+        path.addEllipse(in: CGRect(x: x + w * 0.40, y: y + h * 0.06, width: w * 0.20, height: h * 0.18))
+        path.addRoundedRect(in: CGRect(x: x + w * 0.32, y: y + h * 0.27, width: w * 0.36, height: h * 0.34), cornerSize: CGSize(width: w * 0.10, height: h * 0.10))
+
+        path.move(to: CGPoint(x: x + w * 0.32, y: y + h * 0.34))
+        path.addLine(to: CGPoint(x: x + w * 0.16, y: y + h * 0.58))
+        path.move(to: CGPoint(x: x + w * 0.68, y: y + h * 0.34))
+        path.addLine(to: CGPoint(x: x + w * 0.84, y: y + h * 0.58))
+
+        path.move(to: CGPoint(x: x + w * 0.42, y: y + h * 0.60))
+        path.addLine(to: CGPoint(x: x + w * 0.34, y: y + h * 0.92))
+        path.move(to: CGPoint(x: x + w * 0.58, y: y + h * 0.60))
+        path.addLine(to: CGPoint(x: x + w * 0.66, y: y + h * 0.92))
+
+        return path
+    }
+}
+
+private struct ChestGlyphHighlight: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.addRoundedRect(in: CGRect(x: rect.minX + rect.width * 0.35, y: rect.minY + rect.height * 0.32, width: rect.width * 0.13, height: rect.height * 0.12), cornerSize: CGSize(width: rect.width * 0.04, height: rect.height * 0.04))
+        path.addRoundedRect(in: CGRect(x: rect.minX + rect.width * 0.52, y: rect.minY + rect.height * 0.32, width: rect.width * 0.13, height: rect.height * 0.12), cornerSize: CGSize(width: rect.width * 0.04, height: rect.height * 0.04))
+        return path
+    }
+}
+
+private struct BackGlyphHighlight: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.move(to: CGPoint(x: rect.minX + rect.width * 0.35, y: rect.minY + rect.height * 0.32))
+        path.addLine(to: CGPoint(x: rect.minX + rect.width * 0.48, y: rect.minY + rect.height * 0.56))
+        path.addLine(to: CGPoint(x: rect.minX + rect.width * 0.32, y: rect.minY + rect.height * 0.54))
+        path.closeSubpath()
+        path.move(to: CGPoint(x: rect.minX + rect.width * 0.65, y: rect.minY + rect.height * 0.32))
+        path.addLine(to: CGPoint(x: rect.minX + rect.width * 0.52, y: rect.minY + rect.height * 0.56))
+        path.addLine(to: CGPoint(x: rect.minX + rect.width * 0.68, y: rect.minY + rect.height * 0.54))
+        path.closeSubpath()
+        return path
+    }
+}
+
+private struct LegsGlyphHighlight: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.addRoundedRect(in: CGRect(x: rect.minX + rect.width * 0.34, y: rect.minY + rect.height * 0.62, width: rect.width * 0.12, height: rect.height * 0.30), cornerSize: CGSize(width: rect.width * 0.05, height: rect.height * 0.05))
+        path.addRoundedRect(in: CGRect(x: rect.minX + rect.width * 0.54, y: rect.minY + rect.height * 0.62, width: rect.width * 0.12, height: rect.height * 0.30), cornerSize: CGSize(width: rect.width * 0.05, height: rect.height * 0.05))
+        return path
+    }
+}
+
+private struct GlutesGlyphHighlight: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.addEllipse(in: CGRect(x: rect.minX + rect.width * 0.34, y: rect.minY + rect.height * 0.52, width: rect.width * 0.15, height: rect.height * 0.14))
+        path.addEllipse(in: CGRect(x: rect.minX + rect.width * 0.51, y: rect.minY + rect.height * 0.52, width: rect.width * 0.15, height: rect.height * 0.14))
+        return path
+    }
+}
+
+private struct ShouldersGlyphHighlight: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.addEllipse(in: CGRect(x: rect.minX + rect.width * 0.25, y: rect.minY + rect.height * 0.28, width: rect.width * 0.16, height: rect.height * 0.14))
+        path.addEllipse(in: CGRect(x: rect.minX + rect.width * 0.59, y: rect.minY + rect.height * 0.28, width: rect.width * 0.16, height: rect.height * 0.14))
+        return path
+    }
+}
+
+private struct BicepsGlyphHighlight: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.addRoundedRect(in: CGRect(x: rect.minX + rect.width * 0.18, y: rect.minY + rect.height * 0.40, width: rect.width * 0.12, height: rect.height * 0.20), cornerSize: CGSize(width: rect.width * 0.05, height: rect.height * 0.05))
+        path.addRoundedRect(in: CGRect(x: rect.minX + rect.width * 0.70, y: rect.minY + rect.height * 0.40, width: rect.width * 0.12, height: rect.height * 0.20), cornerSize: CGSize(width: rect.width * 0.05, height: rect.height * 0.05))
+        return path
+    }
+}
+
+private struct TricepsGlyphHighlight: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.addRoundedRect(in: CGRect(x: rect.minX + rect.width * 0.14, y: rect.minY + rect.height * 0.46, width: rect.width * 0.10, height: rect.height * 0.22), cornerSize: CGSize(width: rect.width * 0.05, height: rect.height * 0.05))
+        path.addRoundedRect(in: CGRect(x: rect.minX + rect.width * 0.76, y: rect.minY + rect.height * 0.46, width: rect.width * 0.10, height: rect.height * 0.22), cornerSize: CGSize(width: rect.width * 0.05, height: rect.height * 0.05))
+        return path
+    }
+}
+
+private struct CoreGlyphHighlight: Shape {
+    func path(in rect: CGRect) -> Path {
+        Path(roundedRect: CGRect(x: rect.minX + rect.width * 0.42, y: rect.minY + rect.height * 0.43, width: rect.width * 0.16, height: rect.height * 0.20), cornerRadius: rect.width * 0.04)
     }
 }
 

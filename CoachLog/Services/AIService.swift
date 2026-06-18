@@ -3,6 +3,7 @@ import Foundation
 enum AICoachPreferenceKeys {
     static let isPremiumEnabled = "coachlog.aiPremium.isEnabled"
     static let endpointURL = "coachlog.aiPremium.endpointURL"
+    static let defaultEndpointURL = "https://aicoach-foes5b5rkq-uc.a.run.app"
 }
 
 protocol AIService {
@@ -108,8 +109,11 @@ struct PremiumCoachService: AIService {
     }
 
     private func remoteMessage(for request: AICoachAPIRequest) async -> String? {
+        let storedEndpoint = defaults.string(forKey: AICoachPreferenceKeys.endpointURL) ?? ""
+        let endpointString = storedEndpoint.isEmpty ? AICoachPreferenceKeys.defaultEndpointURL : storedEndpoint
+
         guard defaults.bool(forKey: AICoachPreferenceKeys.isPremiumEnabled),
-              let endpointURL = URL(string: defaults.string(forKey: AICoachPreferenceKeys.endpointURL) ?? ""),
+              let endpointURL = URL(string: endpointString),
               endpointURL.scheme?.hasPrefix("http") == true else {
             return nil
         }

@@ -32,7 +32,6 @@ struct ExerciseLibraryView: View {
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
-                        header
                         searchCard
                         filters
                         libraryList
@@ -45,40 +44,19 @@ struct ExerciseLibraryView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color.coachBackground, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        isShowingAddExercise = true
+                    } label: {
+                        Image(systemName: "plus")
+                            .font(.headline.weight(.semibold))
+                    }
+                    .accessibilityLabel("Add custom exercise")
+                }
+            }
             .sheet(isPresented: $isShowingAddExercise) {
                 AddCustomExerciseView()
-            }
-        }
-    }
-
-    private var header: some View {
-        CoachCard {
-            HStack(spacing: 12) {
-                Image(systemName: "list.bullet.rectangle")
-                    .font(.title2.weight(.semibold))
-                    .foregroundStyle(Color.coachAccent)
-                    .frame(width: 34)
-
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Exercise Library")
-                        .font(.title3.weight(.bold))
-
-                    Text("\(exercises.count) movements · \(exercises.filter(\.isCustom).count) custom")
-                        .font(.subheadline)
-                        .foregroundStyle(Color.coachSecondaryText)
-                }
-
-                Spacer()
-
-                Button {
-                    isShowingAddExercise = true
-                } label: {
-                    Image(systemName: "plus")
-                        .font(.headline)
-                        .frame(width: 38, height: 38)
-                }
-                .buttonStyle(CoachSecondaryButtonStyle())
-                .accessibilityLabel("Add custom exercise")
             }
         }
     }
@@ -107,24 +85,34 @@ struct ExerciseLibraryView: View {
     }
 
     private var filters: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            horizontalFilters(
-                title: "Type",
-                allTitle: "All",
-                values: ExerciseKind.allCases,
-                selection: $selectedKind,
-                label: \.rawValue,
-                icon: \.iconName
-            )
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 8) {
+                kindFilterButton(title: "All", iconName: "line.3.horizontal.decrease.circle", isSelected: selectedKind == nil) {
+                    selectedKind = nil
+                }
 
-            horizontalFilters(
-                title: "Muscle",
-                allTitle: "All muscles",
-                values: MuscleGroup.dashboardGroups,
-                selection: $selectedGroup,
-                label: \.rawValue,
-                icon: \.iconName
-            )
+                ForEach(ExerciseKind.allCases) { kind in
+                    kindFilterButton(title: kind.rawValue, iconName: kind.iconName, isSelected: selectedKind == kind) {
+                        selectedKind = kind
+                    }
+                }
+            }
+
+            LazyVGrid(
+                columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 5),
+                alignment: .leading,
+                spacing: 8
+            ) {
+                muscleFilterButton(title: "All", group: nil, isSelected: selectedGroup == nil) {
+                    selectedGroup = nil
+                }
+
+                ForEach(MuscleGroup.dashboardGroups) { group in
+                    muscleFilterButton(title: group.rawValue, group: group, isSelected: selectedGroup == group) {
+                        selectedGroup = group
+                    }
+                }
+            }
         }
     }
 
@@ -157,36 +145,7 @@ struct ExerciseLibraryView: View {
         .animation(CoachMotion.content, value: filteredExercises.map(\.id))
     }
 
-    private func horizontalFilters<Value: Identifiable & Hashable>(
-        title: String,
-        allTitle: String,
-        values: [Value],
-        selection: Binding<Value?>,
-        label: KeyPath<Value, String>,
-        icon: KeyPath<Value, String>
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(title)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(Color.coachSecondaryText)
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    filterButton(title: allTitle, iconName: "line.3.horizontal.decrease.circle", isSelected: selection.wrappedValue == nil) {
-                        selection.wrappedValue = nil
-                    }
-
-                    ForEach(values) { value in
-                        filterButton(title: value[keyPath: label], iconName: value[keyPath: icon], isSelected: selection.wrappedValue == value) {
-                            selection.wrappedValue = value
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private func filterButton(
+    private func kindFilterButton(
         title: String,
         iconName: String,
         isSelected: Bool,
@@ -196,10 +155,40 @@ struct ExerciseLibraryView: View {
             Label(title, systemImage: iconName)
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(isSelected ? Color.black.opacity(0.88) : Color.coachSecondaryText)
-                .padding(.horizontal, 10)
+                .frame(maxWidth: .infinity)
                 .padding(.vertical, 8)
                 .background(isSelected ? AnyShapeStyle(CoachGradient.accent) : AnyShapeStyle(Color.coachSurfaceElevated))
                 .clipShape(Capsule())
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func muscleFilterButton(
+        title: String,
+        group: MuscleGroup?,
+        isSelected: Bool,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            VStack(spacing: 4) {
+                if let group {
+                    MuscleGroupGlyph(group: group)
+                        .frame(width: 18, height: 18)
+                } else {
+                    Image(systemName: "line.3.horizontal.decrease.circle")
+                        .font(.caption.weight(.semibold))
+                }
+
+                Text(title)
+                    .font(.system(size: 11, weight: .semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.68)
+            }
+            .foregroundStyle(isSelected ? Color.black.opacity(0.88) : Color.coachSecondaryText)
+            .frame(maxWidth: .infinity)
+            .frame(height: 48)
+            .background(isSelected ? AnyShapeStyle(CoachGradient.accent) : AnyShapeStyle(Color.coachSurfaceElevated))
+            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         }
         .buttonStyle(.plain)
     }
@@ -230,17 +219,23 @@ struct ExerciseLibraryRow: View {
         ExerciseMediaLibrary.media(for: exercise.name)
     }
 
-    var body: some View {
-        CoachCard {
-            HStack(spacing: 12) {
-                ExerciseIllustrationThumbnail(exercise: previewExercise, size: 62)
+    private var hasMediaPreview: Bool {
+        media.imageAssetName != nil || media.hasVideo
+    }
 
-                VStack(alignment: .leading, spacing: 7) {
+    var body: some View {
+        CoachCard(padding: 12) {
+            HStack(alignment: .top, spacing: 10) {
+                if hasMediaPreview {
+                    ExerciseIllustrationThumbnail(exercise: previewExercise, size: 58)
+                }
+
+                VStack(alignment: .leading, spacing: 6) {
                     HStack(spacing: 6) {
                         Text(exercise.name)
                             .font(.headline)
                             .foregroundStyle(.primary)
-                            .lineLimit(1)
+                            .lineLimit(2)
                             .minimumScaleFactor(0.78)
 
                         if exercise.isCustom {
@@ -263,8 +258,8 @@ struct ExerciseLibraryRow: View {
                     DetailedMuscleTagRow(primary: exercise.primaryDetailedMuscle, secondary: exercise.secondaryDetailedMuscle)
                     ExerciseMediaStatusBadge(media: media)
                 }
-
-                Spacer(minLength: 4)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .layoutPriority(1)
 
                 ExerciseMuscleTargetBadge(
                     exerciseName: exercise.name,
@@ -272,7 +267,10 @@ struct ExerciseLibraryRow: View {
                     secondary: exercise.secondaryDetailedMuscle,
                     supporting: exercise.detailedMuscles
                 )
-                .frame(width: 70, height: 70)
+                .frame(
+                    width: hasMediaPreview ? 64 : 82,
+                    height: hasMediaPreview ? 64 : 82
+                )
             }
         }
     }

@@ -436,12 +436,16 @@ struct SettingsView: View {
     }
 
     private var isAIEndpointConfigured: Bool {
-        guard let url = URL(string: aiCoachEndpointURL),
+        guard let url = URL(string: effectiveAIEndpointURL),
               let scheme = url.scheme else {
             return false
         }
 
         return scheme == "https" || scheme == "http"
+    }
+
+    private var effectiveAIEndpointURL: String {
+        aiCoachEndpointURL.isEmpty ? AICoachPreferenceKeys.defaultEndpointURL : aiCoachEndpointURL
     }
 
     private var aiPremiumStatusText: String {

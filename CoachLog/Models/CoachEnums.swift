@@ -240,13 +240,13 @@ enum MuscleGroup: String, CaseIterable, Codable, Identifiable {
 
     var iconName: String {
         switch self {
-        case .chest: "lungs"
-        case .back: "figure.rower"
+        case .chest: "figure.arms.open"
+        case .back: "figure.strengthtraining.traditional"
         case .legs: "figure.walk"
         case .glutes: "figure.stair.stepper"
         case .shoulders: "figure.strengthtraining.functional"
-        case .biceps: "figure.strengthtraining.traditional"
-        case .triceps: "figure.boxing"
+        case .biceps: "dumbbell"
+        case .triceps: "figure.strengthtraining.traditional"
         case .core: "figure.core.training"
         }
     }

@@ -59,7 +59,6 @@
 		8B0000000000000000000409 /* exercise-dumbbell-hip-thrust.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000419 /* exercise-dumbbell-hip-thrust.mp4 */; };
 		8B000000000000000000040A /* exercise-cable-glute-kickback.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B000000000000000000041A /* exercise-cable-glute-kickback.mp4 */; };
 		8B000000000000000000040B /* exercise-side-lying-hip-abduction.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B000000000000000000041B /* exercise-side-lying-hip-abduction.mp4 */; };
-		8B000000000000000000040C /* exercise-figure-four-glute-stretch.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B000000000000000000041C /* exercise-figure-four-glute-stretch.mp4 */; };
 		8B0000000000000000000421 /* exercise-romanian-deadlift.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B000000000000000000041D /* exercise-romanian-deadlift.mp4 */; };
 		8B0000000000000000000422 /* exercise-dumbbell-reverse-lunge.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B000000000000000000041E /* exercise-dumbbell-reverse-lunge.mp4 */; };
 		8B0000000000000000000423 /* exercise-step-up.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B000000000000000000041F /* exercise-step-up.mp4 */; };
@@ -124,7 +123,6 @@
 		8B0000000000000000000419 /* exercise-dumbbell-hip-thrust.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "exercise-dumbbell-hip-thrust.mp4"; sourceTree = "<group>"; };
 		8B000000000000000000041A /* exercise-cable-glute-kickback.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "exercise-cable-glute-kickback.mp4"; sourceTree = "<group>"; };
 		8B000000000000000000041B /* exercise-side-lying-hip-abduction.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "exercise-side-lying-hip-abduction.mp4"; sourceTree = "<group>"; };
-		8B000000000000000000041C /* exercise-figure-four-glute-stretch.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "exercise-figure-four-glute-stretch.mp4"; sourceTree = "<group>"; };
 		8B000000000000000000041D /* exercise-romanian-deadlift.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "exercise-romanian-deadlift.mp4"; sourceTree = "<group>"; };
 		8B000000000000000000041E /* exercise-dumbbell-reverse-lunge.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "exercise-dumbbell-reverse-lunge.mp4"; sourceTree = "<group>"; };
 		8B000000000000000000041F /* exercise-step-up.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "exercise-step-up.mp4"; sourceTree = "<group>"; };
@@ -192,7 +190,6 @@
 				8B0000000000000000000419 /* exercise-dumbbell-hip-thrust.mp4 */,
 				8B000000000000000000041A /* exercise-cable-glute-kickback.mp4 */,
 				8B000000000000000000041B /* exercise-side-lying-hip-abduction.mp4 */,
-				8B000000000000000000041C /* exercise-figure-four-glute-stretch.mp4 */,
 				8B000000000000000000041D /* exercise-romanian-deadlift.mp4 */,
 				8B000000000000000000041E /* exercise-dumbbell-reverse-lunge.mp4 */,
 				8B000000000000000000041F /* exercise-step-up.mp4 */,
@@ -350,7 +347,6 @@
 				8B0000000000000000000409 /* exercise-dumbbell-hip-thrust.mp4 in Resources */,
 				8B000000000000000000040A /* exercise-cable-glute-kickback.mp4 in Resources */,
 				8B000000000000000000040B /* exercise-side-lying-hip-abduction.mp4 in Resources */,
-				8B000000000000000000040C /* exercise-figure-four-glute-stretch.mp4 in Resources */,
 				8B0000000000000000000421 /* exercise-romanian-deadlift.mp4 in Resources */,
 				8B0000000000000000000422 /* exercise-dumbbell-reverse-lunge.mp4 in Resources */,
 				8B0000000000000000000423 /* exercise-step-up.mp4 in Resources */,
