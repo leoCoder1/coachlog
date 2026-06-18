@@ -215,20 +215,20 @@ struct ExerciseLibraryRow: View {
         )
     }
 
-    private var media: ExerciseMediaAsset {
-        ExerciseMediaLibrary.media(for: exercise.name)
-    }
-
-    private var hasMediaPreview: Bool {
-        media.imageAssetName != nil || media.hasVideo
-    }
-
     var body: some View {
         CoachCard(padding: 12) {
             HStack(alignment: .top, spacing: 10) {
-                if hasMediaPreview {
+                VStack(spacing: 4) {
                     ExerciseIllustrationThumbnail(exercise: previewExercise, size: 58)
+
+                    Text("Click for Instructions")
+                        .font(.system(size: 9, weight: .semibold))
+                        .foregroundStyle(Color.coachTertiaryText)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
+                .frame(width: 72)
 
                 VStack(alignment: .leading, spacing: 6) {
                     HStack(spacing: 6) {
@@ -254,9 +254,12 @@ struct ExerciseLibraryRow: View {
                         .foregroundStyle(Color.coachSecondaryText)
                         .lineLimit(1)
 
-                    MuscleChipRow(groups: [exercise.primaryMuscleGroup] + exercise.secondaryMuscleGroups)
-                    DetailedMuscleTagRow(primary: exercise.primaryDetailedMuscle, secondary: exercise.secondaryDetailedMuscle)
-                    ExerciseMediaStatusBadge(media: media)
+                    ExerciseMuscleChipRow(
+                        groups: [exercise.primaryMuscleGroup] + exercise.secondaryMuscleGroups,
+                        primary: exercise.primaryDetailedMuscle,
+                        secondary: exercise.secondaryDetailedMuscle,
+                        supporting: exercise.detailedMuscles
+                    )
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .layoutPriority(1)
@@ -268,8 +271,8 @@ struct ExerciseLibraryRow: View {
                     supporting: exercise.detailedMuscles
                 )
                 .frame(
-                    width: hasMediaPreview ? 64 : 82,
-                    height: hasMediaPreview ? 64 : 82
+                    width: 64,
+                    height: 64
                 )
             }
         }

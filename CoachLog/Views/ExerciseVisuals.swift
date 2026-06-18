@@ -29,6 +29,14 @@ enum ExerciseMediaLibrary {
     ]
 
     private static let mediaByExerciseName: [String: ExerciseMediaAsset] = [
+        "Push-ups": ExerciseMediaAsset(
+            imageAssetName: "exercise-push-ups",
+            videoResourceName: nil
+        ),
+        "Dumbbell Bench Press": ExerciseMediaAsset(
+            imageAssetName: "exercise-dumbbell-bench-press",
+            videoResourceName: nil
+        ),
         "Cable Chest Fly": ExerciseMediaAsset(
             imageAssetName: "exercise-cable-chest-fly",
             videoResourceName: "exercise-cable-chest-fly"
@@ -36,6 +44,14 @@ enum ExerciseMediaLibrary {
         "Lat Pulldown": ExerciseMediaAsset(
             imageAssetName: "exercise-lat-pulldown",
             videoResourceName: "exercise-lat-pulldown"
+        ),
+        "Seated Row": ExerciseMediaAsset(
+            imageAssetName: "exercise-seated-row",
+            videoResourceName: nil
+        ),
+        "Assisted Pull-up": ExerciseMediaAsset(
+            imageAssetName: "exercise-assisted-pull-up",
+            videoResourceName: nil
         ),
         "Goblet Squat": ExerciseMediaAsset(
             imageAssetName: "exercise-goblet-squat",
@@ -65,6 +81,14 @@ enum ExerciseMediaLibrary {
             imageAssetName: "exercise-romanian-deadlift",
             videoResourceName: "exercise-romanian-deadlift"
         ),
+        "Leg Press": ExerciseMediaAsset(
+            imageAssetName: "exercise-leg-press",
+            videoResourceName: nil
+        ),
+        "Seated Leg Curl": ExerciseMediaAsset(
+            imageAssetName: "exercise-seated-leg-curl",
+            videoResourceName: nil
+        ),
         "Dumbbell Reverse Lunge": ExerciseMediaAsset(
             imageAssetName: "exercise-dumbbell-reverse-lunge",
             videoResourceName: "exercise-dumbbell-reverse-lunge"
@@ -81,6 +105,10 @@ enum ExerciseMediaLibrary {
             imageAssetName: "exercise-dumbbell-shoulder-press",
             videoResourceName: "exercise-dumbbell-shoulder-press"
         ),
+        "Dumbbell Lateral Raise": ExerciseMediaAsset(
+            imageAssetName: "exercise-dumbbell-lateral-raise",
+            videoResourceName: nil
+        ),
         "Biceps Curl": ExerciseMediaAsset(
             imageAssetName: "exercise-biceps-curl",
             videoResourceName: "exercise-biceps-curl"
@@ -92,11 +120,176 @@ enum ExerciseMediaLibrary {
         "Plank": ExerciseMediaAsset(
             imageAssetName: "exercise-plank",
             videoResourceName: "exercise-plank"
+        ),
+        "Dead Bug": ExerciseMediaAsset(
+            imageAssetName: "exercise-dead-bug",
+            videoResourceName: nil
+        ),
+        "Doorway Chest Stretch": ExerciseMediaAsset(
+            imageAssetName: "exercise-doorway-chest-stretch",
+            videoResourceName: nil
+        ),
+        "Calf Raise": ExerciseMediaAsset(
+            imageAssetName: "exercise-calf-raise",
+            videoResourceName: nil
+        ),
+        "Jog, side shuffle, back pedal": ExerciseMediaAsset(
+            imageAssetName: "exercise-jog-side-shuffle-back-pedal",
+            videoResourceName: nil
+        ),
+        "Arm circles to scapular hugs": ExerciseMediaAsset(
+            imageAssetName: "exercise-arm-circles-to-scapular-hugs",
+            videoResourceName: nil
+        ),
+        "Front and lateral leg swings": ExerciseMediaAsset(
+            imageAssetName: "exercise-front-and-lateral-leg-swings",
+            videoResourceName: nil
+        ),
+        "Walking lunge, reach, calf raise": ExerciseMediaAsset(
+            imageAssetName: "exercise-walking-lunge-reach-calf-raise",
+            videoResourceName: nil
+        ),
+        "High knees, butt kicks, pogo hops": ExerciseMediaAsset(
+            imageAssetName: "exercise-high-knees-butt-kicks-pogo-hops",
+            videoResourceName: nil
+        ),
+        "Slow walk with nasal breathing": ExerciseMediaAsset(
+            imageAssetName: "exercise-slow-walk-with-nasal-breathing",
+            videoResourceName: nil
+        ),
+        "Calf Wall Stretch": ExerciseMediaAsset(
+            imageAssetName: "exercise-calf-wall-stretch",
+            videoResourceName: nil
+        ),
+        "Half-kneeling hip flexor and quad": ExerciseMediaAsset(
+            imageAssetName: "exercise-half-kneeling-hip-flexor-and-quad",
+            videoResourceName: nil
+        ),
+        "Seated Hamstring Stretch": ExerciseMediaAsset(
+            imageAssetName: "exercise-seated-hamstring-stretch",
+            videoResourceName: nil
+        ),
+        "Child's Pose": ExerciseMediaAsset(
+            imageAssetName: "exercise-childs-pose",
+            videoResourceName: nil
+        ),
+        "Cross-Body Shoulder Stretch": ExerciseMediaAsset(
+            imageAssetName: "exercise-cross-body-shoulder-stretch",
+            videoResourceName: nil
+        ),
+        "Forearm flexor and extensor stretch": ExerciseMediaAsset(
+            imageAssetName: "exercise-forearm-flexor-and-extensor-stretch",
+            videoResourceName: nil
+        ),
+        "Medicine ball rotational throw": ExerciseMediaAsset(
+            imageAssetName: "exercise-medicine-ball-rotational-throw",
+            videoResourceName: nil
+        ),
+        "Split squat": ExerciseMediaAsset(
+            imageAssetName: "exercise-split-squat",
+            videoResourceName: nil
+        ),
+        "Pallof Press": ExerciseMediaAsset(
+            imageAssetName: "exercise-pallof-press",
+            videoResourceName: nil
+        ),
+        "Single-leg Romanian deadlift": ExerciseMediaAsset(
+            imageAssetName: "exercise-single-leg-romanian-deadlift",
+            videoResourceName: nil
+        ),
+        "Shadow bat, throw, bowl ramp": ExerciseMediaAsset(
+            imageAssetName: "exercise-shadow-bat-throw-bowl-ramp",
+            videoResourceName: nil
+        ),
+        "Wrist rolls and finger pumps": ExerciseMediaAsset(
+            imageAssetName: "exercise-wrist-rolls-and-finger-pumps",
+            videoResourceName: nil
+        ),
+        "Shadow batting hip turn": ExerciseMediaAsset(
+            imageAssetName: "exercise-shadow-batting-hip-turn",
+            videoResourceName: nil
+        ),
+        "Crease shuffle to sprint start": ExerciseMediaAsset(
+            imageAssetName: "exercise-crease-shuffle-to-sprint-start",
+            videoResourceName: nil
+        ),
+        "Standing thoracic openers": ExerciseMediaAsset(
+            imageAssetName: "exercise-standing-thoracic-openers",
+            videoResourceName: nil
+        ),
+        "Wrist rolls and bat grip pulses": ExerciseMediaAsset(
+            imageAssetName: "exercise-wrist-rolls-and-bat-grip-pulses",
+            videoResourceName: nil
+        ),
+        "Bowling walk-through build-ups": ExerciseMediaAsset(
+            imageAssetName: "exercise-bowling-walk-through-build-ups",
+            videoResourceName: nil
+        ),
+        "Thoracic rotations with reach": ExerciseMediaAsset(
+            imageAssetName: "exercise-thoracic-rotations-with-reach",
+            videoResourceName: nil
+        ),
+        "Single-leg balance to calf pop": ExerciseMediaAsset(
+            imageAssetName: "exercise-single-leg-balance-to-calf-pop",
+            videoResourceName: nil
+        ),
+        "Scapular wall slides or swimmers": ExerciseMediaAsset(
+            imageAssetName: "exercise-scapular-wall-slides-or-swimmers",
+            videoResourceName: nil
+        ),
+        "Open-book trunk rotation": ExerciseMediaAsset(
+            imageAssetName: "exercise-open-book-trunk-rotation",
+            videoResourceName: nil
+        ),
+        "Bat grip forearm release": ExerciseMediaAsset(
+            imageAssetName: "exercise-bat-grip-forearm-release",
+            videoResourceName: nil
+        ),
+        "Overhead lat and triceps side stretch": ExerciseMediaAsset(
+            imageAssetName: "exercise-overhead-lat-and-triceps-side-stretch",
+            videoResourceName: nil
+        ),
+        "Adductor rock-back hold": ExerciseMediaAsset(
+            imageAssetName: "exercise-adductor-rock-back-hold",
+            videoResourceName: nil
+        ),
+        "Dumbbell Row": ExerciseMediaAsset(
+            imageAssetName: "exercise-dumbbell-row",
+            videoResourceName: nil
+        ),
+        "Cable Woodchop": ExerciseMediaAsset(
+            imageAssetName: "exercise-cable-woodchop",
+            videoResourceName: nil
+        ),
+        "Lateral lunge": ExerciseMediaAsset(
+            imageAssetName: "exercise-lateral-lunge",
+            videoResourceName: nil
+        ),
+        "External rotation with band": ExerciseMediaAsset(
+            imageAssetName: "exercise-external-rotation-with-band",
+            videoResourceName: nil
+        ),
+        "Copenhagen side plank": ExerciseMediaAsset(
+            imageAssetName: "exercise-copenhagen-side-plank",
+            videoResourceName: nil
         )
     ]
 
     static func media(for exerciseName: String) -> ExerciseMediaAsset {
         mediaByExerciseName[exerciseName] ?? ExerciseMediaAsset(imageAssetName: nil, videoResourceName: nil)
+    }
+
+    static func imageAssetName(for exercise: PlannedExercise) -> String? {
+        if let imageAssetName = media(for: exercise.name).imageAssetName {
+            return imageAssetName
+        }
+
+        if let representativeName = representativeExercisesByGroup[exercise.muscleGroup],
+           let imageAssetName = mediaByExerciseName[representativeName]?.imageAssetName {
+            return imageAssetName
+        }
+
+        return mediaByExerciseName["Goblet Squat"]?.imageAssetName
     }
 }
 
@@ -178,21 +371,9 @@ struct ExerciseVisualHeader: View {
     var subtitle: String
     var note: String?
 
-    @State private var isShowingInstructions = false
-
-    private var media: ExerciseMediaAsset {
-        ExerciseMediaLibrary.media(for: exercise.name)
-    }
-
-    private var hasMediaPreview: Bool {
-        media.imageAssetName != nil || media.hasVideo
-    }
-
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
-            if hasMediaPreview {
-                ExerciseIllustrationThumbnail(exercise: exercise, size: 58)
-            }
+            ExerciseIllustrationThumbnail(exercise: exercise, size: 58)
 
             VStack(alignment: .leading, spacing: 6) {
                 Text(exercise.name)
@@ -204,19 +385,12 @@ struct ExerciseVisualHeader: View {
                     .foregroundStyle(Color.coachSecondaryText)
                     .lineLimit(2)
 
-                MuscleChipRow(groups: exercise.affectedMuscleGroups)
-                DetailedMuscleTagRow(
+                ExerciseMuscleChipRow(
+                    groups: exercise.affectedMuscleGroups,
                     primary: exercise.primaryDetailedMuscle,
-                    secondary: exercise.secondaryDetailedMuscle
+                    secondary: exercise.secondaryDetailedMuscle,
+                    supporting: exercise.detailedMuscles
                 )
-
-                Button {
-                    isShowingInstructions = true
-                } label: {
-                    ExerciseMediaStatusBadge(media: media)
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Open instructions for \(exercise.name)")
 
                 if let note {
                     Text(note)
@@ -235,15 +409,12 @@ struct ExerciseVisualHeader: View {
                 supporting: exercise.detailedMuscles
             )
             .frame(
-                width: hasMediaPreview ? 64 : 82,
-                height: hasMediaPreview ? 64 : 82
+                width: 64,
+                height: 64
             )
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(exercise.name), primary muscle: \(exercise.primaryDetailedMuscle.rawValue), secondary muscle: \(exercise.secondaryDetailedMuscle?.rawValue ?? "none")")
-        .sheet(isPresented: $isShowingInstructions) {
-            ExerciseInstructionSheet(exercise: exercise, media: media)
-        }
     }
 }
 
@@ -288,7 +459,8 @@ struct ExerciseIllustrationThumbnail: View {
     }
 
     private var resolvedImage: UIImage? {
-        if let imageAssetName = media.imageAssetName, let image = UIImage(named: imageAssetName) {
+        if let imageAssetName = ExerciseMediaLibrary.imageAssetName(for: exercise),
+           let image = UIImage(named: imageAssetName) {
             return image
         }
 
@@ -343,27 +515,6 @@ struct ExerciseIllustrationThumbnail: View {
                 .offset(x: size * 0.16, y: size * 0.24)
         }
         .padding(8)
-    }
-}
-
-struct ExerciseMediaStatusBadge: View {
-    var media: ExerciseMediaAsset
-
-    var body: some View {
-        HStack(spacing: 5) {
-            Image(systemName: "list.bullet.rectangle")
-                .font(.caption2.weight(.bold))
-
-            Text("Instructions")
-                .font(.caption2.weight(.semibold))
-                .lineLimit(1)
-                .minimumScaleFactor(0.78)
-        }
-        .foregroundStyle(media.hasVideo ? Color.black.opacity(0.86) : Color.coachAccent)
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
-        .background(media.hasVideo ? AnyShapeStyle(CoachGradient.accent) : AnyShapeStyle(Color.coachAccent.opacity(0.12)))
-        .clipShape(Capsule())
     }
 }
 
@@ -473,8 +624,6 @@ private struct ExerciseInstructionMuscleMapCard: View {
             .frame(width: 104, height: 104)
 
             VStack(alignment: .leading, spacing: 8) {
-                ExerciseVideoMetaBadge(title: "Instructions", systemImage: "list.bullet.rectangle")
-
                 Text("Target map")
                     .font(.headline.weight(.semibold))
                     .foregroundStyle(Color.coachAccent)
@@ -755,6 +904,339 @@ private enum ExerciseGuidanceLibrary {
             ],
             proTip: "Push the floor away slightly to keep the upper back active.",
             avoid: "Avoid sagging hips, hiking hips high, or holding your breath."
+        ),
+        "Push-ups": ExerciseGuidance(
+            steps: [
+                "Set hands just outside shoulder width with the body in a straight line.",
+                "Lower the chest toward the floor while elbows track about 30 to 45 degrees from the ribs.",
+                "Press the floor away until arms are long without letting hips sag."
+            ],
+            proTip: "Squeeze glutes and brace abs before every rep.",
+            avoid: "Avoid flaring elbows straight out or letting the head drop."
+        ),
+        "Dumbbell Bench Press": ExerciseGuidance(
+            steps: [
+                "Lie on the bench with feet planted and dumbbells over the chest.",
+                "Lower the dumbbells until elbows are slightly below the torso.",
+                "Press up and in until the weights return over the chest."
+            ],
+            proTip: "Keep shoulder blades set against the bench for a stable press.",
+            avoid: "Avoid bouncing at the bottom or letting wrists bend backward."
+        ),
+        "Incline Dumbbell Press": ExerciseGuidance(
+            steps: [
+                "Set the bench to a low incline and start dumbbells near upper chest level.",
+                "Press up over the shoulders while keeping ribs down.",
+                "Lower with control until the upper chest opens comfortably."
+            ],
+            proTip: "Use a modest incline so the upper chest works without turning it into a shoulder press.",
+            avoid: "Avoid shrugging or letting elbows drift too far behind the body."
+        ),
+        "Machine Chest Press": ExerciseGuidance(
+            steps: [
+                "Set the seat so handles start around mid-chest height.",
+                "Press the handles forward until arms are long without locking hard.",
+                "Return slowly until elbows come just behind the torso."
+            ],
+            proTip: "Keep your back against the pad and drive evenly through both hands.",
+            avoid: "Avoid letting shoulders roll forward at the end range."
+        ),
+        "Smith Machine Bench Press": ExerciseGuidance(
+            steps: [
+                "Position the bench so the bar tracks over the mid-chest.",
+                "Unrack with shoulder blades set and lower the bar under control.",
+                "Press back up while keeping feet planted and wrists stacked."
+            ],
+            proTip: "Set safety stops just below your controlled bottom position.",
+            avoid: "Avoid setting the bench too high or pressing toward the neck."
+        ),
+        "Overhead Cable Triceps Extension": ExerciseGuidance(
+            steps: [
+                "Face away from the cable with elbows bent and hands behind the head.",
+                "Brace the ribs down and extend the elbows until arms are long.",
+                "Return slowly while keeping upper arms mostly fixed."
+            ],
+            proTip: "Let the triceps stretch at the bottom without losing rib position.",
+            avoid: "Avoid arching your lower back or letting elbows flare wide."
+        ),
+        "Close-Grip Push-ups": ExerciseGuidance(
+            steps: [
+                "Set hands slightly narrower than shoulders with body in a plank line.",
+                "Lower with elbows staying close to the ribs.",
+                "Press back up by driving through palms and extending the elbows."
+            ],
+            proTip: "Think chest and triceps together, not just dropping into the shoulders.",
+            avoid: "Avoid collapsing through the upper back or letting elbows flare."
+        ),
+        "Seated Row": ExerciseGuidance(
+            steps: [
+                "Sit tall with feet braced and arms reaching long.",
+                "Pull elbows toward the ribs while keeping the chest lifted.",
+                "Return until arms are long and shoulder blades protract under control."
+            ],
+            proTip: "Pause briefly when elbows pass the torso.",
+            avoid: "Avoid leaning far back or yanking with momentum."
+        ),
+        "Assisted Pull-up": ExerciseGuidance(
+            steps: [
+                "Set assistance so you can control the full range.",
+                "Start from long arms, pull shoulder blades down, then drive elbows toward the ribs.",
+                "Lower slowly back to a full controlled hang."
+            ],
+            proTip: "Use less assistance only when reps stay smooth.",
+            avoid: "Avoid kicking, craning the neck, or stopping short at the bottom."
+        ),
+        "Cable Row": ExerciseGuidance(
+            steps: [
+                "Set the cable around mid-torso height and stand or sit tall.",
+                "Pull the handle toward the ribs with elbows close.",
+                "Reach forward under control without rounding the lower back."
+            ],
+            proTip: "Let the shoulder blade move, then finish by squeezing it back.",
+            avoid: "Avoid shrugging or turning the row into a torso swing."
+        ),
+        "Dumbbell Row": ExerciseGuidance(
+            steps: [
+                "Support one hand on a bench or hinge with a flat back.",
+                "Pull the dumbbell toward the hip, keeping the elbow close.",
+                "Lower until the arm is long without rotating the torso."
+            ],
+            proTip: "Aim the elbow toward the back pocket to bias the lats.",
+            avoid: "Avoid twisting open or pulling the weight toward the shoulder."
+        ),
+        "Cable Curl": ExerciseGuidance(
+            steps: [
+                "Stand tall facing the low cable with elbows near the ribs.",
+                "Curl the handle up without moving the upper arms.",
+                "Lower until elbows are straight while keeping cable tension."
+            ],
+            proTip: "Keep wrists neutral and squeeze the biceps at the top.",
+            avoid: "Avoid leaning back or letting elbows drift forward."
+        ),
+        "Incline Dumbbell Curl": ExerciseGuidance(
+            steps: [
+                "Sit on an incline bench with arms hanging behind the torso.",
+                "Curl the dumbbells while keeping upper arms still.",
+                "Lower fully until the biceps stretch under control."
+            ],
+            proTip: "Use lighter weights than standing curls and own the stretch.",
+            avoid: "Avoid swinging or lifting the shoulders off the bench."
+        ),
+        "Leg Press": ExerciseGuidance(
+            steps: [
+                "Set feet about shoulder width on the platform.",
+                "Lower the sled until knees bend deeply while hips stay down.",
+                "Press through the full foot and stop short of hard knee lockout."
+            ],
+            proTip: "Use a range where the pelvis does not tuck under.",
+            avoid: "Avoid knees caving inward or bouncing out of the bottom."
+        ),
+        "Seated Leg Curl": ExerciseGuidance(
+            steps: [
+                "Set the pad so knees line up with the machine axis.",
+                "Curl heels down and back until hamstrings fully contract.",
+                "Return slowly without letting the weight stack slam."
+            ],
+            proTip: "Pause at the curled position for cleaner hamstring tension.",
+            avoid: "Avoid hips lifting off the seat or rushing the return."
+        ),
+        "Calf Raise": ExerciseGuidance(
+            steps: [
+                "Stand tall with balls of feet planted and heels free to move.",
+                "Rise onto the toes and pause briefly at the top.",
+                "Lower slowly until the calves stretch, then repeat."
+            ],
+            proTip: "Keep pressure through the big toe and second toe.",
+            avoid: "Avoid bouncing or rolling ankles outward."
+        ),
+        "Dumbbell Lateral Raise": ExerciseGuidance(
+            steps: [
+                "Stand tall with dumbbells by the sides and elbows softly bent.",
+                "Raise arms out to the sides until hands reach about shoulder height.",
+                "Lower slowly without letting the weights swing."
+            ],
+            proTip: "Lead with elbows and keep traps relaxed.",
+            avoid: "Avoid shrugging or turning the thumbs sharply downward."
+        ),
+        "Cable Lateral Raise": ExerciseGuidance(
+            steps: [
+                "Set the cable low and stand side-on with the handle in the outside hand.",
+                "Raise the arm out to the side with a slight elbow bend.",
+                "Lower across the body under control while keeping tension."
+            ],
+            proTip: "Start light and keep the motion smooth from the side delt.",
+            avoid: "Avoid leaning away so much that momentum does the work."
+        ),
+        "Machine Shoulder Press": ExerciseGuidance(
+            steps: [
+                "Adjust the seat so handles start around shoulder height.",
+                "Brace the torso and press overhead until arms are long.",
+                "Lower to the start position with control."
+            ],
+            proTip: "Keep ribs down and back supported throughout the press.",
+            avoid: "Avoid shrugging hard or letting elbows drift far behind the body."
+        ),
+        "Dead Bug": ExerciseGuidance(
+            steps: [
+                "Lie on your back with hips and knees bent and arms above shoulders.",
+                "Brace abs, then extend the opposite arm and leg slowly.",
+                "Return to center and alternate sides without the low back lifting."
+            ],
+            proTip: "Exhale as the limbs extend to keep ribs down.",
+            avoid: "Avoid speed or range that makes the back arch."
+        ),
+        "Side Plank": ExerciseGuidance(
+            steps: [
+                "Set the elbow under the shoulder and stack feet or stagger them.",
+                "Lift hips until the body forms a straight line.",
+                "Hold while breathing and keeping the top hip stacked."
+            ],
+            proTip: "Push the floor away to keep the shoulder stable.",
+            avoid: "Avoid rolling the chest down or letting hips sag."
+        ),
+        "Pallof Press": ExerciseGuidance(
+            steps: [
+                "Stand side-on to a cable or band with hands at the chest.",
+                "Brace and press the hands straight forward without rotating.",
+                "Bring hands back to the chest under control."
+            ],
+            proTip: "Use a stance that lets the core resist rotation cleanly.",
+            avoid: "Avoid twisting toward the anchor or shrugging."
+        ),
+        "Lat Prayer Stretch": ExerciseGuidance(
+            steps: [
+                "Kneel facing a bench or box and place hands on the surface.",
+                "Sit hips back while keeping arms long.",
+                "Let the chest sink gently until the lats stretch."
+            ],
+            proTip: "Turn thumbs up slightly to make the shoulder position friendlier.",
+            avoid: "Avoid forcing the chest down or pinching the shoulders."
+        ),
+        "Thread the Needle": ExerciseGuidance(
+            steps: [
+                "Start on hands and knees with hips over knees.",
+                "Slide one arm under the body and rotate the chest toward the floor.",
+                "Breathe into the upper back, return to center, then switch sides."
+            ],
+            proTip: "Keep hips mostly still so the rotation comes from the upper back.",
+            avoid: "Avoid pressing the neck into the floor or rushing the rotation."
+        ),
+        "Doorway Chest Stretch": ExerciseGuidance(
+            steps: [
+                "Place forearm on a doorway with elbow around shoulder height.",
+                "Step through gently until the front of the chest stretches.",
+                "Hold with ribs down, then switch sides."
+            ],
+            proTip: "Change elbow height slightly to find the best chest stretch.",
+            avoid: "Avoid twisting aggressively or letting the shoulder roll forward."
+        ),
+        "Wrist Flexor Stretch": ExerciseGuidance(
+            steps: [
+                "Extend one arm with palm facing up.",
+                "Use the opposite hand to gently draw fingers back.",
+                "Hold light tension, then switch sides."
+            ],
+            proTip: "Keep the elbow long but not aggressively locked.",
+            avoid: "Avoid numbness, tingling, or pulling on individual fingers hard."
+        ),
+        "Hip Flexor Lunge Stretch": ExerciseGuidance(
+            steps: [
+                "Set a half-kneeling lunge with the back knee padded.",
+                "Tuck the pelvis and squeeze the back glute.",
+                "Shift forward gently until the front of the hip stretches."
+            ],
+            proTip: "Reach the same-side arm overhead if you need more side-body length.",
+            avoid: "Avoid arching the lower back to fake more range."
+        ),
+        "Standing Quad Stretch": ExerciseGuidance(
+            steps: [
+                "Stand tall and hold a wall or rack for balance.",
+                "Bend one knee and hold the ankle behind you.",
+                "Pull heel toward glute while keeping knees close, then switch sides."
+            ],
+            proTip: "Squeeze the glute on the stretching side to protect the low back.",
+            avoid: "Avoid yanking the foot or letting the knee flare far outward."
+        ),
+        "Cobra Press-Up": ExerciseGuidance(
+            steps: [
+                "Lie face down with hands under or slightly ahead of shoulders.",
+                "Press the chest up while hips stay heavy toward the floor.",
+                "Lower back down slowly and repeat or hold gently."
+            ],
+            proTip: "Use only as much arm pressure as your low back tolerates comfortably.",
+            avoid: "Avoid pinching pain or forcing end range."
+        ),
+        "Cat-Cow": ExerciseGuidance(
+            steps: [
+                "Start on hands and knees with a neutral spine.",
+                "Round the back up and tuck the pelvis for cat.",
+                "Reverse by gently arching and lifting the chest for cow."
+            ],
+            proTip: "Move segment by segment with slow breathing.",
+            avoid: "Avoid forcing the neck into extreme positions."
+        ),
+        "Medicine ball rotational throw": ExerciseGuidance(
+            steps: [
+                "Stand side-on to a wall with the ball near the back hip.",
+                "Drive from hips and trunk to throw the ball into the wall.",
+                "Catch or retrieve, reset fully, and repeat with crisp reps."
+            ],
+            proTip: "Power should start from the ground and hips, not just the arms.",
+            avoid: "Avoid rapid sloppy reps or twisting through a soft front knee."
+        ),
+        "Split squat": ExerciseGuidance(
+            steps: [
+                "Set a long staggered stance with the front foot flat.",
+                "Lower straight down until the front thigh works hard.",
+                "Drive through the front foot to return tall."
+            ],
+            proTip: "Keep pelvis level and torso stacked over the hips.",
+            avoid: "Avoid bouncing, short stance, or front knee collapse."
+        ),
+        "Single-leg Romanian deadlift": ExerciseGuidance(
+            steps: [
+                "Stand on one leg with a soft knee and hips square.",
+                "Hinge back as the free leg reaches behind you.",
+                "Return by driving the hip forward and keeping balance."
+            ],
+            proTip: "Reach long through the back heel to keep the pelvis from opening.",
+            avoid: "Avoid rounding the back or rotating the torso open."
+        ),
+        "Cable Woodchop": ExerciseGuidance(
+            steps: [
+                "Set the cable high or low depending on the chop direction.",
+                "Brace and rotate through the trunk and hips as the hands travel across the body.",
+                "Return slowly to the start without losing stance."
+            ],
+            proTip: "Let the hips and ribs rotate together like an athletic swing.",
+            avoid: "Avoid pulling only with arms or letting the cable yank you back."
+        ),
+        "Lateral lunge": ExerciseGuidance(
+            steps: [
+                "Step wide to one side with toes mostly forward.",
+                "Sit into the stepping hip while the other leg stays long.",
+                "Push the ground away to return to the start."
+            ],
+            proTip: "Keep the working foot flat and chest proud.",
+            avoid: "Avoid knee collapse or shifting weight onto the toes."
+        ),
+        "External rotation with band": ExerciseGuidance(
+            steps: [
+                "Anchor a light band at elbow height and pin the elbow near the ribs.",
+                "Rotate the hand outward while keeping the upper arm still.",
+                "Return slowly until the forearm points forward."
+            ],
+            proTip: "Place a small towel between elbow and ribs to keep position clean.",
+            avoid: "Avoid twisting the torso or using a band that is too heavy."
+        ),
+        "Copenhagen side plank": ExerciseGuidance(
+            steps: [
+                "Set the top leg on a bench and elbow under shoulder.",
+                "Lift hips into a side plank while the bottom leg assists as needed.",
+                "Hold with hips high, then lower under control."
+            ],
+            proTip: "Start with the knee on the bench before progressing to the foot.",
+            avoid: "Avoid sagging hips or sharp groin discomfort."
         ),
         "Jog, side shuffle, back pedal": ExerciseGuidance(
             steps: [
@@ -2481,16 +2963,105 @@ struct MuscleChipRow: View {
             }
 
             if groups.count > 1 {
-                Text("+\(groups.count - 1)")
-                    .font(.caption2.weight(.semibold))
-                    .lineLimit(1)
-                    .foregroundStyle(Color.coachAccent)
-                    .padding(.horizontal, 7)
-                    .padding(.vertical, 4)
-                    .background(Color.coachAccent.opacity(0.12))
-                    .clipShape(Capsule())
+                Menu {
+                    ForEach(groups.dropFirst()) { group in
+                        Text(group.rawValue)
+                    }
+                } label: {
+                    compactMoreChip(count: groups.count - 1)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Show \(groups.count - 1) more muscle groups")
             }
         }
+    }
+
+    private func compactMoreChip(count: Int) -> some View {
+        Text("+\(count)")
+            .font(.caption2.weight(.semibold))
+            .lineLimit(1)
+            .foregroundStyle(Color.coachAccent)
+            .padding(.horizontal, 7)
+            .padding(.vertical, 4)
+            .background(Color.coachAccent.opacity(0.12))
+            .clipShape(Capsule())
+    }
+}
+
+struct ExerciseMuscleChipRow: View {
+    var groups: [MuscleGroup]
+    var primary: DetailedMuscleGroup
+    var secondary: DetailedMuscleGroup?
+    var supporting: [DetailedMuscleGroup] = []
+
+    private var visibleLabel: String {
+        targetLabels.first ?? primary.rawValue
+    }
+
+    private var hiddenLabels: [String] {
+        Array(targetLabels.dropFirst())
+    }
+
+    private var targetLabels: [String] {
+        var labels: [String] = []
+
+        func append(_ label: String) {
+            guard !labels.contains(label) else { return }
+            labels.append(label)
+        }
+
+        append(primary.rawValue)
+
+        if let secondary {
+            append(secondary.rawValue)
+        }
+
+        supporting.forEach { append($0.rawValue) }
+        groups.forEach { append($0.rawValue) }
+
+        return labels
+    }
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Text(visibleLabel)
+                .font(.caption2.weight(.semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.72)
+                .foregroundStyle(Color.black.opacity(0.90))
+                .padding(.horizontal, 7)
+                .padding(.vertical, 4)
+                .background(Color.coachAccent)
+                .clipShape(Capsule())
+
+            if !hiddenLabels.isEmpty {
+                Menu {
+                    ForEach(hiddenLabels, id: \.self) { label in
+                        Text(label)
+                    }
+                } label: {
+                    compactMoreChip(count: hiddenLabels.count)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Show \(hiddenLabels.count) more muscle targets")
+            }
+        }
+        .lineLimit(1)
+    }
+
+    private func compactMoreChip(count: Int) -> some View {
+        Text("+\(count)")
+            .font(.caption2.weight(.semibold))
+            .lineLimit(1)
+            .foregroundStyle(Color.coachAccent)
+            .padding(.horizontal, 7)
+            .padding(.vertical, 4)
+            .background(Color.coachAccent.opacity(0.12))
+            .overlay {
+                Capsule()
+                    .stroke(Color.coachAccent.opacity(0.24), lineWidth: 1)
+            }
+            .clipShape(Capsule())
     }
 }
 
@@ -2499,25 +3070,34 @@ struct DetailedMuscleTagRow: View {
     var secondary: DetailedMuscleGroup?
 
     var body: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: 6) {
-                detailedChip(label: "Primary", muscle: primary, isPrimary: true)
-                    .fixedSize(horizontal: true, vertical: false)
+        HStack(spacing: 6) {
+            detailedChip(label: "Primary", muscle: primary, isPrimary: true)
 
-                if let secondary {
-                    detailedChip(label: "Secondary", muscle: secondary, isPrimary: false)
-                        .fixedSize(horizontal: true, vertical: false)
+            if let secondary {
+                Menu {
+                    Text(secondary.rawValue)
+                } label: {
+                    compactMoreChip(count: 1)
                 }
-            }
-
-            VStack(alignment: .leading, spacing: 4) {
-                detailedChip(label: "Primary", muscle: primary, isPrimary: true)
-
-                if let secondary {
-                    detailedChip(label: "Secondary", muscle: secondary, isPrimary: false)
-                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Show additional muscle")
             }
         }
+    }
+
+    private func compactMoreChip(count: Int) -> some View {
+        Text("+\(count)")
+            .font(.caption2.weight(.semibold))
+            .lineLimit(1)
+            .foregroundStyle(Color.coachAccent)
+            .padding(.horizontal, 7)
+            .padding(.vertical, 4)
+            .background(Color.coachAccent.opacity(0.12))
+            .overlay {
+                Capsule()
+                    .stroke(Color.coachAccent.opacity(0.24), lineWidth: 1)
+            }
+            .clipShape(Capsule())
     }
 
     private func detailedChip(

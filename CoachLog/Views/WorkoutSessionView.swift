@@ -504,10 +504,11 @@ private struct ExerciseSubstitutionSheet: View {
                                         .font(.caption)
                                         .foregroundStyle(Color.coachSecondaryText)
 
-                                    MuscleChipRow(groups: option.exercise.affectedMuscleGroups)
-                                    DetailedMuscleTagRow(
+                                    ExerciseMuscleChipRow(
+                                        groups: option.exercise.affectedMuscleGroups,
                                         primary: option.exercise.primaryDetailedMuscle,
-                                        secondary: option.exercise.secondaryDetailedMuscle
+                                        secondary: option.exercise.secondaryDetailedMuscle,
+                                        supporting: option.exercise.detailedMuscles
                                     )
                                 }
 

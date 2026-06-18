@@ -1,0 +1,640 @@
+{
+  "model": "grok-imagine-image-quality",
+  "resolution": "1k",
+  "aspect_ratio": "3:4",
+  "items": [
+    {
+      "exercise": "Jog, side shuffle, back pedal",
+      "slug": "exercise-jog-side-shuffle-back-pedal",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic sports warm-up still for Jog, side shuffle, back pedal. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model in a light athletic side-shuffle stance on open turf or rubber gym floor: knees softly bent, hips back slightly, arms active, one foot stepping laterally, torso upright, ready to change direction. No running blur.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-jog-side-shuffle-back-pedal.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Arm circles to scapular hugs",
+      "slug": "exercise-arm-circles-to-scapular-hugs",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic sports warm-up still for Arm circles to scapular hugs. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model standing tall with arms opened wide at shoulder height, chest lifted but ribs down, preparing to sweep into a scapular hug. Full arms visible with enough space on both sides.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-arm-circles-to-scapular-hugs.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Front and lateral leg swings",
+      "slug": "exercise-front-and-lateral-leg-swings",
+      "reference": "model_3",
+      "status": "ok",
+      "prompt": "Photorealistic sports warm-up still for Front and lateral leg swings. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model holding a vertical rack post lightly for balance while one leg swings forward under control, standing leg tall, hips square, torso upright. Full body and support post visible.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-front-and-lateral-leg-swings.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Walking lunge, reach, calf raise",
+      "slug": "exercise-walking-lunge-reach-calf-raise",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic sports warm-up still for Walking lunge, reach, calf raise. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model in a forward lunge with both arms reaching overhead, back hip open, front knee tracking over toes, rear heel lifted as if transitioning into calf raise. Full body visible.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-walking-lunge-reach-calf-raise.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "High knees, butt kicks, pogo hops",
+      "slug": "exercise-high-knees-butt-kicks-pogo-hops",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic sports warm-up still for High knees, butt kicks, pogo hops. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model performing controlled high knees: one knee lifted to hip height, opposite arm forward, torso tall, foot under hips, athletic but not blurred. Full body visible on open gym floor.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-high-knees-butt-kicks-pogo-hops.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Slow walk with nasal breathing",
+      "slug": "exercise-slow-walk-with-nasal-breathing",
+      "reference": "model_4",
+      "status": "ok",
+      "prompt": "Photorealistic cool-down still for Slow walk with nasal breathing. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model walking calmly on an indoor track or open gym floor, shoulders relaxed, one hand lightly over lower ribs, nasal breathing posture, slow recovery pace. Full body visible.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-slow-walk-with-nasal-breathing.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Calf Wall Stretch",
+      "slug": "exercise-calf-wall-stretch",
+      "reference": "model_1",
+      "status": "ok",
+      "prompt": "Photorealistic instructional still for Calf Wall Stretch. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model facing a wall with both hands on the wall, one foot forward and one leg straight back, back heel pressed down, toes pointing forward, torso long. Full body and wall contact visible.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-calf-wall-stretch.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Half-kneeling hip flexor and quad",
+      "slug": "exercise-half-kneeling-hip-flexor-and-quad",
+      "reference": "model_1",
+      "status": "ok",
+      "prompt": "Photorealistic instructional still for Half-kneeling hip flexor and quad stretch. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model on a mat in half-kneeling lunge stretch: one knee down on mat, front foot flat, pelvis tucked slightly, back glute engaged, torso tall, one hand lightly on front thigh. Full body visible.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-half-kneeling-hip-flexor-and-quad.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Seated Hamstring Stretch",
+      "slug": "exercise-seated-hamstring-stretch",
+      "reference": "model_1",
+      "status": "ok",
+      "prompt": "Photorealistic instructional still for Seated Hamstring Stretch. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model seated on a mat with one leg extended forward, other knee bent comfortably, torso hinging from hips with long spine, reaching toward the extended foot without rounding. Full body visible.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-seated-hamstring-stretch.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Child's Pose",
+      "slug": "exercise-childs-pose",
+      "reference": "model_1",
+      "status": "ok",
+      "prompt": "Photorealistic instructional still for Child's Pose. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model kneeling on a mat in child's pose, hips back toward heels, arms extended forward, forehead near mat, relaxed back and shoulders. Full body visible from diagonal side angle.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-childs-pose.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Cross-Body Shoulder Stretch",
+      "slug": "exercise-cross-body-shoulder-stretch",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic instructional still for Cross-Body Shoulder Stretch. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model standing tall, one arm pulled across the chest by the opposite forearm, shoulder down, neck relaxed, torso facing forward. Full body visible.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-cross-body-shoulder-stretch.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Forearm flexor and extensor stretch",
+      "slug": "exercise-forearm-flexor-and-extensor-stretch",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic instructional still for Forearm flexor and extensor stretch. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model standing tall with one arm extended forward, palm facing down, opposite hand gently pulling fingers back to stretch the forearm. Hands clear and realistic, full body visible.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-forearm-flexor-and-extensor-stretch.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Medicine ball rotational throw",
+      "slug": "exercise-medicine-ball-rotational-throw",
+      "reference": "model_3",
+      "status": "ok",
+      "prompt": "Photorealistic cricket strength still for Medicine ball rotational throw. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model holding a medicine ball at chest height in a loaded rotational stance beside a solid wall, hips turned, knees soft, torso coiled safely, ready to throw. Medicine ball and wall clearly visible.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-medicine-ball-rotational-throw.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Split squat",
+      "slug": "exercise-split-squat",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic strength instructional still for Split squat. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model holding two dumbbells at her sides in the bottom of a split squat, front knee tracking over toes, rear knee close to floor, torso tall, feet staggered. Dumbbells and full body visible.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-split-squat.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Pallof Press",
+      "slug": "exercise-pallof-press",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic strength instructional still for Pallof Press. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model standing side-on to a cable stack, holding the cable handle with both hands pressed straight out from chest, arms extended, torso square, feet shoulder-width, resisting rotation. Cable stack and handle visible.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-pallof-press.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Single-leg Romanian deadlift",
+      "slug": "exercise-single-leg-romanian-deadlift",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic strength instructional still for Single-leg Romanian deadlift. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model holding one dumbbell in the opposite hand while hinging on one leg, rear leg extended back, hips square, spine neutral, slight bend in standing knee. Dumbbell and full body visible.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-single-leg-romanian-deadlift.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Shadow bat, throw, bowl ramp",
+      "slug": "exercise-shadow-bat-throw-bowl-ramp",
+      "reference": "model_3",
+      "status": "ok",
+      "prompt": "Photorealistic cricket warm-up still for Shadow bat, throw, bowl ramp. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model in a cricket shadow batting stance with a plain cricket bat, front foot planted, hips beginning to rotate, hands guiding the bat through a controlled practice swing. Clean indoor training area, no logos.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-shadow-bat-throw-bowl-ramp.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Wrist rolls and finger pumps",
+      "slug": "exercise-wrist-rolls-and-finger-pumps",
+      "reference": "model_4",
+      "status": "ok",
+      "prompt": "Photorealistic cricket warm-up still for Wrist rolls and finger pumps. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model standing tall with elbows bent in front of the body, hands open and wrists rotating for grip prep. Hands should be clear and realistic; full body visible.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-wrist-rolls-and-finger-pumps.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Shadow batting hip turn",
+      "slug": "exercise-shadow-batting-hip-turn",
+      "reference": "model_3",
+      "status": "ok",
+      "prompt": "Photorealistic cricket warm-up still for Shadow batting hip turn. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model holding a plain cricket bat in a batting follow-through position, hips rotated, head steady, front knee softly bent, back heel turned up. Full body and bat visible, no logos.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-shadow-batting-hip-turn.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Crease shuffle to sprint start",
+      "slug": "exercise-crease-shuffle-to-sprint-start",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic cricket warm-up still for Crease shuffle to sprint start. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model in a lateral shuffle-to-sprint start: low athletic stance, one foot pushing off, arms ready to drive, torso angled forward safely. Open indoor training floor with a simple floor line, full body visible.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-crease-shuffle-to-sprint-start.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Standing thoracic openers",
+      "slug": "exercise-standing-thoracic-openers",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic mobility still for Standing thoracic openers. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model standing in a slight athletic stance with arms crossed over chest and torso rotated to one side, hips mostly square, spine tall, movement through upper back. Full body visible.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-standing-thoracic-openers.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Wrist rolls and bat grip pulses",
+      "slug": "exercise-wrist-rolls-and-bat-grip-pulses",
+      "reference": "model_3",
+      "status": "ok",
+      "prompt": "Photorealistic cricket warm-up still for Wrist rolls and bat grip pulses. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model standing holding a plain cricket bat handle in front of the body, lightly pulsing grip with relaxed forearms. Hands, bat handle, and full body visible; no logos.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-wrist-rolls-and-bat-grip-pulses.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Bowling walk-through build-ups",
+      "slug": "exercise-bowling-walk-through-build-ups",
+      "reference": "model_3",
+      "status": "ok",
+      "prompt": "Photorealistic cricket warm-up still for Bowling walk-through build-ups. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model in a cricket bowling walk-through action: front arm up, bowling arm back and high, front knee lifted, torso tall and controlled. Clean indoor training lane, full body visible, no ball release blur.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-bowling-walk-through-build-ups.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Thoracic rotations with reach",
+      "slug": "exercise-thoracic-rotations-with-reach",
+      "reference": "model_1",
+      "status": "ok",
+      "prompt": "Photorealistic mobility still for Thoracic rotations with reach. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model on a mat in quadruped position, one hand reaching up toward ceiling with chest rotated open, hips over knees, support hand under shoulder, neck neutral. Full body visible.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-thoracic-rotations-with-reach.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Single-leg balance to calf pop",
+      "slug": "exercise-single-leg-balance-to-calf-pop",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic warm-up still for Single-leg balance to calf pop. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model balancing on one leg with heel lifted into a calf raise, opposite knee lifted, arms out for balance, torso tall, ankle straight. Full body visible on open gym floor.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-single-leg-balance-to-calf-pop.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Scapular wall slides or swimmers",
+      "slug": "exercise-scapular-wall-slides-or-swimmers",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic shoulder mobility still for Scapular wall slides. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model standing with back against a wall, elbows and forearms against the wall in a goalpost shape, sliding arms upward while keeping ribs down. Full body visible, wall clear.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-scapular-wall-slides-or-swimmers.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Open-book trunk rotation",
+      "slug": "exercise-open-book-trunk-rotation",
+      "reference": "model_1",
+      "status": "ok",
+      "prompt": "Photorealistic mobility still for Open-book trunk rotation. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model lying on her side on a mat with knees stacked and bent, bottom hand on knees, top arm opening across the chest toward the floor behind her, chest rotated open. Full body visible from diagonal overhead angle.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-open-book-trunk-rotation.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Bat grip forearm release",
+      "slug": "exercise-bat-grip-forearm-release",
+      "reference": "model_3",
+      "status": "ok",
+      "prompt": "Photorealistic cricket cool-down still for Bat grip forearm release. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model standing with a plain cricket bat held vertically, one hand gently stretching the opposite wrist and forearm after gripping the bat. Hands realistic and clear, full body visible, no logos.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-bat-grip-forearm-release.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Overhead lat and triceps side stretch",
+      "slug": "exercise-overhead-lat-and-triceps-side-stretch",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic cool-down still for Overhead lat and triceps side stretch. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model standing tall with one arm overhead, elbow bent and hand behind upper back, opposite hand gently assisting at elbow while side-bending slightly. Full body visible.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-overhead-lat-and-triceps-side-stretch.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Adductor rock-back hold",
+      "slug": "exercise-adductor-rock-back-hold",
+      "reference": "model_1",
+      "status": "ok",
+      "prompt": "Photorealistic mobility still for Adductor rock-back hold. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model on a mat with one knee under hip and the other leg extended out to the side, foot flat, hips rocking back, spine neutral, hands on mat. Full body visible from diagonal side angle.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-adductor-rock-back-hold.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Dumbbell Row",
+      "slug": "exercise-dumbbell-row",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic strength instructional still for Dumbbell Row. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model in a supported one-arm dumbbell row setup using a flat bench: one hand and knee on bench, other foot on floor, rowing dumbbell toward hip, spine neutral. Bench, dumbbell, and full body visible.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-dumbbell-row.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Cable Woodchop",
+      "slug": "exercise-cable-woodchop",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic strength instructional still for Cable Woodchop. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model standing side-on to a cable stack, both hands on a cable handle, rotating diagonally across the body from high to low, hips and ribs turning together, feet planted. Cable stack and full body visible.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-cable-woodchop.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Lateral lunge",
+      "slug": "exercise-lateral-lunge",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic strength instructional still for Lateral lunge. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model in a side lunge: one knee bent with hips back, opposite leg straight, both feet flat and pointing forward, torso long, arms in front for balance. Full body visible.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-lateral-lunge.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "External rotation with band",
+      "slug": "exercise-external-rotation-with-band",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic shoulder prehab still for External rotation with band. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model standing with elbow pinned at her side bent 90 degrees, holding a resistance band attached to a rack, forearm rotated outward away from the body, shoulder down, posture tall. Band and rack anchor visible.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-external-rotation-with-band.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Copenhagen side plank",
+      "slug": "exercise-copenhagen-side-plank",
+      "reference": "model_3",
+      "status": "ok",
+      "prompt": "Photorealistic strength instructional still for Copenhagen side plank. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show the model in a Copenhagen side plank with top leg supported on a low bench, bottom leg hovering, forearm on mat, hips lifted in a straight line, torso braced. Bench, mat, and full body visible.",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-copenhagen-side-plank.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Open-book trunk rotation",
+      "slug": "exercise-open-book-trunk-rotation",
+      "version": "v2",
+      "reference": "model_1",
+      "status": "ok",
+      "prompt": "Photorealistic mobility still for Open-book trunk rotation. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Must show the classic side-lying open-book stretch: model lies on her left side on a mat, knees bent 90 degrees and stacked together, hips stacked, bottom arm holding knees gently, top arm opened far behind toward the floor with chest rotated upward, head following the top hand. Camera from diagonal overhead side angle, full body and mat visible. Avoid seated twist or crunch positions.",
+      "retry_reason": "Instructional clarity improvement",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-open-book-trunk-rotation-v2.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "External rotation with band",
+      "slug": "exercise-external-rotation-with-band",
+      "version": "v2",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic shoulder prehab still for External rotation with band. Use the provided model reference only as the adult athletic fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful sports training instructional still. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean indoor training area, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Show a clear band external rotation: model stands side-on to a rack with a light resistance band anchored at elbow height, towel or elbow pinned to her side, elbow bent 90 degrees, forearm rotated outward away from belly, wrist neutral, shoulder down. Band must be visible and taut horizontally from rack to hand. Full body visible. Avoid cable row, triceps pressdown, or arm hanging straight down.",
+      "retry_reason": "Instructional clarity improvement",
+      "output_path": "/tmp/coachlog-xai-sports-stills/exercise-external-rotation-with-band-v2.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    }
+  ]
+}

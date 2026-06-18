@@ -1,0 +1,268 @@
+{
+  "model": "grok-imagine-image-quality",
+  "resolution": "1k",
+  "aspect_ratio": "3:4",
+  "items": [
+    {
+      "exercise": "Push-ups",
+      "slug": "exercise-push-ups",
+      "reference": "model_2",
+      "status": "ok",
+      "output_path": "/tmp/coachlog-xai-image-batch/exercise-push-ups.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "prompt": "Photorealistic fitness app instructional still image of Push-ups. Use the provided model reference only as the adult fitness model, outfit-style, body-type, and realism reference. Do not include the reference background. One adult athletic woman only. Tasteful fitness app instructional presentation. Natural realistic face, proportionate body, realistic hands and feet. Full body visible. Neutral modern gym, clean wall or equipment backdrop, no mirrors showing extra people, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Demonstrate the top position of a full-body push-up on a mat: hands under shoulders, body in a straight line from head to heels, core braced, feet together, elbows extended but not locked, gaze slightly forward/down. Camera at low three-quarter side angle, full body and mat visible.",
+      "note": "Validated single test request reused as final asset."
+    },
+    {
+      "exercise": "Dumbbell Bench Press",
+      "slug": "exercise-dumbbell-bench-press",
+      "reference": "model_1",
+      "status": "ok",
+      "prompt": "Photorealistic fitness app instructional still image of Dumbbell Bench Press. Use the provided model reference only as the adult fitness model, outfit-style, body-type, and realism reference. Do not include the reference background. One adult athletic woman only. Tasteful fitness app instructional presentation. Natural realistic face, proportionate body, realistic hands and feet. Full body visible. Neutral modern gym, clean wall or equipment backdrop, no mirrors showing extra people, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Model lies on a flat bench holding two dumbbells over the chest at the top position, wrists stacked over elbows, shoulder blades set, feet flat on floor, neutral spine. Bench and dumbbells clearly visible, three-quarter side camera angle, full body visible.",
+      "output_path": "/tmp/coachlog-xai-image-batch/exercise-dumbbell-bench-press.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Seated Row",
+      "slug": "exercise-seated-row",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic fitness app instructional still image of Seated Row. Use the provided model reference only as the adult fitness model, outfit-style, body-type, and realism reference. Do not include the reference background. One adult athletic woman only. Tasteful fitness app instructional presentation. Natural realistic face, proportionate body, realistic hands and feet. Full body visible. Neutral modern gym, clean wall or equipment backdrop, no mirrors showing extra people, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Model sits at a seated cable row station holding a neutral grip handle with arms mostly extended, chest tall, shoulders down, knees slightly bent, feet braced on foot plates, spine neutral. Cable, handle, seat, and foot plates clearly visible, full body visible.",
+      "output_path": "/tmp/coachlog-xai-image-batch/exercise-seated-row.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Assisted Pull-up",
+      "slug": "exercise-assisted-pull-up",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic fitness app instructional still image of Assisted Pull-up. Use the provided model reference only as the adult fitness model, outfit-style, body-type, and realism reference. Do not include the reference background. One adult athletic woman only. Tasteful fitness app instructional presentation. Natural realistic face, proportionate body, realistic hands and feet. Full body visible. Neutral modern gym, clean wall or equipment backdrop, no mirrors showing extra people, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Model uses an assisted pull-up machine with knees on the assistance pad, hands on overhead handles, torso vertical, shoulders packed, elbows slightly bent at the start position. Full machine and full body visible, safe controlled setup, no hanging distortion.",
+      "output_path": "/tmp/coachlog-xai-image-batch/exercise-assisted-pull-up.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Leg Press",
+      "slug": "exercise-leg-press",
+      "reference": "model_1",
+      "status": "ok",
+      "prompt": "Photorealistic fitness app instructional still image of Leg Press. Use the provided model reference only as the adult fitness model, outfit-style, body-type, and realism reference. Do not include the reference background. One adult athletic woman only. Tasteful fitness app instructional presentation. Natural realistic face, proportionate body, realistic hands and feet. Full body visible. Neutral modern gym, clean wall or equipment backdrop, no mirrors showing extra people, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Model sits in a 45-degree leg press machine with back and hips against the pad, feet shoulder-width on the platform, knees bent around 90 degrees and tracking over toes, hands on side handles. Full machine, platform, and full body visible from a three-quarter side angle.",
+      "output_path": "/tmp/coachlog-xai-image-batch/exercise-leg-press.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Seated Leg Curl",
+      "slug": "exercise-seated-leg-curl",
+      "reference": "model_1",
+      "status": "ok",
+      "prompt": "Photorealistic fitness app instructional still image of Seated Leg Curl. Use the provided model reference only as the adult fitness model, outfit-style, body-type, and realism reference. Do not include the reference background. One adult athletic woman only. Tasteful fitness app instructional presentation. Natural realistic face, proportionate body, realistic hands and feet. Full body visible. Neutral modern gym, clean wall or equipment backdrop, no mirrors showing extra people, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Model sits upright in a seated leg curl machine, thighs secured, lower legs behind the ankle roller pad, knees aligned with machine pivot, hands on handles, torso tall. Machine pads and ankle roller clearly visible, full body visible.",
+      "output_path": "/tmp/coachlog-xai-image-batch/exercise-seated-leg-curl.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Calf Raise",
+      "slug": "exercise-calf-raise",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic fitness app instructional still image of Calf Raise. Use the provided model reference only as the adult fitness model, outfit-style, body-type, and realism reference. Do not include the reference background. One adult athletic woman only. Tasteful fitness app instructional presentation. Natural realistic face, proportionate body, realistic hands and feet. Full body visible. Neutral modern gym, clean wall or equipment backdrop, no mirrors showing extra people, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Model stands on the edge of a low step holding two dumbbells at her sides, heels lifted high in the top position, ankles straight, knees softly extended, torso tall. Full body, dumbbells, and step visible from a clean three-quarter side angle.",
+      "output_path": "/tmp/coachlog-xai-image-batch/exercise-calf-raise.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Dumbbell Lateral Raise",
+      "slug": "exercise-dumbbell-lateral-raise",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic fitness app instructional still image of Dumbbell Lateral Raise. Use the provided model reference only as the adult fitness model, outfit-style, body-type, and realism reference. Do not include the reference background. One adult athletic woman only. Tasteful fitness app instructional presentation. Natural realistic face, proportionate body, realistic hands and feet. Full body visible. Neutral modern gym, clean wall or equipment backdrop, no mirrors showing extra people, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Model stands tall holding two dumbbells raised out to the sides to shoulder height, slight bend in elbows, wrists neutral, shoulders down, core braced. Full body visible, dumbbells clearly visible, straight-on camera with enough space around arms.",
+      "output_path": "/tmp/coachlog-xai-image-batch/exercise-dumbbell-lateral-raise.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Dead Bug",
+      "slug": "exercise-dead-bug",
+      "reference": "model_1",
+      "status": "ok",
+      "prompt": "Photorealistic fitness app instructional still image of Dead Bug. Use the provided model reference only as the adult fitness model, outfit-style, body-type, and realism reference. Do not include the reference background. One adult athletic woman only. Tasteful fitness app instructional presentation. Natural realistic face, proportionate body, realistic hands and feet. Full body visible. Neutral modern gym, clean wall or equipment backdrop, no mirrors showing extra people, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Model lies on her back on a mat demonstrating a dead bug: one arm and opposite leg extended close to the floor, other arm vertical and opposite knee bent at 90 degrees over hip, low back gently pressed into mat, neck neutral. Camera from diagonal overhead angle, full body and mat visible.",
+      "output_path": "/tmp/coachlog-xai-image-batch/exercise-dead-bug.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Doorway Chest Stretch",
+      "slug": "exercise-doorway-chest-stretch",
+      "reference": "model_3",
+      "status": "ok",
+      "prompt": "Photorealistic fitness app instructional still image of Doorway Chest Stretch. Use the provided model reference only as the adult fitness model, outfit-style, body-type, and realism reference. Do not include the reference background. One adult athletic woman only. Tasteful fitness app instructional presentation. Natural realistic face, proportionate body, realistic hands and feet. Full body visible. Neutral modern gym, clean wall or equipment backdrop, no mirrors showing extra people, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Model stands beside a doorway or upright rack post with one forearm against the vertical frame, elbow bent around 90 degrees, chest gently rotated away, shoulders down, posture tall. Full body visible, doorway/rack post clear, side three-quarter camera angle.",
+      "output_path": "/tmp/coachlog-xai-image-batch/exercise-doorway-chest-stretch.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Leg Press",
+      "slug": "exercise-leg-press",
+      "version": "v2",
+      "reference": "model_1",
+      "status": "ok",
+      "prompt": "Photorealistic fitness app instructional still image of Leg Press. Use the provided model reference only as the adult fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful fitness app instructional presentation. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym, clean equipment backdrop, no mirrors showing extra people, fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Side view of a proper 45-degree leg press machine. Model is seated with back and hips fully against the back pad, both feet flat and clearly visible shoulder-width on the large foot platform, knees bent around 90 degrees tracking over toes, hands gripping side handles. The sled rails, large foot platform, seat pad, and full body are clearly visible. Do not show a hack squat or seated curl machine.",
+      "retry_reason": "Form/camera clarity improvement",
+      "output_path": "/tmp/coachlog-xai-image-batch/exercise-leg-press-v2.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Dumbbell Lateral Raise",
+      "slug": "exercise-dumbbell-lateral-raise",
+      "version": "v2",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic fitness app instructional still image of Dumbbell Lateral Raise. Use the provided model reference only as the adult fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful fitness app instructional presentation. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym, clean equipment backdrop, no mirrors showing extra people, fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Model stands tall with two dumbbells raised out to the sides in a true lateral raise, arms nearly straight with only a soft elbow bend, dumbbells level with shoulders, palms facing down or slightly forward, shoulders down, torso still. Straight-on camera, full body visible, enough space around both arms. Avoid goalpost arms, shoulder press, or biceps curl positions.",
+      "retry_reason": "Form/camera clarity improvement",
+      "output_path": "/tmp/coachlog-xai-image-batch/exercise-dumbbell-lateral-raise-v2.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Dead Bug",
+      "slug": "exercise-dead-bug",
+      "version": "v2",
+      "reference": "model_1",
+      "status": "ok",
+      "prompt": "Photorealistic fitness app instructional still image of Dead Bug. Use the provided model reference only as the adult fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful fitness app instructional presentation. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym, clean equipment backdrop, no mirrors showing extra people, fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Camera from diagonal overhead angle. Model lies on her back on a mat with low back gently pressed into mat. Show the classic dead bug position clearly: right arm extended overhead close to the floor, left leg extended straight close to the floor, left arm vertical above shoulder, right knee bent 90 degrees above hip. Full body and mat visible. Avoid crunch, bicycle crunch, yoga, or floating limbs.",
+      "retry_reason": "Form/camera clarity improvement",
+      "output_path": "/tmp/coachlog-xai-image-batch/exercise-dead-bug-v2.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Doorway Chest Stretch",
+      "slug": "exercise-doorway-chest-stretch",
+      "version": "v2",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic fitness app instructional still image of Doorway Chest Stretch. Use the provided model reference only as the adult fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful fitness app instructional presentation. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym, clean equipment backdrop, no mirrors showing extra people, fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Model stands in a doorway or beside a vertical rack upright with one forearm pressed against the vertical frame, elbow bent exactly around 90 degrees at shoulder height, upper arm horizontal, chest gently rotated away from the frame, shoulders down, posture tall. Full body visible from a side three-quarter angle, doorway/rack frame clear. Avoid simply standing beside a pole; show the forearm contact and chest-opening stretch.",
+      "retry_reason": "Form/camera clarity improvement",
+      "output_path": "/tmp/coachlog-xai-image-batch/exercise-doorway-chest-stretch-v2.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    },
+    {
+      "exercise": "Doorway Chest Stretch",
+      "slug": "exercise-doorway-chest-stretch",
+      "version": "v3",
+      "reference": "model_2",
+      "status": "ok",
+      "prompt": "Photorealistic fitness app instructional still image of Doorway Chest Stretch. Use the provided model reference only as the adult fitness model, outfit-style, body-type, and realism reference. One adult athletic woman only. Tasteful fitness app instructional presentation. Natural realistic face, proportionate body, realistic hands and feet. Full body visible, neutral modern gym or clean studio doorway, no mirrors, no extra people, fixed camera, bright professional lighting. Show a clear classic pec doorway stretch: the model stands side-on inside an open doorway, left forearm and palm flat against the vertical door frame, elbow bent exactly 90 degrees and held at shoulder height, upper arm horizontal, chest rotated away from the frame, right arm relaxed at her side, shoulders down, neck neutral, feet staggered. The single vertical door frame must touch her forearm; do not show both hands on a rack. No text, no logos, no watermark, no distorted hands, no unsafe posture.",
+      "retry_reason": "Doorway stretch v2 did not show clear forearm-on-frame chest stretch",
+      "output_path": "/tmp/coachlog-xai-image-batch/exercise-doorway-chest-stretch-v3.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 600000000
+      },
+      "estimated_cost_usd": 0.06,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 600000000
+        }
+      }
+    }
+  ]
+}
