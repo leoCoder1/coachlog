@@ -5,6 +5,45 @@ enum UnitPreferenceKeys {
     static let lengthUnit = "coachlog.lengthUnit"
 }
 
+enum SportPreferenceKeys {
+    static let defaultSport = "coachlog.defaultSport"
+}
+
+enum CoachSport: String, CaseIterable, Codable, Identifiable {
+    case cricket
+    case baseball
+    case soccer
+
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .cricket: "Cricket"
+        case .baseball: "Baseball"
+        case .soccer: "Soccer"
+        }
+    }
+
+    var iconName: String {
+        switch self {
+        case .cricket: "figure.cricket"
+        case .baseball: "baseball"
+        case .soccer: "soccerball"
+        }
+    }
+
+    var isAvailable: Bool {
+        switch self {
+        case .cricket: true
+        case .baseball, .soccer: false
+        }
+    }
+
+    static var currentDefault: CoachSport {
+        CoachSport(rawValue: UserDefaults.standard.string(forKey: SportPreferenceKeys.defaultSport) ?? "") ?? .cricket
+    }
+}
+
 enum WeightUnitPreference: String, CaseIterable, Codable, Identifiable {
     case pounds
     case kilograms

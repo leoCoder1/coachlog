@@ -19,6 +19,7 @@ struct SettingsView: View {
     @AppStorage(AICoachPreferenceKeys.endpointURL) private var aiCoachEndpointURL = ""
     @AppStorage(UnitPreferenceKeys.weightUnit) private var weightUnitRaw = WeightUnitPreference.pounds.rawValue
     @AppStorage(UnitPreferenceKeys.lengthUnit) private var lengthUnitRaw = LengthUnitPreference.inches.rawValue
+    @AppStorage(SportPreferenceKeys.defaultSport) private var defaultSportRaw = CoachSport.cricket.rawValue
     @AppStorage(HealthKitRecoverySync.autoImportEnabledKey) private var healthKitAutoImportEnabled = false
     @AppStorage(HealthKitRecoverySync.lastAutoImportDateKey) private var lastHealthKitAutoImportTime = 0.0
 
@@ -32,6 +33,7 @@ struct SettingsView: View {
                         accountSection
                         aiPremiumSection
                         unitsSection
+                        sportsSection
                         healthKitSection
                         recoverySection
                         measurementsSection
@@ -210,6 +212,33 @@ struct SettingsView: View {
                 }
 
                 Text("Existing logs stay unchanged; CoachLog only converts the values you see and enter.")
+                    .font(.caption)
+                    .foregroundStyle(Color.coachSecondaryText)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+
+    private var sportsSection: some View {
+        CoachCard {
+            VStack(alignment: .leading, spacing: 14) {
+                Label("Sports", systemImage: "figure.run")
+                    .font(.headline)
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Default sport")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Color.coachSecondaryText)
+
+                    Picker("Default sport", selection: $defaultSportRaw) {
+                        ForEach(CoachSport.allCases) { sport in
+                            Text(sport.displayName).tag(sport.rawValue)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                }
+
+                Text("CoachLog opens the Sports tab with this sport selected. Cricket routines are available now; other sport libraries can be added next.")
                     .font(.caption)
                     .foregroundStyle(Color.coachSecondaryText)
                     .fixedSize(horizontal: false, vertical: true)
@@ -469,6 +498,7 @@ struct SettingsView: View {
             lastHealthKitAutoImportTime = 0
             weightUnitRaw = WeightUnitPreference.pounds.rawValue
             lengthUnitRaw = LengthUnitPreference.inches.rawValue
+            defaultSportRaw = CoachSport.cricket.rawValue
             accountErrorMessage = nil
         } catch {
             accountErrorMessage = "Could not delete local account data. Please try again."

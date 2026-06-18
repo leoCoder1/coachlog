@@ -152,6 +152,44 @@ struct ExerciseDefinition: Identifiable, Hashable {
             [.lowerBack, .rectusAbdominis, .upperBack]
         case "World's Greatest Stretch":
             [.gluteusMaximus, .quadriceps, .obliques, .hamstrings, .upperBack]
+        case "Jog, side shuffle, back pedal", "High knees, butt kicks, pogo hops":
+            [.gastrocnemius, .soleus, .quadriceps, .hamstrings, .gluteusMaximus]
+        case "Arm circles to scapular hugs", "Scapular wall slides or swimmers":
+            [.rearDeltoids, .sideDeltoids, .frontDeltoids, .upperBack]
+        case "Front and lateral leg swings":
+            [.hamstrings, .adductors, .quadriceps, .gluteusMedius]
+        case "Walking lunge, reach, calf raise":
+            [.quadriceps, .gluteusMaximus, .gastrocnemius, .soleus]
+        case "Shadow bat, throw, bowl ramp":
+            [.obliques, .rearDeltoids, .gluteusMaximus, .hamstrings]
+        case "Wrist rolls and finger pumps", "Forearm flexor and extensor stretch", "Bat grip forearm release":
+            [.forearmFlexors, .forearmExtensors, .brachioradialis]
+        case "Shadow batting hip turn", "Standing thoracic openers", "Thoracic rotations with reach", "Open-book trunk rotation":
+            [.obliques, .upperBack, .latissimusDorsi, .gluteusMaximus]
+        case "Crease shuffle to sprint start":
+            [.adductors, .gastrocnemius, .hamstrings, .gluteusMedius]
+        case "Bowling walk-through build-ups":
+            [.rearDeltoids, .obliques, .gluteusMaximus, .hamstrings]
+        case "Single-leg balance to calf pop":
+            [.gastrocnemius, .soleus, .gluteusMedius, .hamstrings]
+        case "Slow walk with nasal breathing":
+            [.gastrocnemius, .soleus, .hamstrings]
+        case "Half-kneeling hip flexor and quad":
+            [.quadriceps, .gluteusMaximus, .rectusAbdominis]
+        case "Overhead lat and triceps side stretch":
+            [.latissimusDorsi, .triceps, .obliques]
+        case "Adductor rock-back hold":
+            [.adductors, .gluteusMaximus, .hamstrings]
+        case "Medicine ball rotational throw", "Cable Woodchop":
+            [.obliques, .rectusAbdominis, .gluteusMaximus, .rearDeltoids]
+        case "Split squat", "Lateral lunge":
+            [.quadriceps, .gluteusMaximus, .adductors, .hamstrings]
+        case "Single-leg Romanian deadlift":
+            [.hamstrings, .gluteusMaximus, .gluteusMedius, .lowerBack]
+        case "External rotation with band":
+            [.rearDeltoids, .sideDeltoids, .upperBack]
+        case "Copenhagen side plank":
+            [.adductors, .obliques, .rectusAbdominis, .gluteusMedius]
         default:
             DetailedMuscleGroup.defaults(primary: primary, secondary: secondary)
         }
@@ -621,6 +659,289 @@ enum ExerciseLibrary {
             equipment: .bodyweight,
             station: .mat,
             kind: .stretch,
+            isKneeFriendly: false,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Jog, side shuffle, back pedal",
+            primaryMuscleGroup: .legs,
+            secondaryMuscleGroups: [.glutes],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            kind: .stretch,
+            isKneeFriendly: false,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Arm circles to scapular hugs",
+            primaryMuscleGroup: .shoulders,
+            secondaryMuscleGroups: [.back, .chest],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Front and lateral leg swings",
+            primaryMuscleGroup: .legs,
+            secondaryMuscleGroups: [.glutes],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            kind: .stretch,
+            isKneeFriendly: false,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Walking lunge, reach, calf raise",
+            primaryMuscleGroup: .legs,
+            secondaryMuscleGroups: [.glutes],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            kind: .stretch,
+            isKneeFriendly: false,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "High knees, butt kicks, pogo hops",
+            primaryMuscleGroup: .legs,
+            secondaryMuscleGroups: [.glutes],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            kind: .stretch,
+            isKneeFriendly: false,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Shadow bat, throw, bowl ramp",
+            primaryMuscleGroup: .core,
+            secondaryMuscleGroups: [.shoulders, .glutes, .legs],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Wrist rolls and finger pumps",
+            primaryMuscleGroup: .biceps,
+            secondaryMuscleGroups: [],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Shadow batting hip turn",
+            primaryMuscleGroup: .core,
+            secondaryMuscleGroups: [.glutes, .back],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Crease shuffle to sprint start",
+            primaryMuscleGroup: .legs,
+            secondaryMuscleGroups: [.glutes],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            kind: .stretch,
+            isKneeFriendly: false,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Standing thoracic openers",
+            primaryMuscleGroup: .core,
+            secondaryMuscleGroups: [.back, .shoulders],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Wrist rolls and bat grip pulses",
+            primaryMuscleGroup: .biceps,
+            secondaryMuscleGroups: [],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Bowling walk-through build-ups",
+            primaryMuscleGroup: .shoulders,
+            secondaryMuscleGroups: [.core, .glutes, .legs],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            kind: .stretch,
+            isKneeFriendly: false,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Thoracic rotations with reach",
+            primaryMuscleGroup: .core,
+            secondaryMuscleGroups: [.back, .shoulders],
+            equipment: .bodyweight,
+            station: .mat,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Single-leg balance to calf pop",
+            primaryMuscleGroup: .legs,
+            secondaryMuscleGroups: [.glutes],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            kind: .stretch,
+            isKneeFriendly: false,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Scapular wall slides or swimmers",
+            primaryMuscleGroup: .shoulders,
+            secondaryMuscleGroups: [.back],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Slow walk with nasal breathing",
+            primaryMuscleGroup: .legs,
+            secondaryMuscleGroups: [],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Half-kneeling hip flexor and quad",
+            primaryMuscleGroup: .legs,
+            secondaryMuscleGroups: [.glutes, .core],
+            equipment: .bodyweight,
+            station: .mat,
+            kind: .stretch,
+            isKneeFriendly: false,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Forearm flexor and extensor stretch",
+            primaryMuscleGroup: .biceps,
+            secondaryMuscleGroups: [],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Open-book trunk rotation",
+            primaryMuscleGroup: .core,
+            secondaryMuscleGroups: [.back, .chest],
+            equipment: .bodyweight,
+            station: .mat,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Bat grip forearm release",
+            primaryMuscleGroup: .biceps,
+            secondaryMuscleGroups: [],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Overhead lat and triceps side stretch",
+            primaryMuscleGroup: .back,
+            secondaryMuscleGroups: [.triceps, .core],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            kind: .stretch,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Adductor rock-back hold",
+            primaryMuscleGroup: .legs,
+            secondaryMuscleGroups: [.glutes],
+            equipment: .bodyweight,
+            station: .mat,
+            kind: .stretch,
+            isKneeFriendly: false,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Medicine ball rotational throw",
+            primaryMuscleGroup: .core,
+            secondaryMuscleGroups: [.glutes, .shoulders],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            isKneeFriendly: true,
+            isShoulderFriendly: false
+        ),
+        ExerciseDefinition(
+            name: "Split squat",
+            primaryMuscleGroup: .legs,
+            secondaryMuscleGroups: [.glutes, .core],
+            equipment: .dumbbell,
+            station: .dumbbellRack,
+            isKneeFriendly: false,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Single-leg Romanian deadlift",
+            primaryMuscleGroup: .legs,
+            secondaryMuscleGroups: [.glutes, .back],
+            equipment: .dumbbell,
+            station: .dumbbellRack,
+            isKneeFriendly: false,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Cable Woodchop",
+            primaryMuscleGroup: .core,
+            secondaryMuscleGroups: [.shoulders, .glutes],
+            equipment: .cable,
+            station: .cableStack,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Lateral lunge",
+            primaryMuscleGroup: .legs,
+            secondaryMuscleGroups: [.glutes, .core],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            isKneeFriendly: false,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "External rotation with band",
+            primaryMuscleGroup: .shoulders,
+            secondaryMuscleGroups: [.back],
+            equipment: .bodyweight,
+            station: .bodyweight,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        ),
+        ExerciseDefinition(
+            name: "Copenhagen side plank",
+            primaryMuscleGroup: .legs,
+            secondaryMuscleGroups: [.core, .glutes],
+            equipment: .bodyweight,
+            station: .mat,
             isKneeFriendly: false,
             isShoulderFriendly: true
         )

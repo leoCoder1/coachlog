@@ -45,6 +45,8 @@
 		8B0000000000000000000236 /* CoachAuthSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000136 /* CoachAuthSession.swift */; };
 		8B0000000000000000000237 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000137 /* SignInView.swift */; };
 		8B0000000000000000000238 /* LocalAccountDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000138 /* LocalAccountDataStore.swift */; };
+		8B0000000000000000000239 /* SportsPrepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000139 /* SportsPrepView.swift */; };
+		8B000000000000000000023A /* SportsTrainingLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B000000000000000000013A /* SportsTrainingLibrary.swift */; };
 		8B0000000000000000000306 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000305 /* PrivacyInfo.xcprivacy */; };
 		8B0000000000000000000401 /* exercise-biceps-curl.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000411 /* exercise-biceps-curl.mp4 */; };
 		8B0000000000000000000402 /* exercise-cable-chest-fly.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B0000000000000000000412 /* exercise-cable-chest-fly.mp4 */; };
@@ -105,6 +107,8 @@
 		8B0000000000000000000136 /* CoachAuthSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachAuthSession.swift; sourceTree = "<group>"; };
 		8B0000000000000000000137 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		8B0000000000000000000138 /* LocalAccountDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAccountDataStore.swift; sourceTree = "<group>"; };
+		8B0000000000000000000139 /* SportsPrepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsPrepView.swift; sourceTree = "<group>"; };
+		8B000000000000000000013A /* SportsTrainingLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsTrainingLibrary.swift; sourceTree = "<group>"; };
 		8B0000000000000000000301 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8B0000000000000000000303 /* CoachLog.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CoachLog.entitlements; sourceTree = "<group>"; };
 		8B0000000000000000000304 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -253,6 +257,7 @@
 				8B0000000000000000000137 /* SignInView.swift */,
 				8B0000000000000000000121 /* SharedViews.swift */,
 				8B0000000000000000000122 /* TodayCoachView.swift */,
+				8B0000000000000000000139 /* SportsPrepView.swift */,
 				8B0000000000000000000134 /* SavedWorkoutsView.swift */,
 				8B0000000000000000000123 /* WorkoutSessionView.swift */,
 				8B0000000000000000000132 /* ExerciseLibraryView.swift */,
@@ -271,6 +276,7 @@
 				8B0000000000000000000112 /* DataSeeder.swift */,
 				8B0000000000000000000135 /* HealthKitRecoverySync.swift */,
 				8B0000000000000000000138 /* LocalAccountDataStore.swift */,
+				8B000000000000000000013A /* SportsTrainingLibrary.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -392,6 +398,8 @@
 				8B0000000000000000000236 /* CoachAuthSession.swift in Sources */,
 				8B0000000000000000000237 /* SignInView.swift in Sources */,
 				8B0000000000000000000238 /* LocalAccountDataStore.swift in Sources */,
+				8B0000000000000000000239 /* SportsPrepView.swift in Sources */,
+				8B000000000000000000023A /* SportsTrainingLibrary.swift in Sources */,
 				8B0000000000000000000221 /* SharedViews.swift in Sources */,
 				8B0000000000000000000222 /* TodayCoachView.swift in Sources */,
 				8B0000000000000000000223 /* WorkoutSessionView.swift in Sources */,

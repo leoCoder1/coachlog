@@ -104,6 +104,8 @@ struct ContentView: View {
         switch selectedTab {
         case .coach:
             TodayCoachView()
+        case .sports:
+            SportsPrepView()
         case .freshness:
             MuscleFreshnessDashboardView()
         case .library:
@@ -118,6 +120,7 @@ struct ContentView: View {
 
 private enum CoachTab: String, CaseIterable, Identifiable {
     case coach = "Coach"
+    case sports = "Sports"
     case freshness = "Freshness"
     case library = "Library"
     case progress = "Progress"
@@ -128,6 +131,7 @@ private enum CoachTab: String, CaseIterable, Identifiable {
     var iconName: String {
         switch self {
         case .coach: "sparkles"
+        case .sports: "figure.run"
         case .freshness: "figure.strengthtraining.traditional"
         case .library: "list.bullet.rectangle"
         case .progress: "chart.xyaxis.line"
@@ -152,6 +156,8 @@ private struct CoachTabBar: View {
 
                         Text(tab.rawValue)
                             .font(.caption2.weight(.semibold))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.72)
                     }
                     .foregroundStyle(selectedTab == tab ? Color.coachAccent : Color.coachSecondaryText)
                     .frame(maxWidth: .infinity, minHeight: 52)
