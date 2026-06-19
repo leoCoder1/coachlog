@@ -266,7 +266,7 @@ struct SettingsView: View {
 
                 Toggle(isOn: $healthKitAutoImportEnabled) {
                     VStack(alignment: .leading, spacing: 3) {
-                        Text("Daily auto-import")
+                        Text("HealthKit auto-sync")
                             .font(.subheadline.weight(.semibold))
 
                         Text(lastHealthKitImportText)
@@ -474,11 +474,11 @@ struct SettingsView: View {
 
     private var lastHealthKitImportText: String {
         guard lastHealthKitAutoImportTime > 0 else {
-            return "Syncs once per day after HealthKit is connected."
+            return "Syncs when you open CoachLog and once daily in background."
         }
 
         let date = Date(timeIntervalSince1970: lastHealthKitAutoImportTime)
-        return "Last sync \(date.formatted(date: .abbreviated, time: .shortened))"
+        return "Last HealthKit sync \(date.formatted(date: .abbreviated, time: .shortened))"
     }
 
     private func importHealthKitRecovery(enableDailyImportOnSuccess: Bool = false) async {

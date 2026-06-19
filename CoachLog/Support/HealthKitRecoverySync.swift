@@ -6,10 +6,16 @@ enum HealthKitRecoverySync {
     static let autoImportEnabledKey = "healthKitRecoveryAutoImportEnabled"
     static let lastAutoImportDateKey = "healthKitRecoveryLastAutoImportDate"
     static let backgroundRefreshTaskIdentifier = "com.machvect.CoachLog.healthkit-refresh"
+    static let foregroundImportMinimumInterval: TimeInterval = 30 * 60
 
     static func shouldAutoImport(lastImportDate: Date?, now: Date = .now) -> Bool {
         guard let lastImportDate else { return true }
         return !Calendar.current.isDate(lastImportDate, inSameDayAs: now)
+    }
+
+    static func shouldForegroundImport(lastImportDate: Date?, now: Date = .now) -> Bool {
+        guard let lastImportDate else { return true }
+        return now.timeIntervalSince(lastImportDate) >= foregroundImportMinimumInterval
     }
 
     @MainActor

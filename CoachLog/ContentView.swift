@@ -3,9 +3,11 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.scenePhase) private var scenePhase
     @State private var didSeed = false
     @State private var didValidateAppleCredential = false
     @State private var healthKitManager = HealthKitManager()
+    @State private var isHealthKitImportRunning = false
     @State private var selectedTab: CoachTab = .coach
     @AppStorage(CoachAuthKeys.isSignedIn) private var isSignedIn = false
     @AppStorage(CoachAuthKeys.appleUserID) private var appleUserID = ""
@@ -38,10 +40,17 @@ struct ContentView: View {
                 DataSeeder.seedExercisesIfNeeded(in: modelContext)
             }
 
-            await autoImportHealthKitRecoveryIfNeeded()
+            await importHealthKitRecoveryOnForegroundIfNeeded()
 
             if healthKitAutoImportEnabled {
                 HealthKitRecoverySync.scheduleBackgroundRefresh()
+            }
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            guard isSignedIn, newPhase == .active else { return }
+
+            Task {
+                await importHealthKitRecoveryOnForegroundIfNeeded()
             }
         }
     }
@@ -77,8 +86,10 @@ struct ContentView: View {
         }
     }
 
-    private func autoImportHealthKitRecoveryIfNeeded() async {
-        guard healthKitAutoImportEnabled, healthKitManager.isHealthDataAvailable else {
+    private func importHealthKitRecoveryOnForegroundIfNeeded() async {
+        guard healthKitAutoImportEnabled,
+              healthKitManager.isHealthDataAvailable,
+              !isHealthKitImportRunning else {
             return
         }
 
@@ -86,9 +97,12 @@ struct ContentView: View {
             ? Date(timeIntervalSince1970: lastHealthKitAutoImportTime)
             : nil
 
-        guard HealthKitRecoverySync.shouldAutoImport(lastImportDate: lastImportDate) else {
+        guard HealthKitRecoverySync.shouldForegroundImport(lastImportDate: lastImportDate) else {
             return
         }
+
+        isHealthKitImportRunning = true
+        defer { isHealthKitImportRunning = false }
 
         let result = await healthKitManager.importRecoverySnapshot()
         guard let snapshot = result.snapshot else {
