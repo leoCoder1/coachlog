@@ -161,7 +161,7 @@ struct BodyMeasurementReminderCard: View {
                 }
 
                 if changes.isEmpty {
-                    Text("Build a baseline now, then CoachLog will compare waist, abdomen, chest, biceps, and thigh every few weeks.")
+                    Text("Build a baseline now, then AI Trainer Log will compare waist, abdomen, chest, biceps, and thigh every few weeks.")
                         .font(.subheadline)
                         .foregroundStyle(Color.coachSecondaryText)
                         .fixedSize(horizontal: false, vertical: true)

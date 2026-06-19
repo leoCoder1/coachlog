@@ -77,7 +77,7 @@ final class HealthKitManager {
         )
 
         guard !importedMetricKeys.isEmpty else {
-            lastImportMessage = "No HealthKit recovery samples were returned. Check Apple Health > Sharing > Apps > CoachLog and confirm Sleep, Resting Heart Rate, and HRV are enabled."
+            lastImportMessage = "No HealthKit recovery samples were returned. Check Apple Health > Sharing > Apps > AI Trainer Log and confirm Sleep, Resting Heart Rate, and HRV are enabled."
             return RecoveryImportResult(snapshot: nil, message: lastImportMessage, importedMetricCount: 0)
         }
 

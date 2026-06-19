@@ -79,7 +79,7 @@ struct SettingsView: View {
                         .foregroundStyle(aiPremiumStatusColor)
                 }
 
-                Text("Premium coaching sends workout, recovery, and progress summaries to your backend endpoint. LLM API keys stay server-side and are never bundled in CoachLog.")
+                Text("Premium coaching sends workout, recovery, and progress summaries to your backend endpoint. LLM API keys stay server-side and are never bundled in AI Trainer Log.")
                     .font(.subheadline)
                     .foregroundStyle(Color.coachSecondaryText)
                     .fixedSize(horizontal: false, vertical: true)
@@ -89,7 +89,7 @@ struct SettingsView: View {
                         Text("Use AI coach")
                             .font(.subheadline.weight(.semibold))
 
-                        Text(aiPremiumEnabled ? "Remote AI will personalize coaching when an endpoint is configured." : "CoachLog will use local rule-based coaching.")
+                        Text(aiPremiumEnabled ? "Remote AI will personalize coaching when an endpoint is configured." : "AI Trainer Log will use local rule-based coaching.")
                             .font(.caption)
                             .foregroundStyle(Color.coachSecondaryText)
                             .fixedSize(horizontal: false, vertical: true)
@@ -211,7 +211,7 @@ struct SettingsView: View {
                     )
                 }
 
-                Text("Existing logs stay unchanged; CoachLog only converts the values you see and enter.")
+                Text("Existing logs stay unchanged; AI Trainer Log only converts the values you see and enter.")
                     .font(.caption)
                     .foregroundStyle(Color.coachSecondaryText)
                     .fixedSize(horizontal: false, vertical: true)
@@ -238,7 +238,7 @@ struct SettingsView: View {
                     .pickerStyle(.segmented)
                 }
 
-                Text("CoachLog opens the Sports tab with this sport selected. Cricket routines are available now; other sport libraries can be added next.")
+                Text("AI Trainer Log opens the Sports tab with this sport selected. Cricket routines are available now; other sport libraries can be added next.")
                     .font(.caption)
                     .foregroundStyle(Color.coachSecondaryText)
                     .fixedSize(horizontal: false, vertical: true)
@@ -432,7 +432,7 @@ struct SettingsView: View {
 
         return isSignedIn
             ? "Your workout data currently stays on this device."
-            : "Sign in with Apple to use CoachLog."
+            : "Sign in with Apple to use AI Trainer Log."
     }
 
     private var isAIEndpointConfigured: Bool {
@@ -474,7 +474,7 @@ struct SettingsView: View {
 
     private var lastHealthKitImportText: String {
         guard lastHealthKitAutoImportTime > 0 else {
-            return "Syncs when you open CoachLog and once daily in background."
+            return "Syncs when you open AI Trainer Log and once daily in background."
         }
 
         let date = Date(timeIntervalSince1970: lastHealthKitAutoImportTime)

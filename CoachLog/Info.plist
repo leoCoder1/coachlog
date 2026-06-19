@@ -9,7 +9,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>CoachLog</string>
+	<string>AI Trainer Log</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -33,9 +33,9 @@
 	<key>NSAccentColorName</key>
 	<string>AccentColor</string>
 	<key>NSHealthShareUsageDescription</key>
-	<string>CoachLog reads recovery and body metrics to adjust workout recommendations.</string>
+	<string>AI Trainer Log reads recovery and body metrics to adjust workout recommendations.</string>
 	<key>NSHealthUpdateUsageDescription</key>
-	<string>CoachLog may save workout data when HealthKit integration is enabled.</string>
+	<string>AI Trainer Log may save workout data when HealthKit integration is enabled.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

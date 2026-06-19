@@ -104,7 +104,7 @@ enum ProgressViewModel {
         }
 
         if cards.isEmpty {
-            cards.append("Log a few workouts and CoachLog will start finding useful progress signals.")
+            cards.append("Log a few workouts and AI Trainer Log will start finding useful progress signals.")
         }
 
         return cards
