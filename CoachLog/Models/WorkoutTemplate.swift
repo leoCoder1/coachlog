@@ -8,6 +8,7 @@ final class WorkoutTemplate {
     var createdAt: Date
     var updatedAt: Date
     var goalRaw: String
+    var scheduledWeekdayRaw: String?
 
     @Relationship(deleteRule: .cascade)
     var templateExercises: [WorkoutTemplateExercise]
@@ -18,6 +19,7 @@ final class WorkoutTemplate {
         createdAt: Date = .now,
         updatedAt: Date = .now,
         goal: FitnessGoal = .generalFitness,
+        scheduledWeekday: WorkoutWeekday? = nil,
         templateExercises: [WorkoutTemplateExercise] = []
     ) {
         self.id = id
@@ -25,12 +27,25 @@ final class WorkoutTemplate {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.goalRaw = goal.rawValue
+        self.scheduledWeekdayRaw = scheduledWeekday?.rawValue
         self.templateExercises = templateExercises
     }
 
     var goal: FitnessGoal {
         get { FitnessGoal(rawValue: goalRaw) ?? .generalFitness }
         set { goalRaw = newValue.rawValue }
+    }
+
+    var scheduledWeekday: WorkoutWeekday? {
+        get {
+            guard let scheduledWeekdayRaw else { return nil }
+            return WorkoutWeekday(rawValue: scheduledWeekdayRaw)
+        }
+        set { scheduledWeekdayRaw = newValue?.rawValue }
+    }
+
+    var scheduleLabel: String {
+        scheduledWeekday?.rawValue ?? "Any day"
     }
 
     var orderedExercises: [WorkoutTemplateExercise] {
@@ -157,6 +172,25 @@ final class WorkoutTemplateExercise {
             targetRepsLower: targetRepsLower,
             targetRepsUpper: targetRepsUpper,
             coachingNote: "From your saved workout."
+        )
+    }
+
+    convenience init(plannedExercise: PlannedExercise, orderIndex: Int) {
+        self.init(
+            sourceExerciseID: nil,
+            orderIndex: orderIndex,
+            exerciseName: plannedExercise.name,
+            primaryMuscleGroup: plannedExercise.muscleGroup,
+            secondaryMuscleGroups: plannedExercise.secondaryMuscleGroups,
+            equipment: plannedExercise.equipment,
+            station: plannedExercise.station,
+            primaryDetailedMuscle: plannedExercise.primaryDetailedMuscle,
+            secondaryDetailedMuscle: plannedExercise.secondaryDetailedMuscle,
+            kind: plannedExercise.kind,
+            targetSets: plannedExercise.targetSets,
+            targetRepsLower: plannedExercise.targetRepsLower,
+            targetRepsUpper: plannedExercise.targetRepsUpper,
+            coachingNote: plannedExercise.coachingNote
         )
     }
 

@@ -9,6 +9,8 @@ struct TodayCoachView: View {
     @Query(sort: \WorkoutTemplate.updatedAt, order: .reverse) private var workoutTemplates: [WorkoutTemplate]
     @State private var viewModel = TodayCoachViewModel()
     @State private var isShowingMeasurementCheckIn = false
+    @State private var isShowingWorkoutSuggestion = false
+    @State private var isShowingWeeklyPlanBuilder = false
     @State private var workoutBuilderRoute: WorkoutBuilderRoute?
     private let freshnessEngine = MuscleFreshnessEngine()
 
@@ -19,20 +21,18 @@ struct TodayCoachView: View {
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 18) {
-                        header
-                        selectors
-                        recoveryCard
-                        bodyCheckInCard
+                        readinessCard
                         savedWorkoutsCard
-                        generateButton
-                        weeklyLoadCard
+                        suggestTodayButton
                         generatedPlanCard
+                        weeklyLoadCard
+                        bodyCheckInCard
                     }
                     .padding()
                     .padding(.bottom, CoachLayout.bottomScrollPadding)
                 }
             }
-            .navigationTitle("Coach")
+            .navigationTitle("Train")
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color.coachBackground, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
@@ -44,10 +44,27 @@ struct TodayCoachView: View {
             .sheet(isPresented: $isShowingMeasurementCheckIn) {
                 BodyMeasurementCheckInView(latestMeasurement: bodyMeasurements.first)
             }
+            .sheet(isPresented: $isShowingWorkoutSuggestion) {
+                TodayWorkoutSuggestionSheet(
+                    viewModel: viewModel,
+                    sessions: sessions,
+                    latestRecovery: recoverySnapshots.first
+                )
+            }
+            .sheet(isPresented: $isShowingWeeklyPlanBuilder) {
+                WeeklyWorkoutPlanBuilderView()
+            }
             .sheet(item: $workoutBuilderRoute) { route in
-                SavedWorkoutBuilderView(template: route.template)
+                SavedWorkoutBuilderView(
+                    template: route.template,
+                    defaultWeekday: route.defaultWeekday
+                )
             }
         }
+    }
+
+    private var todayWeekday: WorkoutWeekday {
+        WorkoutWeekday.today()
     }
 
     private var currentWorkoutContext: WorkoutContext {
@@ -60,98 +77,8 @@ struct TodayCoachView: View {
         )
     }
 
-    private var header: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Ready to train?")
-                .font(.system(size: 42, weight: .black, design: .rounded))
-                .lineLimit(2)
-
-            Text("Log less. Progress more.")
-                .font(.title3)
-                .foregroundStyle(Color.coachSecondaryText)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.top, 8)
-    }
-
-    private var selectors: some View {
-        CoachCard {
-            VStack(alignment: .leading, spacing: 18) {
-                selectorSection("Time") {
-                    Picker("Time", selection: $viewModel.selectedMinutes) {
-                        ForEach(AvailableMinutes.allCases) { minutes in
-                            Text(minutes.displayName).tag(minutes)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                    .tint(Color.coachAccent)
-                }
-
-                selectorSection("Energy") {
-                    Picker("Energy", selection: $viewModel.selectedEnergy) {
-                        ForEach(EnergyLevel.allCases) { energy in
-                            Text(energy.displayName).tag(energy)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                    .tint(Color.coachAccent)
-                }
-
-                selectorSection("Pain") {
-                    Picker("Pain", selection: $viewModel.selectedPain) {
-                        ForEach(PainFlag.allCases) { pain in
-                            Text(pain.displayName).tag(pain)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                    .tint(Color.coachAccent)
-                }
-
-                HStack {
-                    Label("Goal", systemImage: "target")
-                        .font(.headline)
-
-                    Spacer()
-
-                    Picker("Goal", selection: $viewModel.selectedGoal) {
-                        ForEach(FitnessGoal.allCases) { goal in
-                            Text(goal.displayName).tag(goal)
-                        }
-                    }
-                }
-            }
-        }
-        .onChange(of: viewModel.selectedMinutes) { _, _ in viewModel.clearGeneratedPlan() }
-        .onChange(of: viewModel.selectedEnergy) { _, _ in viewModel.clearGeneratedPlan() }
-        .onChange(of: viewModel.selectedPain) { _, _ in viewModel.clearGeneratedPlan() }
-        .onChange(of: viewModel.selectedGoal) { _, _ in viewModel.clearGeneratedPlan() }
-    }
-
-    private var recoveryCard: some View {
-        CoachCard {
-            HStack(spacing: 14) {
-                Image(systemName: "heart.text.square")
-                    .font(.title2)
-                    .foregroundStyle(Color.coachAccent)
-
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Recovery")
-                        .font(.headline)
-
-                    if let latest = recoverySnapshots.first {
-                        Text("\(latest.sleepHours.formatted(.number.precision(.fractionLength(1)))) hr sleep · \(latest.readinessScore) readiness")
-                            .font(.subheadline)
-                            .foregroundStyle(Color.coachSecondaryText)
-                    } else {
-                        Text("No recovery snapshot yet")
-                            .font(.subheadline)
-                            .foregroundStyle(Color.coachSecondaryText)
-                    }
-                }
-
-                Spacer()
-            }
-        }
+    private var readinessCard: some View {
+        ReadinessOverviewCard(snapshot: recoverySnapshots.first)
     }
 
     private var weeklyLoadCard: some View {
@@ -200,27 +127,26 @@ struct TodayCoachView: View {
         SavedWorkoutTemplateSection(
             templates: workoutTemplates,
             context: currentWorkoutContext,
-            onCreate: {
-                workoutBuilderRoute = WorkoutBuilderRoute(template: nil)
+            today: todayWeekday,
+            onCreate: { defaultWeekday in
+                workoutBuilderRoute = WorkoutBuilderRoute(template: nil, defaultWeekday: defaultWeekday)
+            },
+            onCreateWeekly: {
+                isShowingWeeklyPlanBuilder = true
             },
             onEdit: { template in
-                workoutBuilderRoute = WorkoutBuilderRoute(template: template)
+                workoutBuilderRoute = WorkoutBuilderRoute(template: template, defaultWeekday: nil)
             },
             onDelete: deleteTemplate
         )
     }
 
-    private var generateButton: some View {
+    private var suggestTodayButton: some View {
         Button {
-            Task {
-                await viewModel.generateWorkout(
-                    sessions: sessions,
-                    latestRecovery: recoverySnapshots.first
-                )
-            }
+            isShowingWorkoutSuggestion = true
         } label: {
             Label(
-                viewModel.isGenerating ? "Generating" : "Generate Today's Workout",
+                viewModel.isGenerating ? "Building Suggestion" : "Suggest Today's Workout",
                 systemImage: "wand.and.stars"
             )
             .font(.headline)
@@ -270,6 +196,264 @@ struct TodayCoachView: View {
         }
     }
 
+    private func deleteTemplate(_ template: WorkoutTemplate) {
+        modelContext.delete(template)
+        try? modelContext.save()
+    }
+}
+
+private struct ReadinessOverviewCard: View {
+    var snapshot: RecoverySnapshot?
+
+    private var score: Int? {
+        snapshot?.readinessScore
+    }
+
+    private var statusTitle: String {
+        guard let score else { return "No Snapshot" }
+
+        switch score {
+        case 75...:
+            return "Ready"
+        case 60..<75:
+            return "Steady"
+        default:
+            return "Recover"
+        }
+    }
+
+    private var statusColor: Color {
+        guard let score else { return Color.coachAccent }
+
+        switch score {
+        case 75...:
+            return Color.freshness(.ready)
+        case 60..<75:
+            return Color.coachWarm
+        default:
+            return Color.freshness(.caution)
+        }
+    }
+
+    private var scoreText: String {
+        score.map(String.init) ?? "--"
+    }
+
+    var body: some View {
+        CoachCard {
+            VStack(alignment: .leading, spacing: 16) {
+                HStack(alignment: .center, spacing: 14) {
+                    ZStack {
+                        Circle()
+                            .stroke(Color.coachSurfaceMuted, lineWidth: 8)
+                            .frame(width: 82, height: 82)
+
+                        if let score {
+                            Circle()
+                                .trim(from: 0, to: CGFloat(score) / 100)
+                                .stroke(statusColor, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+                                .rotationEffect(.degrees(-90))
+                                .frame(width: 82, height: 82)
+                        }
+
+                        VStack(spacing: 0) {
+                            Text(scoreText)
+                                .font(.system(size: 28, weight: .black, design: .rounded))
+                                .lineLimit(1)
+
+                            Text("score")
+                                .font(.caption2.weight(.semibold))
+                                .foregroundStyle(Color.coachSecondaryText)
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Readiness")
+                            .font(.headline)
+
+                        Text(statusTitle)
+                            .font(.title2.weight(.black))
+                            .foregroundStyle(statusColor)
+
+                        Text(snapshot == nil ? "No recovery snapshot yet" : "Recovery stats for today's training decision")
+                            .font(.subheadline)
+                            .foregroundStyle(Color.coachSecondaryText)
+                            .lineLimit(2)
+                    }
+
+                    Spacer(minLength: 0)
+                }
+
+                HStack(spacing: 8) {
+                    ReadinessMetricPill(
+                        title: "Sleep",
+                        value: sleepValue,
+                        iconName: "bed.double.fill"
+                    )
+
+                    ReadinessMetricPill(
+                        title: "RHR",
+                        value: restingHeartRateValue,
+                        iconName: "heart.fill"
+                    )
+
+                    ReadinessMetricPill(
+                        title: "HRV",
+                        value: hrvValue,
+                        iconName: "waveform.path.ecg"
+                    )
+                }
+            }
+        }
+    }
+
+    private var sleepValue: String {
+        guard let snapshot, snapshot.displaysMetric(.sleep) else { return "--" }
+        return "\(snapshot.sleepHours.formatted(.number.precision(.fractionLength(1))))h"
+    }
+
+    private var restingHeartRateValue: String {
+        guard let snapshot, snapshot.displaysMetric(.restingHeartRate) else { return "--" }
+        return "\(snapshot.restingHeartRate.formatted(.number.precision(.fractionLength(0))))"
+    }
+
+    private var hrvValue: String {
+        guard let snapshot, snapshot.displaysMetric(.hrv) else { return "--" }
+        return "\(snapshot.hrv.formatted(.number.precision(.fractionLength(0))))"
+    }
+}
+
+private struct ReadinessMetricPill: View {
+    var title: String
+    var value: String
+    var iconName: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Label(title, systemImage: iconName)
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(Color.coachSecondaryText)
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
+
+            Text(value)
+                .font(.headline.weight(.bold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(10)
+        .background(Color.coachSurfaceElevated)
+        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .stroke(Color.coachBorder, lineWidth: 1)
+        }
+    }
+}
+
+private struct TodayWorkoutSuggestionSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @Bindable var viewModel: TodayCoachViewModel
+    var sessions: [WorkoutSession]
+    var latestRecovery: RecoverySnapshot?
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                CoachScreenBackground()
+
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+                        CoachCard {
+                            VStack(alignment: .leading, spacing: 18) {
+                                selectorSection("Time") {
+                                    Picker("Time", selection: $viewModel.selectedMinutes) {
+                                        ForEach(AvailableMinutes.allCases) { minutes in
+                                            Text(minutes.displayName).tag(minutes)
+                                        }
+                                    }
+                                    .pickerStyle(.segmented)
+                                    .tint(Color.coachAccent)
+                                }
+
+                                selectorSection("Energy") {
+                                    Picker("Energy", selection: $viewModel.selectedEnergy) {
+                                        ForEach(EnergyLevel.allCases) { energy in
+                                            Text(energy.displayName).tag(energy)
+                                        }
+                                    }
+                                    .pickerStyle(.segmented)
+                                    .tint(Color.coachAccent)
+                                }
+
+                                selectorSection("Pain") {
+                                    Picker("Pain", selection: $viewModel.selectedPain) {
+                                        ForEach(PainFlag.allCases) { pain in
+                                            Text(pain.displayName).tag(pain)
+                                        }
+                                    }
+                                    .pickerStyle(.segmented)
+                                    .tint(Color.coachAccent)
+                                }
+
+                                HStack {
+                                    Label("Goal", systemImage: "target")
+                                        .font(.headline)
+
+                                    Spacer()
+
+                                    Picker("Goal", selection: $viewModel.selectedGoal) {
+                                        ForEach(FitnessGoal.allCases) { goal in
+                                            Text(goal.displayName).tag(goal)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        .onChange(of: viewModel.selectedMinutes) { _, _ in viewModel.clearGeneratedPlan() }
+                        .onChange(of: viewModel.selectedEnergy) { _, _ in viewModel.clearGeneratedPlan() }
+                        .onChange(of: viewModel.selectedPain) { _, _ in viewModel.clearGeneratedPlan() }
+                        .onChange(of: viewModel.selectedGoal) { _, _ in viewModel.clearGeneratedPlan() }
+
+                        Button {
+                            Task {
+                                await viewModel.generateWorkout(
+                                    sessions: sessions,
+                                    latestRecovery: latestRecovery
+                                )
+                                dismiss()
+                            }
+                        } label: {
+                            Label(
+                                viewModel.isGenerating ? "Thinking" : "Suggest Workout",
+                                systemImage: "sparkles"
+                            )
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                        }
+                        .buttonStyle(CoachPrimaryButtonStyle())
+                        .disabled(viewModel.isGenerating)
+                    }
+                    .padding()
+                    .padding(.bottom, 24)
+                }
+            }
+            .navigationTitle("Suggest Today")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+        .presentationDetents([.large])
+        .preferredColorScheme(.dark)
+    }
+
     private func selectorSection<Content: View>(
         _ title: String,
         @ViewBuilder content: () -> Content
@@ -280,16 +464,12 @@ struct TodayCoachView: View {
             content()
         }
     }
-
-    private func deleteTemplate(_ template: WorkoutTemplate) {
-        modelContext.delete(template)
-        try? modelContext.save()
-    }
 }
 
 private struct WorkoutBuilderRoute: Identifiable {
     let id = UUID()
     var template: WorkoutTemplate?
+    var defaultWeekday: WorkoutWeekday?
 }
 
 private struct WeeklyLoadRow: View {

@@ -4,31 +4,71 @@ import SwiftUI
 struct SavedWorkoutTemplateSection: View {
     var templates: [WorkoutTemplate]
     var context: WorkoutContext
-    var onCreate: () -> Void
+    var today: WorkoutWeekday
+    var onCreate: (WorkoutWeekday?) -> Void
+    var onCreateWeekly: () -> Void
     var onEdit: (WorkoutTemplate) -> Void
     var onDelete: (WorkoutTemplate) -> Void
+
+    private var todaysTemplates: [WorkoutTemplate] {
+        sortedTemplates.filter { template in
+            template.scheduledWeekday == today || template.scheduledWeekday == nil
+        }
+    }
+
+    private var otherTemplates: [WorkoutTemplate] {
+        let primaryIDs = Set(todaysTemplates.map(\.id))
+        return sortedTemplates.filter { !primaryIDs.contains($0.id) }
+    }
+
+    private var sortedTemplates: [WorkoutTemplate] {
+        templates.sorted { lhs, rhs in
+            let lhsIndex = lhs.scheduledWeekday.weekSortIndex
+            let rhsIndex = rhs.scheduledWeekday.weekSortIndex
+
+            if lhsIndex == rhsIndex {
+                return lhs.updatedAt > rhs.updatedAt
+            }
+
+            return lhsIndex < rhsIndex
+        }
+    }
+
+    private var subtitle: String {
+        if !todaysTemplates.isEmpty {
+            return "\(today.rawValue) · \(todaysTemplates.count) saved"
+        }
+
+        if templates.isEmpty {
+            return "No plan saved yet"
+        }
+
+        return "No \(today.rawValue) workout saved"
+    }
 
     var body: some View {
         CoachCard {
             VStack(alignment: .leading, spacing: 14) {
                 HStack(spacing: 12) {
-                    Image(systemName: "square.stack.3d.up")
+                    Image(systemName: "calendar.badge.clock")
                         .font(.title2.weight(.semibold))
                         .foregroundStyle(Color.coachAccent)
                         .frame(width: 34)
 
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Your Workouts")
+                        Text("Today's Workout")
                             .font(.headline)
 
-                        Text(templates.isEmpty ? "Saved sets for days you already have a plan" : "\(templates.count) saved")
+                        Text(subtitle)
                             .font(.subheadline)
                             .foregroundStyle(Color.coachSecondaryText)
                     }
 
                     Spacer()
 
-                    Button(action: onCreate) {
+                    Button {
+                        onCreate(today)
+                    } label: {
                         Image(systemName: "plus")
                             .font(.headline)
                             .frame(width: 38, height: 38)
@@ -38,27 +78,111 @@ struct SavedWorkoutTemplateSection: View {
                 }
 
                 if templates.isEmpty {
-                    Button(action: onCreate) {
-                        Label("Create Workout", systemImage: "plus.circle")
+                    Button(action: onCreateWeekly) {
+                        Label("Build Weekly Plan", systemImage: "calendar.badge.plus")
                             .font(.headline)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 12)
                     }
+                    .buttonStyle(CoachPrimaryButtonStyle())
+
+                    Button {
+                        onCreate(today)
+                    } label: {
+                        Label("Create Workout", systemImage: "plus.circle")
+                            .font(.subheadline.weight(.semibold))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 10)
+                    }
                     .buttonStyle(CoachSecondaryButtonStyle())
                 } else {
-                    VStack(spacing: 10) {
-                        ForEach(templates) { template in
-                            SavedWorkoutTemplateRow(
-                                template: template,
-                                context: context,
-                                onEdit: { onEdit(template) },
-                                onDelete: { onDelete(template) }
-                            )
+                    if todaysTemplates.isEmpty {
+                        NoWorkoutTodayView(today: today)
+                    } else {
+                        VStack(spacing: 10) {
+                            ForEach(todaysTemplates) { template in
+                                SavedWorkoutTemplateRow(
+                                    template: template,
+                                    context: context,
+                                    onEdit: { onEdit(template) },
+                                    onDelete: { onDelete(template) }
+                                )
+                            }
+                        }
+                    }
+
+                    Button(action: onCreateWeekly) {
+                        Label("Build Weekly Plan", systemImage: "calendar.badge.plus")
+                            .font(.subheadline.weight(.semibold))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 10)
+                    }
+                    .buttonStyle(CoachSecondaryButtonStyle())
+
+                    if !otherTemplates.isEmpty {
+                        Divider()
+                            .overlay(Color.coachBorder)
+
+                        Text("Other Saved Workouts")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(Color.coachSecondaryText)
+
+                        VStack(spacing: 10) {
+                            ForEach(otherTemplates) { template in
+                                SavedWorkoutTemplateRow(
+                                    template: template,
+                                    context: context,
+                                    onEdit: { onEdit(template) },
+                                    onDelete: { onDelete(template) }
+                                )
+                            }
                         }
                     }
                 }
             }
         }
+    }
+}
+
+private struct NoWorkoutTodayView: View {
+    var today: WorkoutWeekday
+
+    var body: some View {
+        HStack(spacing: 12) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(Color.coachSurfaceElevated)
+                    .frame(width: 42, height: 42)
+
+                Image(systemName: "moon.zzz.fill")
+                    .font(.headline)
+                    .foregroundStyle(Color.coachSecondaryText)
+            }
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("No \(today.shortName) workout")
+                    .font(.headline)
+
+                Text("Use a saved plan from another day or build a weekly plan.")
+                    .font(.subheadline)
+                    .foregroundStyle(Color.coachSecondaryText)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(12)
+        .background(Color.coachSurfaceElevated.opacity(0.72))
+        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .stroke(Color.coachBorder, lineWidth: 1)
+        }
+    }
+}
+
+private extension Optional where Wrapped == WorkoutWeekday {
+    var weekSortIndex: Int {
+        guard let self else { return -1 }
+        return WorkoutWeekday.allCases.firstIndex(of: self) ?? 99
     }
 }
 
@@ -101,11 +225,11 @@ private struct SavedWorkoutTemplateRow: View {
                         .lineLimit(1)
                         .minimumScaleFactor(0.75)
 
-                    Text("\(template.exerciseCountText) · \(template.estimatedMinutes) min · \(template.goal.displayName)")
+                    Text("\(template.scheduleLabel) · \(template.exerciseCountText) · \(template.estimatedMinutes) min · \(template.goal.displayName)")
                         .font(.caption)
                         .foregroundStyle(Color.coachSecondaryText)
                         .lineLimit(1)
-                        .minimumScaleFactor(0.75)
+                        .minimumScaleFactor(0.65)
                 }
 
                 Spacer(minLength: 6)
@@ -171,14 +295,16 @@ struct SavedWorkoutBuilderView: View {
 
     @State private var name: String
     @State private var goal: FitnessGoal
+    @State private var scheduledWeekday: WorkoutWeekday?
     @State private var drafts: [WorkoutTemplateExerciseDraft]
     @State private var isShowingExercisePicker = false
     @State private var saveError: String?
 
-    init(template: WorkoutTemplate? = nil) {
+    init(template: WorkoutTemplate? = nil, defaultWeekday: WorkoutWeekday? = nil) {
         self.template = template
         _name = State(initialValue: template?.name ?? "")
         _goal = State(initialValue: template?.goal ?? .generalFitness)
+        _scheduledWeekday = State(initialValue: template?.scheduledWeekday ?? defaultWeekday)
         _drafts = State(initialValue: template?.orderedExercises.map(WorkoutTemplateExerciseDraft.init(templateExercise:)) ?? [])
     }
 
@@ -260,6 +386,11 @@ struct SavedWorkoutBuilderView: View {
                         Text(goal.displayName).tag(goal)
                     }
                 }
+
+                OptionalWorkoutWeekdayMenu(
+                    title: "Day",
+                    selection: $scheduledWeekday
+                )
             }
         }
     }
@@ -344,12 +475,14 @@ struct SavedWorkoutBuilderView: View {
 
             template.name = trimmedName
             template.goal = goal
+            template.scheduledWeekday = scheduledWeekday
             template.updatedAt = .now
             template.templateExercises = templateExercises
         } else {
             let template = WorkoutTemplate(
                 name: trimmedName,
                 goal: goal,
+                scheduledWeekday: scheduledWeekday,
                 templateExercises: templateExercises
             )
             modelContext.insert(template)
@@ -360,6 +493,395 @@ struct SavedWorkoutBuilderView: View {
             dismiss()
         } catch {
             saveError = error.localizedDescription
+        }
+    }
+}
+
+struct WeeklyWorkoutPlanBuilderView: View {
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+
+    @State private var selectedGoal: FitnessGoal = .buildMuscle
+    @State private var trainingDays = 3
+    @State private var selectedMinutes: AvailableMinutes = .forty
+    @State private var selectedDays = Set([WorkoutWeekday.monday, .wednesday, .friday])
+    @State private var saveError: String?
+
+    private var orderedSelectedDays: [WorkoutWeekday] {
+        selectedDays.orderedByWeek
+    }
+
+    private var canSave: Bool {
+        orderedSelectedDays.count == trainingDays
+    }
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                CoachScreenBackground()
+
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+                        questionsCard
+                        daysCard
+
+                        Button(action: savePlan) {
+                            Label("Save Weekly Plan", systemImage: "checkmark.circle.fill")
+                                .font(.headline)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                        }
+                        .buttonStyle(CoachPrimaryButtonStyle())
+                        .disabled(!canSave)
+                    }
+                    .padding()
+                    .padding(.bottom, 24)
+                }
+            }
+            .navigationTitle("Build Weekly Plan")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+            }
+            .alert("Weekly plan could not be saved", isPresented: .constant(saveError != nil)) {
+                Button("OK") { saveError = nil }
+            } message: {
+                Text(saveError ?? "")
+            }
+            .onChange(of: trainingDays) { _, newValue in
+                selectedDays = Set(Self.defaultDays(for: newValue))
+            }
+        }
+        .presentationDetents([.large])
+        .preferredColorScheme(.dark)
+    }
+
+    private var questionsCard: some View {
+        CoachCard {
+            VStack(alignment: .leading, spacing: 16) {
+                Text("Plan")
+                    .font(.headline)
+
+                Picker("Goal", selection: $selectedGoal) {
+                    ForEach(FitnessGoal.allCases) { goal in
+                        Text(goal.displayName).tag(goal)
+                    }
+                }
+
+                selectorSection("Days per week") {
+                    Picker("Days per week", selection: $trainingDays) {
+                        ForEach(2...5, id: \.self) { dayCount in
+                            Text("\(dayCount)x").tag(dayCount)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .tint(Color.coachAccent)
+                }
+
+                selectorSection("Session length") {
+                    Picker("Session length", selection: $selectedMinutes) {
+                        ForEach(AvailableMinutes.allCases) { minutes in
+                            Text(minutes.displayName).tag(minutes)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .tint(Color.coachAccent)
+                }
+            }
+        }
+    }
+
+    private var daysCard: some View {
+        CoachCard {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Text("Training Days")
+                        .font(.headline)
+
+                    Spacer()
+
+                    Text("\(orderedSelectedDays.count)/\(trainingDays)")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(canSave ? Color.coachAccent : Color.coachWarm)
+                }
+
+                HStack(spacing: 6) {
+                    ForEach(WorkoutWeekday.allCases) { day in
+                        dayButton(day)
+                    }
+                }
+            }
+        }
+    }
+
+    private func selectorSection<Content: View>(
+        _ title: String,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Color.coachSecondaryText)
+            content()
+        }
+    }
+
+    private func dayButton(_ day: WorkoutWeekday) -> some View {
+        let isSelected = selectedDays.contains(day)
+
+        return Button {
+            toggle(day)
+        } label: {
+            Text(day.shortName)
+                .font(.caption.weight(.bold))
+                .foregroundStyle(isSelected ? Color.black.opacity(0.9) : Color.coachSecondaryText)
+                .frame(maxWidth: .infinity, minHeight: 38)
+                .background(isSelected ? AnyShapeStyle(CoachGradient.accent) : AnyShapeStyle(Color.coachSurfaceElevated))
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .stroke(isSelected ? Color.white.opacity(0.18) : Color.coachBorder, lineWidth: 1)
+                }
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func toggle(_ day: WorkoutWeekday) {
+        if selectedDays.contains(day) {
+            guard selectedDays.count > 1 else { return }
+            selectedDays.remove(day)
+            return
+        }
+
+        if selectedDays.count >= trainingDays, let lastDay = orderedSelectedDays.last {
+            selectedDays.remove(lastDay)
+        }
+
+        selectedDays.insert(day)
+    }
+
+    private func savePlan() {
+        guard canSave else { return }
+
+        let days = orderedSelectedDays
+        for (index, day) in days.enumerated() {
+            let focusName = focusTitle(for: index, total: days.count)
+            let plannedExercises = plannedExercises(for: index, total: days.count, day: day)
+            let templateExercises = plannedExercises.enumerated().map { exerciseIndex, exercise in
+                WorkoutTemplateExercise(plannedExercise: exercise, orderIndex: exerciseIndex)
+            }
+
+            let template = WorkoutTemplate(
+                name: "\(day.shortName) \(focusName)",
+                goal: selectedGoal,
+                scheduledWeekday: day,
+                templateExercises: templateExercises
+            )
+            modelContext.insert(template)
+        }
+
+        do {
+            try modelContext.save()
+            dismiss()
+        } catch {
+            saveError = error.localizedDescription
+        }
+    }
+
+    private func plannedExercises(
+        for index: Int,
+        total: Int,
+        day: WorkoutWeekday
+    ) -> [PlannedExercise] {
+        let definitions = exerciseDefinitions(
+            for: focusGroups(for: index, total: total),
+            count: selectedMinutes.exerciseCount
+        )
+        let repRange = targetRepRange(for: selectedGoal)
+        let targetSets = selectedMinutes == .twenty ? 2 : 3
+
+        return definitions.map { definition in
+            PlannedExercise(
+                name: definition.name,
+                muscleGroup: definition.primaryMuscleGroup,
+                secondaryMuscleGroups: definition.secondaryMuscleGroups,
+                primaryDetailedMuscle: definition.primaryDetailedMuscle,
+                secondaryDetailedMuscle: definition.secondaryDetailedMuscle,
+                detailedMuscles: definition.detailedMuscles,
+                equipment: definition.equipment,
+                station: definition.station,
+                kind: definition.kind,
+                targetSets: targetSets,
+                targetRepsLower: repRange.lowerBound,
+                targetRepsUpper: repRange.upperBound,
+                coachingNote: "Planned for \(day.rawValue)'s \(focusTitle(for: index, total: total).lowercased()) session."
+            )
+        }
+    }
+
+    private func exerciseDefinitions(
+        for focusGroups: [MuscleGroup],
+        count: Int
+    ) -> [ExerciseDefinition] {
+        var chosenDefinitions: [ExerciseDefinition] = []
+
+        while chosenDefinitions.count < count {
+            let startingCount = chosenDefinitions.count
+
+            for group in focusGroups {
+                guard chosenDefinitions.count < count else { break }
+                guard let definition = ExerciseLibrary.definitions.first(where: {
+                    $0.kind == .strength
+                    && $0.primaryMuscleGroup == group
+                    && !chosenDefinitions.contains($0)
+                }) else {
+                    continue
+                }
+
+                chosenDefinitions.append(definition)
+            }
+
+            if chosenDefinitions.count == startingCount {
+                break
+            }
+        }
+
+        if chosenDefinitions.count < count {
+            for definition in ExerciseLibrary.definitions where definition.kind == .strength && !chosenDefinitions.contains(definition) {
+                guard chosenDefinitions.count < count else { break }
+                chosenDefinitions.append(definition)
+            }
+        }
+
+        return Array(chosenDefinitions.prefix(count))
+    }
+
+    private func focusGroups(for index: Int, total: Int) -> [MuscleGroup] {
+        switch total {
+        case 2:
+            return [
+                [.legs, .glutes, .chest, .back, .core],
+                [.back, .shoulders, .legs, .biceps, .triceps]
+            ][index]
+        case 3:
+            return [
+                [.legs, .glutes, .core],
+                [.chest, .shoulders, .triceps],
+                [.back, .biceps, .glutes, .core]
+            ][index]
+        case 4:
+            return [
+                [.legs, .glutes],
+                [.chest, .shoulders, .triceps],
+                [.back, .biceps],
+                [.glutes, .legs, .core]
+            ][index]
+        default:
+            return [
+                [.chest, .shoulders, .triceps],
+                [.back, .biceps],
+                [.legs, .glutes],
+                [.core, .shoulders, .triceps],
+                [.glutes, .legs, .back]
+            ][index]
+        }
+    }
+
+    private func focusTitle(for index: Int, total: Int) -> String {
+        switch total {
+        case 2:
+            return ["Full Body A", "Full Body B"][index]
+        case 3:
+            return ["Lower", "Push", "Pull + Core"][index]
+        case 4:
+            return ["Lower", "Push", "Pull", "Lower + Core"][index]
+        default:
+            return ["Push", "Pull", "Legs", "Core + Shoulders", "Posterior Chain"][index]
+        }
+    }
+
+    private func targetRepRange(for goal: FitnessGoal) -> ClosedRange<Int> {
+        switch goal {
+        case .strength:
+            return 5...8
+        case .buildMuscle:
+            return 8...12
+        case .fatLoss:
+            return 10...15
+        case .generalFitness:
+            return 8...12
+        }
+    }
+
+    private static func defaultDays(for dayCount: Int) -> [WorkoutWeekday] {
+        switch dayCount {
+        case 2:
+            return [.monday, .thursday]
+        case 3:
+            return [.monday, .wednesday, .friday]
+        case 4:
+            return [.monday, .tuesday, .thursday, .saturday]
+        default:
+            return [.monday, .tuesday, .wednesday, .friday, .saturday]
+        }
+    }
+}
+
+private extension Set where Element == WorkoutWeekday {
+    var orderedByWeek: [WorkoutWeekday] {
+        WorkoutWeekday.allCases.filter { contains($0) }
+    }
+}
+
+private struct OptionalWorkoutWeekdayMenu: View {
+    var title: String
+    @Binding var selection: WorkoutWeekday?
+
+    private var selectedTitle: String {
+        selection?.rawValue ?? "Any day"
+    }
+
+    var body: some View {
+        Menu {
+            Button("Any day") {
+                selection = nil
+            }
+
+            ForEach(WorkoutWeekday.allCases) { day in
+                Button(day.rawValue) {
+                    selection = day
+                }
+            }
+        } label: {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title)
+                        .font(.caption)
+                        .foregroundStyle(Color.coachSecondaryText)
+
+                    Text(selectedTitle)
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+                }
+
+                Spacer()
+
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Color.coachSecondaryText)
+            }
+            .padding(12)
+            .frame(maxWidth: .infinity, minHeight: 60)
+            .background(Color.coachSurfaceElevated)
+            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .stroke(Color.coachBorder, lineWidth: 1)
+            }
         }
     }
 }
