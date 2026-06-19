@@ -1,49 +1,56 @@
 import SwiftData
 import SwiftUI
+import UIKit
 
-struct SavedWorkoutTemplateSection: View {
+struct TodayWorkoutPlanCard: View {
     var templates: [WorkoutTemplate]
     var context: WorkoutContext
     var today: WorkoutWeekday
-    var onCreate: (WorkoutWeekday?) -> Void
-    var onCreateWeekly: () -> Void
-    var onEdit: (WorkoutTemplate) -> Void
-    var onDelete: (WorkoutTemplate) -> Void
+    var onBuildWeeklyPlan: () -> Void
+    var onManagePlan: () -> Void
 
     private var todaysTemplates: [WorkoutTemplate] {
-        sortedTemplates.filter { template in
-            template.scheduledWeekday == today || template.scheduledWeekday == nil
-        }
+        scheduledTemplates.filter { $0.scheduledWeekday == today }
     }
 
-    private var otherTemplates: [WorkoutTemplate] {
-        let primaryIDs = Set(todaysTemplates.map(\.id))
-        return sortedTemplates.filter { !primaryIDs.contains($0.id) }
+    private var scheduledTemplates: [WorkoutTemplate] {
+        sortedTemplates.filter { $0.scheduledWeekday != nil }
     }
 
     private var sortedTemplates: [WorkoutTemplate] {
-        templates.sorted { lhs, rhs in
-            let lhsIndex = lhs.scheduledWeekday.weekSortIndex
-            let rhsIndex = rhs.scheduledWeekday.weekSortIndex
-
-            if lhsIndex == rhsIndex {
-                return lhs.updatedAt > rhs.updatedAt
-            }
-
-            return lhsIndex < rhsIndex
-        }
+        templates.sortedByWorkoutSchedule
     }
 
-    private var subtitle: String {
+    private var hasWeeklyPlan: Bool {
+        !scheduledTemplates.isEmpty
+    }
+
+    private var nextScheduledTemplate: WorkoutTemplate? {
+        guard hasWeeklyPlan,
+              let todayIndex = WorkoutWeekday.allCases.firstIndex(of: today) else {
+            return nil
+        }
+
+        for offset in 1...WorkoutWeekday.allCases.count {
+            let day = WorkoutWeekday.allCases[(todayIndex + offset) % WorkoutWeekday.allCases.count]
+            if let template = scheduledTemplates.first(where: { $0.scheduledWeekday == day }) {
+                return template
+            }
+        }
+
+        return nil
+    }
+
+    private var subtitleText: String {
         if !todaysTemplates.isEmpty {
-            return "\(today.rawValue) · \(todaysTemplates.count) saved"
+            return "\(today.rawValue) · \(todaysTemplates.count) ready"
         }
 
-        if templates.isEmpty {
-            return "No plan saved yet"
+        if hasWeeklyPlan {
+            return "\(today.rawValue) · rest day"
         }
 
-        return "No \(today.rawValue) workout saved"
+        return "No weekly plan yet"
     }
 
     var body: some View {
@@ -56,86 +63,42 @@ struct SavedWorkoutTemplateSection: View {
                         .frame(width: 34)
 
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Today's Workout")
+                        Text("Today's Plan")
                             .font(.headline)
 
-                        Text(subtitle)
+                        Text(subtitleText)
                             .font(.subheadline)
                             .foregroundStyle(Color.coachSecondaryText)
                     }
 
                     Spacer()
 
-                    Button {
-                        onCreate(today)
-                    } label: {
-                        Image(systemName: "plus")
-                            .font(.headline)
-                            .frame(width: 38, height: 38)
+                    if hasWeeklyPlan {
+                        Button(action: onManagePlan) {
+                            Label("Manage", systemImage: "slider.horizontal.3")
+                                .font(.caption.weight(.semibold))
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 8)
+                        }
+                        .buttonStyle(CoachSecondaryButtonStyle())
                     }
-                    .buttonStyle(CoachSecondaryButtonStyle())
-                    .accessibilityLabel("Create saved workout")
                 }
 
-                if templates.isEmpty {
-                    Button(action: onCreateWeekly) {
-                        Label("Build Weekly Plan", systemImage: "calendar.badge.plus")
-                            .font(.headline)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
-                    }
-                    .buttonStyle(CoachPrimaryButtonStyle())
-
-                    Button {
-                        onCreate(today)
-                    } label: {
-                        Label("Create Workout", systemImage: "plus.circle")
-                            .font(.subheadline.weight(.semibold))
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 10)
-                    }
-                    .buttonStyle(CoachSecondaryButtonStyle())
+                if !hasWeeklyPlan {
+                    WeeklyPlanSetupPrompt(onBuildWeeklyPlan: onBuildWeeklyPlan)
+                } else if todaysTemplates.isEmpty {
+                    NoWorkoutTodayView(
+                        today: today,
+                        nextTemplate: nextScheduledTemplate,
+                        onManagePlan: onManagePlan
+                    )
                 } else {
-                    if todaysTemplates.isEmpty {
-                        NoWorkoutTodayView(today: today)
-                    } else {
-                        VStack(spacing: 10) {
-                            ForEach(todaysTemplates) { template in
-                                SavedWorkoutTemplateRow(
-                                    template: template,
-                                    context: context,
-                                    onEdit: { onEdit(template) },
-                                    onDelete: { onDelete(template) }
-                                )
-                            }
-                        }
-                    }
-
-                    Button(action: onCreateWeekly) {
-                        Label("Build Weekly Plan", systemImage: "calendar.badge.plus")
-                            .font(.subheadline.weight(.semibold))
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 10)
-                    }
-                    .buttonStyle(CoachSecondaryButtonStyle())
-
-                    if !otherTemplates.isEmpty {
-                        Divider()
-                            .overlay(Color.coachBorder)
-
-                        Text("Other Saved Workouts")
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(Color.coachSecondaryText)
-
-                        VStack(spacing: 10) {
-                            ForEach(otherTemplates) { template in
-                                SavedWorkoutTemplateRow(
-                                    template: template,
-                                    context: context,
-                                    onEdit: { onEdit(template) },
-                                    onDelete: { onDelete(template) }
-                                )
-                            }
+                    VStack(spacing: 10) {
+                        ForEach(todaysTemplates) { template in
+                            TodayWorkoutTemplateRow(
+                                template: template,
+                                context: context
+                            )
                         }
                     }
                 }
@@ -144,30 +107,428 @@ struct SavedWorkoutTemplateSection: View {
     }
 }
 
-private struct NoWorkoutTodayView: View {
-    var today: WorkoutWeekday
+struct SavedWorkoutsLibrarySection: View {
+    var templates: [WorkoutTemplate]
+    var context: WorkoutContext
+    var onCreate: (WorkoutWeekday?) -> Void
+    var onBuildOrModifyWeeklyPlan: ([WorkoutTemplate]) -> Void
+    var onDeleteWeeklyPlan: ([WorkoutTemplate]) -> Void
+    var onEdit: (WorkoutTemplate) -> Void
+    var onShare: (WorkoutTemplate) -> Void
+    var onDelete: (WorkoutTemplate) -> Void
+
+    @State private var isConfirmingDeleteWeeklyPlan = false
+
+    private var sortedTemplates: [WorkoutTemplate] {
+        templates.sortedByWorkoutSchedule
+    }
+
+    private var scheduledTemplates: [WorkoutTemplate] {
+        sortedTemplates.filter { $0.scheduledWeekday != nil }
+    }
+
+    private var hasWeeklyPlan: Bool {
+        !scheduledTemplates.isEmpty
+    }
+
+    private var groupedTemplates: [WorkoutTemplateGroup] {
+        var groups: [WorkoutTemplateGroup] = []
+
+        for day in WorkoutWeekday.allCases {
+            let dayTemplates = sortedTemplates.filter { $0.scheduledWeekday == day }
+            guard !dayTemplates.isEmpty else { continue }
+
+            groups.append(
+                WorkoutTemplateGroup(
+                    id: day.rawValue,
+                    title: day.rawValue,
+                    templates: dayTemplates
+                )
+            )
+        }
+
+        let anyDayTemplates = sortedTemplates.filter { $0.scheduledWeekday == nil }
+        if !anyDayTemplates.isEmpty {
+            groups.append(
+                WorkoutTemplateGroup(
+                    id: "any-day",
+                    title: "Any Day",
+                    templates: anyDayTemplates
+                )
+            )
+        }
+
+        return groups
+    }
+
+    private var planButtonTitle: String {
+        hasWeeklyPlan ? "Edit Weekly Plan" : "Build Weekly Plan"
+    }
 
     var body: some View {
-        HStack(spacing: 12) {
+        VStack(alignment: .leading, spacing: 14) {
+            CoachCard {
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack(spacing: 12) {
+                        Image(systemName: "square.stack.3d.up")
+                            .font(.title2.weight(.semibold))
+                            .foregroundStyle(Color.coachAccent)
+                            .frame(width: 34)
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Workout Library")
+                                .font(.headline)
+
+                            Text("\(templates.count) \(templates.count == 1 ? "saved workout" : "saved workouts")")
+                                .font(.subheadline)
+                                .foregroundStyle(Color.coachSecondaryText)
+                        }
+
+                        Spacer()
+
+                        Button {
+                            onCreate(nil)
+                        } label: {
+                            Image(systemName: "plus")
+                                .font(.headline)
+                                .frame(width: 38, height: 38)
+                        }
+                        .buttonStyle(CoachSecondaryButtonStyle())
+                        .accessibilityLabel("Create saved workout")
+                    }
+
+                    Button {
+                        onBuildOrModifyWeeklyPlan(scheduledTemplates)
+                    } label: {
+                        Label(planButtonTitle, systemImage: hasWeeklyPlan ? "calendar.badge.clock" : "calendar.badge.plus")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
+                    }
+                    .buttonStyle(CoachPrimaryButtonStyle())
+
+                    if hasWeeklyPlan {
+                        Button(role: .destructive) {
+                            isConfirmingDeleteWeeklyPlan = true
+                        } label: {
+                            Label("Delete Weekly Plan", systemImage: "trash")
+                                .font(.subheadline.weight(.semibold))
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 10)
+                        }
+                        .buttonStyle(CoachSecondaryButtonStyle())
+                    } else {
+                        Button {
+                            onCreate(nil)
+                        } label: {
+                            Label("Create Workout", systemImage: "plus.circle")
+                                .font(.subheadline.weight(.semibold))
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 10)
+                        }
+                        .buttonStyle(CoachSecondaryButtonStyle())
+                    }
+                }
+            }
+
+            if templates.isEmpty {
+                EmptyStateView(
+                    iconName: "figure.strengthtraining.traditional",
+                    title: "No saved workouts",
+                    message: "Create a workout or build a weekly plan."
+                )
+            } else {
+                VStack(spacing: 14) {
+                    ForEach(groupedTemplates) { group in
+                        WorkoutTemplateGroupSection(
+                            group: group,
+                            context: context,
+                            onEdit: onEdit,
+                            onShare: onShare,
+                            onDelete: onDelete
+                        )
+                    }
+                }
+            }
+        }
+        .confirmationDialog(
+            "Delete weekly plan?",
+            isPresented: $isConfirmingDeleteWeeklyPlan,
+            titleVisibility: .visible
+        ) {
+            Button("Delete Weekly Plan", role: .destructive) {
+                onDeleteWeeklyPlan(scheduledTemplates)
+            }
+
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This removes the workouts assigned to weekdays. Any Day workouts stay in your library.")
+        }
+    }
+}
+
+struct WorkoutShareSheet: View {
+    @Environment(\.dismiss) private var dismiss
+
+    var template: WorkoutTemplate
+
+    @State private var didCopy = false
+
+    private var sharedWorkout: SharedWorkoutPayload {
+        SharedWorkoutPayload(template: template)
+    }
+
+    private var shareURL: URL? {
+        sharedWorkout.shareURL
+    }
+
+    private var shareURLString: String {
+        shareURL?.absoluteString ?? ""
+    }
+
+    var body: some View {
+        NavigationStack {
             ZStack {
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .fill(Color.coachSurfaceElevated)
-                    .frame(width: 42, height: 42)
+                CoachScreenBackground()
 
-                Image(systemName: "moon.zzz.fill")
-                    .font(.headline)
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+                        headerCard
+                        linkCard
+                        shareActions
+                    }
+                    .padding()
+                    .padding(.bottom, 24)
+                }
+            }
+            .navigationTitle("Share Workout")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+        .presentationDetents([.medium, .large])
+        .preferredColorScheme(.dark)
+    }
+
+    private var headerCard: some View {
+        CoachCard {
+            HStack(alignment: .top, spacing: 12) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .fill(CoachGradient.accentSoft)
+                        .frame(width: 46, height: 46)
+
+                    Image(systemName: "square.and.arrow.up")
+                        .font(.headline)
+                        .foregroundStyle(Color.coachAccent)
+                }
+
+                VStack(alignment: .leading, spacing: 5) {
+                    Text(template.name)
+                        .font(.title3.weight(.black))
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.76)
+
+                    Text("\(template.scheduleLabel) · \(template.exerciseCountText) · \(template.estimatedMinutes) min")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.coachSecondaryText)
+                        .lineLimit(2)
+                }
+            }
+        }
+    }
+
+    private var linkCard: some View {
+        CoachCard {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack {
+                    Text("Share Link")
+                        .font(.headline)
+
+                    Spacer()
+
+                    if didCopy {
+                        Label("Copied", systemImage: "checkmark.circle.fill")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(Color.coachAccent)
+                    }
+                }
+
+                Text(shareURLString.isEmpty ? "Unable to create link" : shareURLString)
+                    .font(.caption.monospaced())
                     .foregroundStyle(Color.coachSecondaryText)
+                    .lineLimit(5)
+                    .textSelection(.enabled)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(10)
+                    .background(Color.coachSurfaceElevated)
+                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+            }
+        }
+    }
+
+    private var shareActions: some View {
+        VStack(spacing: 10) {
+            Button(action: copyLink) {
+                Label(didCopy ? "Link Copied" : "Copy Link", systemImage: didCopy ? "checkmark" : "doc.on.doc")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+            }
+            .buttonStyle(CoachPrimaryButtonStyle())
+            .disabled(shareURLString.isEmpty)
+
+            if let shareURL {
+                ShareLink(
+                    item: shareURL,
+                    subject: Text("CoachLog workout: \(template.name)"),
+                    message: Text(sharedWorkout.shareMessage)
+                ) {
+                    Label("Share Via...", systemImage: "square.and.arrow.up")
+                        .font(.subheadline.weight(.semibold))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                }
+                .buttonStyle(CoachSecondaryButtonStyle())
+            }
+        }
+    }
+
+    private func copyLink() {
+        guard !shareURLString.isEmpty else { return }
+
+        UIPasteboard.general.string = shareURLString
+        didCopy = true
+    }
+}
+
+private struct WorkoutTemplateGroup: Identifiable {
+    var id: String
+    var title: String
+    var templates: [WorkoutTemplate]
+}
+
+private struct WorkoutTemplateGroupSection: View {
+    var group: WorkoutTemplateGroup
+    var context: WorkoutContext
+    var onEdit: (WorkoutTemplate) -> Void
+    var onShare: (WorkoutTemplate) -> Void
+    var onDelete: (WorkoutTemplate) -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(group.title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Color.coachSecondaryText)
+
+            VStack(spacing: 10) {
+                ForEach(group.templates) { template in
+                    SavedWorkoutTemplateRow(
+                        template: template,
+                        context: context,
+                        onEdit: { onEdit(template) },
+                        onShare: { onShare(template) },
+                        onDelete: { onDelete(template) }
+                    )
+                }
+            }
+        }
+    }
+}
+
+private struct WeeklyPlanSetupPrompt: View {
+    var onBuildWeeklyPlan: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 12) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .fill(Color.coachSurfaceElevated)
+                        .frame(width: 42, height: 42)
+
+                    Image(systemName: "calendar.badge.plus")
+                        .font(.headline)
+                        .foregroundStyle(Color.coachAccent)
+                }
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Build your week")
+                        .font(.headline)
+
+                    Text("Create it once, then adjust it from Library.")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.coachSecondaryText)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
 
-            VStack(alignment: .leading, spacing: 4) {
-                Text("No \(today.shortName) workout")
+            Button(action: onBuildWeeklyPlan) {
+                Label("Build Weekly Plan", systemImage: "calendar.badge.plus")
                     .font(.headline)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+            }
+            .buttonStyle(CoachPrimaryButtonStyle())
+        }
+        .padding(12)
+        .background(Color.coachSurfaceElevated.opacity(0.72))
+        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .stroke(Color.coachBorder, lineWidth: 1)
+        }
+    }
+}
 
-                Text("Use a saved plan from another day or build a weekly plan.")
+private struct NoWorkoutTodayView: View {
+    var today: WorkoutWeekday
+    var nextTemplate: WorkoutTemplate?
+    var onManagePlan: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 12) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .fill(Color.coachSurfaceElevated)
+                        .frame(width: 42, height: 42)
+
+                    Image(systemName: "moon.zzz.fill")
+                        .font(.headline)
+                        .foregroundStyle(Color.coachSecondaryText)
+                }
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("No \(today.shortName) workout")
+                        .font(.headline)
+
+                    if let nextTemplate {
+                        Text("Next: \(nextTemplate.scheduleLabel) · \(nextTemplate.name)")
+                            .font(.subheadline)
+                            .foregroundStyle(Color.coachSecondaryText)
+                            .fixedSize(horizontal: false, vertical: true)
+                    } else {
+                        Text("Your weekly plan has no workout today.")
+                            .font(.subheadline)
+                            .foregroundStyle(Color.coachSecondaryText)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
+
+            Button(action: onManagePlan) {
+                Label("Manage Plan", systemImage: "slider.horizontal.3")
                     .font(.subheadline)
-                    .foregroundStyle(Color.coachSecondaryText)
-                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
             }
+            .buttonStyle(CoachSecondaryButtonStyle())
         }
         .padding(12)
         .background(Color.coachSurfaceElevated.opacity(0.72))
@@ -186,10 +547,109 @@ private extension Optional where Wrapped == WorkoutWeekday {
     }
 }
 
+private extension Array where Element == WorkoutTemplate {
+    var sortedByWorkoutSchedule: [WorkoutTemplate] {
+        sorted { lhs, rhs in
+            let lhsIndex = lhs.scheduledWeekday.weekSortIndex
+            let rhsIndex = rhs.scheduledWeekday.weekSortIndex
+
+            if lhsIndex == rhsIndex {
+                return lhs.updatedAt > rhs.updatedAt
+            }
+
+            return lhsIndex < rhsIndex
+        }
+    }
+}
+
+private struct TodayWorkoutTemplateRow: View {
+    var template: WorkoutTemplate
+    var context: WorkoutContext
+
+    private var sessionContext: WorkoutContext {
+        WorkoutContext(
+            availableMinutes: template.availableMinutes,
+            energyLevel: context.energyLevel,
+            painFlag: context.painFlag,
+            goal: template.goal,
+            recovery: context.recovery
+        )
+    }
+
+    private var previewExercises: [WorkoutTemplateExercise] {
+        Array(template.orderedExercises.prefix(3))
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 12) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .fill(CoachGradient.accentSoft)
+                        .frame(width: 42, height: 42)
+
+                    Image(systemName: "figure.strengthtraining.traditional")
+                        .font(.headline)
+                        .foregroundStyle(Color.coachAccent)
+                }
+
+                VStack(alignment: .leading, spacing: 5) {
+                    Text(template.name)
+                        .font(.headline)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.75)
+
+                    Text("\(template.exerciseCountText) · \(template.estimatedMinutes) min · \(template.goal.displayName)")
+                        .font(.caption)
+                        .foregroundStyle(Color.coachSecondaryText)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.65)
+                }
+
+                Spacer(minLength: 0)
+            }
+
+            if !previewExercises.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 6) {
+                        ForEach(previewExercises) { exercise in
+                            Text(exercise.exerciseName)
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(Color.coachSecondaryText)
+                                .padding(.horizontal, 9)
+                                .padding(.vertical, 6)
+                                .background(Color.coachSurface)
+                                .clipShape(Capsule())
+                        }
+                    }
+                }
+            }
+
+            NavigationLink {
+                WorkoutSessionView(plan: template.makeWorkoutPlan(), context: sessionContext)
+            } label: {
+                Label("Start", systemImage: "play.fill")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+            }
+            .buttonStyle(CoachPrimaryButtonStyle())
+        }
+        .padding(12)
+        .background(Color.coachSurfaceElevated.opacity(0.72))
+        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .stroke(Color.coachBorder, lineWidth: 1)
+        }
+    }
+}
+
 private struct SavedWorkoutTemplateRow: View {
     var template: WorkoutTemplate
     var context: WorkoutContext
     var onEdit: () -> Void
+    var onShare: () -> Void
     var onDelete: () -> Void
 
     private var sessionContext: WorkoutContext {
@@ -233,6 +693,14 @@ private struct SavedWorkoutTemplateRow: View {
                 }
 
                 Spacer(minLength: 6)
+
+                Button(action: onShare) {
+                    Image(systemName: "square.and.arrow.up")
+                        .font(.caption.weight(.bold))
+                        .frame(width: 32, height: 32)
+                }
+                .buttonStyle(CoachSecondaryButtonStyle())
+                .accessibilityLabel("Share \(template.name)")
 
                 Button(action: onEdit) {
                     Image(systemName: "pencil")
@@ -501,14 +969,39 @@ struct WeeklyWorkoutPlanBuilderView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
 
+    private let existingScheduledTemplates: [WorkoutTemplate]
     @State private var selectedGoal: FitnessGoal = .buildMuscle
     @State private var trainingDays = 3
     @State private var selectedMinutes: AvailableMinutes = .forty
     @State private var selectedDays = Set([WorkoutWeekday.monday, .wednesday, .friday])
     @State private var saveError: String?
 
+    init(existingScheduledTemplates: [WorkoutTemplate] = []) {
+        let orderedTemplates = existingScheduledTemplates.sortedByWorkoutSchedule
+        let scheduledDays = orderedTemplates.compactMap(\.scheduledWeekday)
+        let uniqueDays = WorkoutWeekday.allCases.filter { scheduledDays.contains($0) }
+        let clampedDayCount = min(max(uniqueDays.count, 2), 5)
+        let initialDays = uniqueDays.isEmpty
+            ? Set(Self.defaultDays(for: clampedDayCount))
+            : Set(uniqueDays.prefix(clampedDayCount))
+
+        self.existingScheduledTemplates = orderedTemplates
+        _selectedGoal = State(initialValue: orderedTemplates.first?.goal ?? .buildMuscle)
+        _trainingDays = State(initialValue: clampedDayCount)
+        _selectedMinutes = State(initialValue: orderedTemplates.first?.availableMinutes ?? .forty)
+        _selectedDays = State(initialValue: initialDays)
+    }
+
     private var orderedSelectedDays: [WorkoutWeekday] {
         selectedDays.orderedByWeek
+    }
+
+    private var isModifyingExistingPlan: Bool {
+        !existingScheduledTemplates.isEmpty
+    }
+
+    private var navigationTitle: String {
+        isModifyingExistingPlan ? "Modify Weekly Plan" : "Build Weekly Plan"
     }
 
     private var canSave: Bool {
@@ -526,7 +1019,7 @@ struct WeeklyWorkoutPlanBuilderView: View {
                         daysCard
 
                         Button(action: savePlan) {
-                            Label("Save Weekly Plan", systemImage: "checkmark.circle.fill")
+                            Label(isModifyingExistingPlan ? "Update Weekly Plan" : "Save Weekly Plan", systemImage: "checkmark.circle.fill")
                                 .font(.headline)
                                 .frame(maxWidth: .infinity)
                                 .padding()
@@ -538,7 +1031,7 @@ struct WeeklyWorkoutPlanBuilderView: View {
                     .padding(.bottom, 24)
                 }
             }
-            .navigationTitle("Build Weekly Plan")
+            .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -666,6 +1159,10 @@ struct WeeklyWorkoutPlanBuilderView: View {
 
     private func savePlan() {
         guard canSave else { return }
+
+        for template in existingScheduledTemplates {
+            modelContext.delete(template)
+        }
 
         let days = orderedSelectedDays
         for (index, day) in days.enumerated() {

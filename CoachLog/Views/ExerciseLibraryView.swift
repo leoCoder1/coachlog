@@ -1,14 +1,31 @@
 import SwiftData
 import SwiftUI
 
+enum ExerciseLibrarySection: String, CaseIterable, Identifiable {
+    case workouts = "Workouts"
+    case movements = "Movements"
+
+    var id: String { rawValue }
+}
+
 struct ExerciseLibraryView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Exercise.name) private var exercises: [Exercise]
+    @Query(sort: \WorkoutTemplate.updatedAt, order: .reverse) private var workoutTemplates: [WorkoutTemplate]
 
+    @Binding private var selectedSection: ExerciseLibrarySection
     @State private var searchText = ""
     @State private var selectedGroup: MuscleGroup?
     @State private var selectedKind: ExerciseKind?
     @State private var isShowingAddExercise = false
+    @State private var isShowingWeeklyPlanBuilder = false
+    @State private var weeklyPlanBuilderTemplates: [WorkoutTemplate] = []
+    @State private var workoutBuilderRoute: WorkoutBuilderRoute?
+    @State private var sharingTemplate: WorkoutTemplate?
+
+    init(selectedSection: Binding<ExerciseLibrarySection> = .constant(.workouts)) {
+        _selectedSection = selectedSection
+    }
 
     private var filteredExercises: [Exercise] {
         exercises.filter { exercise in
@@ -25,6 +42,16 @@ struct ExerciseLibraryView: View {
         }
     }
 
+    private var workoutContext: WorkoutContext {
+        WorkoutContext(
+            availableMinutes: .forty,
+            energyLevel: .normal,
+            painFlag: .none,
+            goal: .generalFitness,
+            recovery: nil
+        )
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -32,9 +59,16 @@ struct ExerciseLibraryView: View {
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
-                        searchCard
-                        filters
-                        libraryList
+                        sectionPicker
+
+                        switch selectedSection {
+                        case .workouts:
+                            workoutsLibrary
+                        case .movements:
+                            searchCard
+                            filters
+                            libraryList
+                        }
                     }
                     .padding()
                     .padding(.bottom, CoachLayout.bottomScrollPadding)
@@ -47,18 +81,62 @@ struct ExerciseLibraryView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        isShowingAddExercise = true
+                        handleAddButton()
                     } label: {
                         Image(systemName: "plus")
                             .font(.headline.weight(.semibold))
                     }
-                    .accessibilityLabel("Add custom exercise")
+                    .accessibilityLabel(selectedSection == .workouts ? "Create saved workout" : "Add custom exercise")
                 }
             }
             .sheet(isPresented: $isShowingAddExercise) {
                 QuickCustomExerciseSheet(source: .library) { _ in }
             }
+            .sheet(isPresented: $isShowingWeeklyPlanBuilder) {
+                WeeklyWorkoutPlanBuilderView(existingScheduledTemplates: weeklyPlanBuilderTemplates)
+            }
+            .sheet(item: $workoutBuilderRoute) { route in
+                SavedWorkoutBuilderView(
+                    template: route.template,
+                    defaultWeekday: route.defaultWeekday
+                )
+            }
+            .sheet(item: $sharingTemplate) { template in
+                WorkoutShareSheet(template: template)
+            }
         }
+    }
+
+    private var sectionPicker: some View {
+        Picker("Library section", selection: $selectedSection) {
+            ForEach(ExerciseLibrarySection.allCases) { section in
+                Text(section.rawValue).tag(section)
+            }
+        }
+        .pickerStyle(.segmented)
+        .tint(Color.coachAccent)
+    }
+
+    private var workoutsLibrary: some View {
+        SavedWorkoutsLibrarySection(
+            templates: workoutTemplates,
+            context: workoutContext,
+            onCreate: { defaultWeekday in
+                workoutBuilderRoute = WorkoutBuilderRoute(template: nil, defaultWeekday: defaultWeekday)
+            },
+            onBuildOrModifyWeeklyPlan: { scheduledTemplates in
+                weeklyPlanBuilderTemplates = scheduledTemplates
+                isShowingWeeklyPlanBuilder = true
+            },
+            onDeleteWeeklyPlan: deleteWeeklyPlan,
+            onEdit: { template in
+                workoutBuilderRoute = WorkoutBuilderRoute(template: template, defaultWeekday: nil)
+            },
+            onShare: { template in
+                sharingTemplate = template
+            },
+            onDelete: deleteTemplate
+        )
     }
 
     private var searchCard: some View {
@@ -191,6 +269,28 @@ struct ExerciseLibraryView: View {
             .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         }
         .buttonStyle(.plain)
+    }
+
+    private func handleAddButton() {
+        switch selectedSection {
+        case .workouts:
+            workoutBuilderRoute = WorkoutBuilderRoute(template: nil, defaultWeekday: nil)
+        case .movements:
+            isShowingAddExercise = true
+        }
+    }
+
+    private func deleteTemplate(_ template: WorkoutTemplate) {
+        modelContext.delete(template)
+        try? modelContext.save()
+    }
+
+    private func deleteWeeklyPlan(_ templates: [WorkoutTemplate]) {
+        for template in templates {
+            modelContext.delete(template)
+        }
+
+        try? modelContext.save()
     }
 }
 
