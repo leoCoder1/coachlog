@@ -56,7 +56,7 @@ struct ExerciseLibraryView: View {
                 }
             }
             .sheet(isPresented: $isShowingAddExercise) {
-                AddCustomExerciseView()
+                QuickCustomExerciseSheet(source: .library) { _ in }
             }
         }
     }
@@ -218,25 +218,17 @@ struct ExerciseLibraryRow: View {
     var body: some View {
         CoachCard(padding: 12) {
             HStack(alignment: .top, spacing: 10) {
-                VStack(spacing: 4) {
-                    ExerciseIllustrationThumbnail(exercise: previewExercise, size: 58)
-
-                    Text("Click for Instructions")
-                        .font(.system(size: 9, weight: .semibold))
-                        .foregroundStyle(Color.coachTertiaryText)
-                        .multilineTextAlignment(.center)
-                        .lineLimit(2)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                .frame(width: 72)
+                ExerciseIllustrationThumbnail(exercise: previewExercise, size: 78)
 
                 VStack(alignment: .leading, spacing: 6) {
                     HStack(spacing: 6) {
                         Text(exercise.name)
                             .font(.headline)
                             .foregroundStyle(.primary)
-                            .lineLimit(2)
-                            .minimumScaleFactor(0.78)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.72)
+                            .truncationMode(.tail)
+                            .layoutPriority(1)
 
                         if exercise.isCustom {
                             Text("Custom")

@@ -370,20 +370,31 @@ struct ExerciseVisualHeader: View {
     var exercise: PlannedExercise
     var subtitle: String
     var note: String?
+    var thumbnailSize: CGFloat = 58
+    var targetBadgeSize: CGFloat = 64
+
+    @State private var isShowingInstructions = false
+
+    private var media: ExerciseMediaAsset {
+        ExerciseMediaLibrary.media(for: exercise.name)
+    }
 
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
-            ExerciseIllustrationThumbnail(exercise: exercise, size: 58)
+            ExerciseIllustrationThumbnail(exercise: exercise, size: thumbnailSize, opensInstructions: false)
 
             VStack(alignment: .leading, spacing: 6) {
                 Text(exercise.name)
                     .font(.headline)
-                    .lineLimit(2)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.72)
+                    .truncationMode(.tail)
 
                 Text(subtitle)
                     .font(.subheadline)
                     .foregroundStyle(Color.coachSecondaryText)
-                    .lineLimit(2)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
 
                 ExerciseMuscleChipRow(
                     groups: exercise.affectedMuscleGroups,
@@ -391,13 +402,6 @@ struct ExerciseVisualHeader: View {
                     secondary: exercise.secondaryDetailedMuscle,
                     supporting: exercise.detailedMuscles
                 )
-
-                if let note {
-                    Text(note)
-                        .font(.caption)
-                        .foregroundStyle(Color.coachSecondaryText)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .layoutPriority(1)
@@ -409,18 +413,27 @@ struct ExerciseVisualHeader: View {
                 supporting: exercise.detailedMuscles
             )
             .frame(
-                width: 64,
-                height: 64
+                width: targetBadgeSize,
+                height: targetBadgeSize
             )
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            isShowingInstructions = true
+        }
+        .sheet(isPresented: $isShowingInstructions) {
+            ExerciseInstructionSheet(exercise: exercise, media: media, note: note)
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(exercise.name), primary muscle: \(exercise.primaryDetailedMuscle.rawValue), secondary muscle: \(exercise.secondaryDetailedMuscle?.rawValue ?? "none")")
+        .accessibilityAddTraits(.isButton)
     }
 }
 
 struct ExerciseIllustrationThumbnail: View {
     var exercise: PlannedExercise
     var size: CGFloat
+    var opensInstructions = true
 
     @State private var isShowingInstructions = false
 
@@ -451,8 +464,10 @@ struct ExerciseIllustrationThumbnail: View {
         .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         .contentShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         .onTapGesture {
+            guard opensInstructions else { return }
             isShowingInstructions = true
         }
+        .allowsHitTesting(opensInstructions)
         .sheet(isPresented: $isShowingInstructions) {
             ExerciseInstructionSheet(exercise: exercise, media: media)
         }
@@ -523,6 +538,7 @@ private struct ExerciseInstructionSheet: View {
 
     var exercise: PlannedExercise
     var media: ExerciseMediaAsset
+    var note: String? = nil
 
     @State private var player: AVQueuePlayer?
     @State private var looper: AVPlayerLooper?
@@ -549,8 +565,27 @@ private struct ExerciseInstructionSheet: View {
                                     RoundedRectangle(cornerRadius: 8, style: .continuous)
                                         .stroke(Color.coachBorder, lineWidth: 1)
                                 }
+                        } else if let image = instructionImage {
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(maxWidth: .infinity)
+                                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                        .stroke(Color.coachBorder, lineWidth: 1)
+                                }
                         } else {
                             ExerciseInstructionMuscleMapCard(exercise: exercise)
+                        }
+
+                        if let note, !note.isEmpty {
+                            ExerciseGuidanceCallout(
+                                title: "Coach cue",
+                                message: note,
+                                systemImage: "scope",
+                                tint: Color.coachAccent
+                            )
                         }
 
                         ExerciseGuidanceView(guidance: guidance)
@@ -571,6 +606,15 @@ private struct ExerciseInstructionSheet: View {
             .onDisappear(perform: stopPlayback)
         }
         .preferredColorScheme(.dark)
+    }
+
+    private var instructionImage: UIImage? {
+        if let imageAssetName = ExerciseMediaLibrary.imageAssetName(for: exercise),
+           let image = UIImage(named: imageAssetName) {
+            return image
+        }
+
+        return UIImage(named: exercise.illustrationAssetName)
     }
 
     private func startPlayback() {

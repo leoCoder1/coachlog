@@ -487,6 +487,7 @@ private struct SavedWorkoutExercisePickerSheet: View {
     @State private var searchText = ""
     @State private var selectedKind: ExerciseKind?
     @State private var selectedGroup: MuscleGroup?
+    @State private var isShowingCustomExercise = false
 
     private var filteredExercises: [Exercise] {
         exercises.filter { exercise in
@@ -512,6 +513,7 @@ private struct SavedWorkoutExercisePickerSheet: View {
                     VStack(alignment: .leading, spacing: 16) {
                         searchCard
                         filters
+                        customExerciseButton
                         exerciseList
                     }
                     .padding()
@@ -525,6 +527,17 @@ private struct SavedWorkoutExercisePickerSheet: View {
                     Button("Close") {
                         dismiss()
                     }
+                }
+            }
+            .sheet(isPresented: $isShowingCustomExercise) {
+                QuickCustomExerciseSheet(source: .savedWorkoutBuilder) { exercise in
+                    guard !selectedExerciseNames.contains(exercise.name) else {
+                        dismiss()
+                        return
+                    }
+
+                    onSelect(exercise)
+                    dismiss()
                 }
             }
         }
@@ -543,6 +556,18 @@ private struct SavedWorkoutExercisePickerSheet: View {
                     .autocorrectionDisabled()
             }
         }
+    }
+
+    private var customExerciseButton: some View {
+        Button {
+            isShowingCustomExercise = true
+        } label: {
+            Label("Create custom movement", systemImage: "plus.circle")
+                .font(.subheadline.weight(.semibold))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
+        }
+        .buttonStyle(CoachSecondaryButtonStyle())
     }
 
     private var filters: some View {
@@ -619,6 +644,341 @@ private struct SavedWorkoutExercisePickerSheet: View {
                 .clipShape(Capsule())
         }
         .buttonStyle(.plain)
+    }
+}
+
+enum CustomExerciseTelemetrySource: String {
+    case library
+    case savedWorkoutBuilder
+    case workoutSession
+}
+
+private enum CustomExerciseTrainingMode: String, CaseIterable, Identifiable {
+    case weightTraining
+    case movement
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .weightTraining: "Weight"
+        case .movement: "Movement"
+        }
+    }
+
+    var kind: ExerciseKind {
+        switch self {
+        case .weightTraining: .strength
+        case .movement: .stretch
+        }
+    }
+
+    var equipment: Equipment {
+        switch self {
+        case .weightTraining: .dumbbell
+        case .movement: .bodyweight
+        }
+    }
+
+    var station: GymStation {
+        switch self {
+        case .weightTraining: .dumbbellRack
+        case .movement: .bodyweight
+        }
+    }
+
+    var iconName: String {
+        switch self {
+        case .weightTraining: "dumbbell"
+        case .movement: "figure.flexibility"
+        }
+    }
+}
+
+struct QuickCustomExerciseSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+
+    var source: CustomExerciseTelemetrySource
+    var onSave: (Exercise) -> Void
+
+    @State private var name = ""
+    @State private var trainingMode: CustomExerciseTrainingMode = .weightTraining
+    @State private var targetGroup: MuscleGroup?
+    @State private var saveError: String?
+
+    private var trimmedName: String {
+        name.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var canSave: Bool {
+        !trimmedName.isEmpty
+    }
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                CoachScreenBackground()
+
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+                        detailsCard
+                        trackingCard
+                        targetCard
+                    }
+                    .padding()
+                    .padding(.bottom, 24)
+                }
+            }
+            .navigationTitle("Custom Movement")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        save()
+                    }
+                    .disabled(!canSave)
+                }
+            }
+            .alert("Movement could not be saved", isPresented: .constant(saveError != nil)) {
+                Button("OK") { saveError = nil }
+            } message: {
+                Text(saveError ?? "")
+            }
+        }
+        .presentationDetents([.medium, .large])
+        .preferredColorScheme(.dark)
+    }
+
+    private var detailsCard: some View {
+        CoachCard {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Details")
+                    .font(.headline)
+
+                TextField("Movement name", text: $name)
+                    .textInputAutocapitalization(.words)
+                    .autocorrectionDisabled()
+                    .padding(12)
+                    .background(Color.coachSurfaceElevated)
+                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+            }
+        }
+    }
+
+    private var trackingCard: some View {
+        CoachCard {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Tracking")
+                    .font(.headline)
+
+                Picker("Tracking", selection: $trainingMode) {
+                    ForEach(CustomExerciseTrainingMode.allCases) { mode in
+                        Label(mode.title, systemImage: mode.iconName)
+                            .tag(mode)
+                    }
+                }
+                .pickerStyle(.segmented)
+            }
+        }
+    }
+
+    private var targetCard: some View {
+        CoachCard {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Target")
+                    .font(.headline)
+
+                OptionalMuscleGroupWheelPickerButton(
+                    title: "Main muscle group",
+                    selection: $targetGroup
+                )
+            }
+        }
+    }
+
+    private func save() {
+        guard canSave else { return }
+
+        let storedGroup = targetGroup ?? .core
+        let primaryDetailed = DetailedMuscleGroup.defaults(for: storedGroup)[0]
+        let exercise = Exercise(
+            name: trimmedName,
+            primaryMuscleGroup: storedGroup,
+            secondaryMuscleGroups: [],
+            equipment: trainingMode.equipment,
+            station: trainingMode.station,
+            primaryDetailedMuscle: primaryDetailed,
+            secondaryDetailedMuscle: nil,
+            kind: trainingMode.kind,
+            isCustom: true,
+            isKneeFriendly: true,
+            isShoulderFriendly: true
+        )
+
+        modelContext.insert(exercise)
+
+        do {
+            try modelContext.save()
+            CustomExerciseSuggestionReporter.report(
+                exerciseName: trimmedName,
+                trackingMode: trainingMode,
+                targetGroup: targetGroup,
+                storedGroup: storedGroup,
+                source: source
+            )
+            onSave(exercise)
+            dismiss()
+        } catch {
+            saveError = error.localizedDescription
+        }
+    }
+}
+
+private struct OptionalMuscleGroupWheelPickerButton: View {
+    var title: String
+    @Binding var selection: MuscleGroup?
+
+    @State private var isPresented = false
+
+    private var selectedTitle: String {
+        selection?.rawValue ?? "Not sure"
+    }
+
+    var body: some View {
+        Button {
+            isPresented = true
+        } label: {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title)
+                        .font(.caption)
+                        .foregroundStyle(Color.coachSecondaryText)
+
+                    Text(selectedTitle)
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+                }
+
+                Spacer()
+
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Color.coachSecondaryText)
+            }
+            .padding(12)
+            .frame(maxWidth: .infinity, minHeight: 64)
+            .background(Color.coachSurfaceElevated)
+            .overlay {
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .stroke(Color.coachBorder, lineWidth: 1)
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .sheet(isPresented: $isPresented) {
+            NavigationStack {
+                Picker(title, selection: $selection) {
+                    Text("Not sure").tag(MuscleGroup?.none)
+
+                    ForEach(MuscleGroup.dashboardGroups) { group in
+                        Text(group.rawValue).tag(Optional(group))
+                    }
+                }
+                .pickerStyle(.wheel)
+                .navigationTitle(title)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done") {
+                            isPresented = false
+                        }
+                    }
+                }
+            }
+            .presentationDetents([.height(320)])
+            .presentationBackground(Color.coachSurface)
+            .preferredColorScheme(.dark)
+        }
+    }
+}
+
+private enum CustomExerciseSuggestionReporter {
+    private struct Payload: Encodable {
+        var event: String = "customExerciseCreated"
+        var exerciseName: String
+        var trackingType: String
+        var exerciseKind: String
+        var targetMuscleGroup: String?
+        var storedMuscleGroup: String
+        var source: String
+        var createdAt: Date
+        var appVersion: String?
+    }
+
+    static func report(
+        exerciseName: String,
+        trackingMode: CustomExerciseTrainingMode,
+        targetGroup: MuscleGroup?,
+        storedGroup: MuscleGroup,
+        source: CustomExerciseTelemetrySource,
+        defaults: UserDefaults = .standard,
+        session: URLSession = .shared
+    ) {
+        guard let endpointURL = endpointURL(defaults: defaults) else { return }
+
+        let payload = Payload(
+            exerciseName: exerciseName,
+            trackingType: trackingMode.rawValue,
+            exerciseKind: trackingMode.kind.rawValue,
+            targetMuscleGroup: targetGroup?.rawValue,
+            storedMuscleGroup: storedGroup.rawValue,
+            source: source.rawValue,
+            createdAt: .now,
+            appVersion: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+        )
+
+        Task {
+            await send(payload: payload, to: endpointURL, session: session)
+        }
+    }
+
+    private static func endpointURL(defaults: UserDefaults) -> URL? {
+        let storedEndpoint = defaults.string(forKey: AICoachPreferenceKeys.endpointURL) ?? ""
+        let endpointString = storedEndpoint.isEmpty ? AICoachPreferenceKeys.defaultEndpointURL : storedEndpoint
+
+        guard let baseURL = URL(string: endpointString),
+              baseURL.scheme?.hasPrefix("http") == true else {
+            return nil
+        }
+
+        return baseURL
+            .appendingPathComponent("events")
+            .appendingPathComponent("custom-exercises")
+    }
+
+    private static func send(payload: Payload, to endpointURL: URL, session: URLSession) async {
+        do {
+            var request = URLRequest(url: endpointURL)
+            request.httpMethod = "POST"
+            request.timeoutInterval = 8
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .iso8601
+            request.httpBody = try encoder.encode(payload)
+
+            _ = try await session.data(for: request)
+        } catch {
+            return
+        }
     }
 }
 

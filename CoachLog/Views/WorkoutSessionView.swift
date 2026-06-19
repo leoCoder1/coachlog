@@ -125,6 +125,7 @@ private struct SessionMovementPickerSheet: View {
 
     @State private var searchText = ""
     @State private var selectedKind: ExerciseKind?
+    @State private var isShowingCustomExercise = false
 
     private var filteredExercises: [Exercise] {
         exercises.filter { exercise in
@@ -163,11 +164,13 @@ private struct SessionMovementPickerSheet: View {
                         }
                         .pickerStyle(.segmented)
 
+                        customExerciseButton
+
                         if filteredExercises.isEmpty {
                             EmptyStateView(
                                 iconName: "list.bullet.rectangle",
                                 title: "No movements",
-                                message: "Add a custom exercise from the Library tab first."
+                                message: "Create a custom movement or adjust the search."
                             )
                         } else {
                             ForEach(filteredExercises) { exercise in
@@ -184,6 +187,12 @@ private struct SessionMovementPickerSheet: View {
                     .padding(.bottom, 24)
                 }
             }
+            .sheet(isPresented: $isShowingCustomExercise) {
+                QuickCustomExerciseSheet(source: .workoutSession) { exercise in
+                    onSelect(exercise)
+                    dismiss()
+                }
+            }
             .navigationTitle("Add Movement")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -196,6 +205,18 @@ private struct SessionMovementPickerSheet: View {
         }
         .presentationDetents([.large])
         .preferredColorScheme(.dark)
+    }
+
+    private var customExerciseButton: some View {
+        Button {
+            isShowingCustomExercise = true
+        } label: {
+            Label("Create custom movement", systemImage: "plus.circle")
+                .font(.subheadline.weight(.semibold))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
+        }
+        .buttonStyle(CoachSecondaryButtonStyle())
     }
 }
 
