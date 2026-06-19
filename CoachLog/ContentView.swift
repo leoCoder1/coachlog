@@ -133,7 +133,7 @@ struct ContentView: View {
 }
 
 private enum CoachTab: String, CaseIterable, Identifiable {
-    case coach = "Coach"
+    case coach = "Train"
     case sports = "Sports"
     case freshness = "Freshness"
     case library = "Library"

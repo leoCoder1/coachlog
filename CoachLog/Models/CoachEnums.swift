@@ -485,6 +485,47 @@ enum AvailableMinutes: Int, CaseIterable, Codable, Identifiable {
     }
 }
 
+enum WorkoutWeekday: String, CaseIterable, Codable, Identifiable, Hashable {
+    case monday = "Monday"
+    case tuesday = "Tuesday"
+    case wednesday = "Wednesday"
+    case thursday = "Thursday"
+    case friday = "Friday"
+    case saturday = "Saturday"
+    case sunday = "Sunday"
+
+    var id: String { rawValue }
+
+    var shortName: String {
+        switch self {
+        case .monday: "Mon"
+        case .tuesday: "Tue"
+        case .wednesday: "Wed"
+        case .thursday: "Thu"
+        case .friday: "Fri"
+        case .saturday: "Sat"
+        case .sunday: "Sun"
+        }
+    }
+
+    var calendarWeekday: Int {
+        switch self {
+        case .sunday: 1
+        case .monday: 2
+        case .tuesday: 3
+        case .wednesday: 4
+        case .thursday: 5
+        case .friday: 6
+        case .saturday: 7
+        }
+    }
+
+    static func today(calendar: Calendar = .current, date: Date = .now) -> WorkoutWeekday {
+        let weekday = calendar.component(.weekday, from: date)
+        return allCases.first { $0.calendarWeekday == weekday } ?? .monday
+    }
+}
+
 enum FitnessGoal: String, CaseIterable, Codable, Identifiable {
     case buildMuscle
     case fatLoss
