@@ -9,6 +9,8 @@ struct ContentView: View {
     @State private var healthKitManager = HealthKitManager()
     @State private var isHealthKitImportRunning = false
     @State private var selectedTab: CoachTab = .coach
+    @State private var selectedLibrarySection: ExerciseLibrarySection = .workouts
+    @State private var pendingSharedWorkoutImport: PendingSharedWorkoutImport?
     @AppStorage(CoachAuthKeys.isSignedIn) private var isSignedIn = false
     @AppStorage(CoachAuthKeys.appleUserID) private var appleUserID = ""
     @AppStorage(HealthKitRecoverySync.autoImportEnabledKey) private var healthKitAutoImportEnabled = false
@@ -51,6 +53,14 @@ struct ContentView: View {
 
             Task {
                 await importHealthKitRecoveryOnForegroundIfNeeded()
+            }
+        }
+        .onOpenURL { url in
+            handleOpenURL(url)
+        }
+        .sheet(item: $pendingSharedWorkoutImport) { importRequest in
+            SharedWorkoutImportView(workout: importRequest.workout) {
+                showWorkoutLibrary()
             }
         }
     }
@@ -113,17 +123,31 @@ struct ContentView: View {
         lastHealthKitAutoImportTime = Date().timeIntervalSince1970
     }
 
+    private func handleOpenURL(_ url: URL) {
+        guard let sharedWorkout = SharedWorkoutPayload.workout(from: url) else {
+            return
+        }
+
+        showWorkoutLibrary()
+        pendingSharedWorkoutImport = PendingSharedWorkoutImport(workout: sharedWorkout)
+    }
+
+    private func showWorkoutLibrary() {
+        selectedLibrarySection = .workouts
+        selectedTab = .library
+    }
+
     @ViewBuilder
     private var selectedScreen: some View {
         switch selectedTab {
         case .coach:
-            TodayCoachView()
+            TodayCoachView(onManageWorkouts: showWorkoutLibrary)
         case .sports:
             SportsPrepView()
         case .freshness:
             MuscleFreshnessDashboardView()
         case .library:
-            ExerciseLibraryView()
+            ExerciseLibraryView(selectedSection: $selectedLibrarySection)
         case .progress:
             ProgressScreen()
         case .settings:

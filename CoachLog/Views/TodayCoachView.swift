@@ -2,16 +2,16 @@ import SwiftData
 import SwiftUI
 
 struct TodayCoachView: View {
-    @Environment(\.modelContext) private var modelContext
     @Query(sort: \WorkoutSession.date, order: .reverse) private var sessions: [WorkoutSession]
     @Query(sort: \RecoverySnapshot.date, order: .reverse) private var recoverySnapshots: [RecoverySnapshot]
     @Query(sort: \BodyMeasurement.date, order: .reverse) private var bodyMeasurements: [BodyMeasurement]
     @Query(sort: \WorkoutTemplate.updatedAt, order: .reverse) private var workoutTemplates: [WorkoutTemplate]
+    var onManageWorkouts: () -> Void = {}
+
     @State private var viewModel = TodayCoachViewModel()
     @State private var isShowingMeasurementCheckIn = false
     @State private var isShowingWorkoutSuggestion = false
     @State private var isShowingWeeklyPlanBuilder = false
-    @State private var workoutBuilderRoute: WorkoutBuilderRoute?
     private let freshnessEngine = MuscleFreshnessEngine()
 
     var body: some View {
@@ -22,7 +22,7 @@ struct TodayCoachView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 18) {
                         readinessCard
-                        savedWorkoutsCard
+                        todayPlanCard
                         suggestTodayButton
                         generatedPlanCard
                         weeklyLoadCard
@@ -53,12 +53,6 @@ struct TodayCoachView: View {
             }
             .sheet(isPresented: $isShowingWeeklyPlanBuilder) {
                 WeeklyWorkoutPlanBuilderView()
-            }
-            .sheet(item: $workoutBuilderRoute) { route in
-                SavedWorkoutBuilderView(
-                    template: route.template,
-                    defaultWeekday: route.defaultWeekday
-                )
             }
         }
     }
@@ -123,21 +117,15 @@ struct TodayCoachView: View {
         }
     }
 
-    private var savedWorkoutsCard: some View {
-        SavedWorkoutTemplateSection(
+    private var todayPlanCard: some View {
+        TodayWorkoutPlanCard(
             templates: workoutTemplates,
             context: currentWorkoutContext,
             today: todayWeekday,
-            onCreate: { defaultWeekday in
-                workoutBuilderRoute = WorkoutBuilderRoute(template: nil, defaultWeekday: defaultWeekday)
-            },
-            onCreateWeekly: {
+            onBuildWeeklyPlan: {
                 isShowingWeeklyPlanBuilder = true
             },
-            onEdit: { template in
-                workoutBuilderRoute = WorkoutBuilderRoute(template: template, defaultWeekday: nil)
-            },
-            onDelete: deleteTemplate
+            onManagePlan: onManageWorkouts
         )
     }
 
@@ -196,10 +184,6 @@ struct TodayCoachView: View {
         }
     }
 
-    private func deleteTemplate(_ template: WorkoutTemplate) {
-        modelContext.delete(template)
-        try? modelContext.save()
-    }
 }
 
 private struct ReadinessOverviewCard: View {
@@ -466,7 +450,7 @@ private struct TodayWorkoutSuggestionSheet: View {
     }
 }
 
-private struct WorkoutBuilderRoute: Identifiable {
+struct WorkoutBuilderRoute: Identifiable {
     let id = UUID()
     var template: WorkoutTemplate?
     var defaultWeekday: WorkoutWeekday?
