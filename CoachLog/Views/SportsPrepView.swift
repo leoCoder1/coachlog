@@ -12,6 +12,7 @@ struct SportsPrepView: View {
     @State private var selectedRole: CricketRole = .allRounder
     @State private var logMessage: String?
     @State private var saveError: String?
+    @State private var loggedMovementCounts: [String: Int] = [:]
 
     private var selectedDefaultSport: CoachSport {
         CoachSport(rawValue: defaultSportRaw) ?? .cricket
@@ -244,8 +245,11 @@ struct SportsPrepView: View {
                             ForEach(block.items) { item in
                                 SportsRoutineMovementRow(
                                     item: item,
-                                    tint: tintColor(for: plan)
-                                )
+                                    tint: tintColor(for: plan),
+                                    loggedCount: loggedMovementCounts[item.id, default: 0]
+                                ) { draft in
+                                    logMovement(item, draft: draft, plan: plan)
+                                }
 
                                 if item.id != block.items.last?.id {
                                     Divider()
@@ -352,8 +356,51 @@ struct SportsPrepView: View {
         do {
             try modelContext.save()
             logMessage = "\(plan.title) logged. Coach and Freshness now include these muscles."
+            for item in plan.allItems {
+                loggedMovementCounts[item.id, default: 0] += 1
+            }
         } catch {
             saveError = error.localizedDescription
+        }
+    }
+
+    private func logMovement(
+        _ item: SportsRoutineItem,
+        draft: SportsMovementLogDraft,
+        plan: SportsTrainingPlan
+    ) -> Bool {
+        let completedSet = WorkoutSet(
+            weight: draft.weight,
+            reps: draft.reps,
+            rir: draft.rir,
+            timestamp: Date()
+        )
+
+        let completedExercise = CompletedExercise(
+            exerciseName: item.exercise.name,
+            muscleGroup: item.exercise.muscleGroup,
+            sets: [completedSet]
+        )
+
+        let session = WorkoutSession(
+            duration: TimeInterval(max(30, draft.durationSeconds ?? item.durationSeconds ?? 60)),
+            energyLevel: .normal,
+            painFlag: .none,
+            availableMinutes: plan.availableMinutes,
+            goal: plan.workoutGoal,
+            completedExercises: [completedExercise]
+        )
+
+        modelContext.insert(session)
+
+        do {
+            try modelContext.save()
+            loggedMovementCounts[item.id, default: 0] += 1
+            logMessage = "\(item.exercise.name) logged. Freshness now includes this movement."
+            return true
+        } catch {
+            saveError = error.localizedDescription
+            return false
         }
     }
 
@@ -468,9 +515,63 @@ private struct SportsSummaryBadge: View {
     }
 }
 
+private struct SportsMovementLogDraft {
+    var weight: Double
+    var reps: Int
+    var rir: Int
+    var durationSeconds: Int?
+}
+
 private struct SportsRoutineMovementRow: View {
     var item: SportsRoutineItem
     var tint: Color
+    var loggedCount: Int
+    var onLog: (SportsMovementLogDraft) -> Bool
+
+    @AppStorage(UnitPreferenceKeys.weightUnit) private var weightUnitRaw = WeightUnitPreference.pounds.rawValue
+    @State private var weight: Double
+    @State private var reps: Int
+    @State private var durationSeconds: Int
+    @State private var rir: Int
+
+    init(
+        item: SportsRoutineItem,
+        tint: Color,
+        loggedCount: Int,
+        onLog: @escaping (SportsMovementLogDraft) -> Bool
+    ) {
+        self.item = item
+        self.tint = tint
+        self.loggedCount = loggedCount
+        self.onLog = onLog
+        _weight = State(initialValue: 0)
+        _reps = State(initialValue: item.exercise.targetRepsLower)
+        _durationSeconds = State(initialValue: item.durationSeconds ?? 60)
+        _rir = State(initialValue: item.exercise.kind == .stretch ? 3 : 2)
+    }
+
+    private var weightUnit: WeightUnitPreference {
+        WeightUnitPreference(rawValue: weightUnitRaw) ?? .pounds
+    }
+
+    private var logsDuration: Bool {
+        item.durationSeconds != nil || item.exercise.kind == .stretch
+    }
+
+    private var showsWeight: Bool {
+        item.exercise.kind == .strength
+        && item.exercise.equipment != .bodyweight
+        && item.exercise.station != .bodyweight
+        && item.exercise.station != .mat
+    }
+
+    private var durationOptions: [Int] {
+        stride(from: 15, through: 600, by: 15).map { $0 }
+    }
+
+    private var repOptions: [Int] {
+        Array(1...60)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -491,6 +592,82 @@ private struct SportsRoutineMovementRow: View {
                         .padding(.vertical, 5)
                         .background(Color.coachSurfaceElevated)
                         .clipShape(Capsule())
+                }
+            }
+
+            loggingControls
+        }
+    }
+
+    @ViewBuilder
+    private var loggingControls: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            if logsDuration {
+                WheelIntPickerButton(
+                    title: "Duration",
+                    unit: "sec",
+                    values: durationOptions,
+                    value: $durationSeconds
+                )
+            } else {
+                HStack(spacing: 10) {
+                    if showsWeight {
+                        WheelWeightPickerButton(
+                            title: "Weight",
+                            unit: weightUnit,
+                            poundsRange: 0...400,
+                            pounds: $weight
+                        )
+                    }
+
+                    WheelIntPickerButton(
+                        title: "Reps",
+                        unit: "reps",
+                        values: repOptions,
+                        value: $reps
+                    )
+                }
+
+                if item.exercise.kind == .strength {
+                    Picker("RIR", selection: $rir) {
+                        Text("0 Max").tag(0)
+                        Text("1-2 Hard").tag(2)
+                        Text("3+ Easy").tag(3)
+                    }
+                    .pickerStyle(.segmented)
+                }
+            }
+
+            HStack(spacing: 10) {
+                Button {
+                    let draft = SportsMovementLogDraft(
+                        weight: logsDuration || !showsWeight ? 0 : weight,
+                        reps: logsDuration ? durationSeconds : reps,
+                        rir: logsDuration ? 3 : rir,
+                        durationSeconds: logsDuration ? durationSeconds : nil
+                    )
+                    _ = onLog(draft)
+                } label: {
+                    Label(logsDuration ? "Log Move" : "Log Set", systemImage: "checkmark.circle.fill")
+                        .font(.caption.weight(.bold))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 9)
+                }
+                .buttonStyle(CoachSecondaryButtonStyle())
+
+                if loggedCount > 0 {
+                    Label("\(loggedCount)", systemImage: "checkmark.circle")
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(tint)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 8)
+                        .background(tint.opacity(0.12))
+                        .overlay {
+                            Capsule()
+                                .stroke(tint.opacity(0.22), lineWidth: 1)
+                        }
+                        .clipShape(Capsule())
+                        .accessibilityLabel("\(loggedCount) logs")
                 }
             }
         }

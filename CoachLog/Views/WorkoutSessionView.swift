@@ -212,6 +212,13 @@ private struct ExerciseLoggingCard: View {
         WeightUnitPreference(rawValue: weightUnitRaw) ?? .pounds
     }
 
+    private var showsWeight: Bool {
+        exercise.kind == .strength
+        && exercise.equipment != .bodyweight
+        && exercise.station != .bodyweight
+        && exercise.station != .mat
+    }
+
     var body: some View {
         let loggedSets = viewModel.sets(for: exercise.id)
 
@@ -246,15 +253,17 @@ private struct ExerciseLoggingCard: View {
                 }
 
                 HStack(spacing: 12) {
-                    WheelWeightPickerButton(
-                        title: "Weight",
-                        unit: weightUnit,
-                        poundsRange: 0...400,
-                        pounds: Binding(
-                            get: { viewModel.input(for: exercise.id).weight },
-                            set: { viewModel.updateWeight($0, for: exercise.id) }
+                    if showsWeight {
+                        WheelWeightPickerButton(
+                            title: "Weight",
+                            unit: weightUnit,
+                            poundsRange: 0...400,
+                            pounds: Binding(
+                                get: { viewModel.input(for: exercise.id).weight },
+                                set: { viewModel.updateWeight($0, for: exercise.id) }
+                            )
                         )
-                    )
+                    }
 
                     WheelIntPickerButton(
                         title: "Reps",
@@ -267,7 +276,7 @@ private struct ExerciseLoggingCard: View {
                     )
                 }
 
-                if let suggestion = viewModel.loadSuggestion(for: exercise.id) {
+                if showsWeight, let suggestion = viewModel.loadSuggestion(for: exercise.id) {
                     HStack(alignment: .top, spacing: 10) {
                         Image(systemName: "arrow.up.forward.circle")
                             .foregroundStyle(Color.coachAccent)
@@ -329,7 +338,7 @@ private struct ExerciseLoggingCard: View {
 
                                 Spacer()
 
-                                Text("\(weightUnit.formattedWeight(set.weight)) · \(set.reps) reps · RIR \(set.rir)")
+                                Text(loggedSetSummary(set))
                                     .font(.subheadline)
                                     .foregroundStyle(Color.coachSecondaryText)
                                     .lineLimit(1)
@@ -357,6 +366,14 @@ private struct ExerciseLoggingCard: View {
                 isShowingSubstitutions = false
             }
         }
+    }
+
+    private func loggedSetSummary(_ set: LoggedSetDraft) -> String {
+        if showsWeight {
+            return "\(weightUnit.formattedWeight(set.weight)) · \(set.reps) reps · RIR \(set.rir)"
+        }
+
+        return "\(set.reps) reps · RIR \(set.rir)"
     }
 }
 
