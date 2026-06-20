@@ -1863,6 +1863,39 @@ struct MuscleGroupGlyph: View {
     var group: MuscleGroup
 
     var body: some View {
+        if let image = UIImage(named: assetName) {
+            Image(uiImage: image)
+                .resizable()
+                .renderingMode(.original)
+                .scaledToFit()
+                .accessibilityHidden(true)
+        } else {
+            vectorGlyph
+        }
+    }
+
+    private var assetName: String {
+        switch group {
+        case .chest:
+            "muscle-group-filter-chest"
+        case .back:
+            "muscle-group-filter-back"
+        case .legs:
+            "muscle-group-filter-legs"
+        case .glutes:
+            "muscle-group-filter-glutes"
+        case .shoulders:
+            "muscle-group-filter-shoulders"
+        case .biceps:
+            "muscle-group-filter-biceps"
+        case .triceps:
+            "muscle-group-filter-triceps"
+        case .core:
+            "muscle-group-filter-core"
+        }
+    }
+
+    private var vectorGlyph: some View {
         GeometryReader { proxy in
             let size = min(proxy.size.width, proxy.size.height)
 

@@ -1,0 +1,178 @@
+{
+  "model": "grok-imagine-image-quality",
+  "resolution": "1k",
+  "aspect_ratio": "1:1",
+  "generated_at": "2026-06-19T22:14:30.396Z",
+  "items": [
+    {
+      "slug": "muscle-group-filter-all",
+      "title": "All",
+      "detail": "Show a front-facing full-body silhouette with all major muscle groups softly highlighted in teal.",
+      "status": "ok",
+      "prompt": "Square 1:1 polished fitness app muscle-group infographic icon for a dark-mode iOS app. Centered simplified anatomical human silhouette, graphite gray body, bright teal/cyan target muscle highlight. High contrast, clean professional 3D anatomical render, rounded dark charcoal vignette background, legible at 24 px. Tasteful non-sexual fitness anatomy presentation. No gore, no exposed organs, no skeleton, no equipment. No text, no letters, no numbers, no logo, no watermark, no extra people, no cropped body parts. Show a front-facing full-body silhouette with all major muscle groups softly highlighted in teal.",
+      "output_path": "/Users/S/logicione/production/coach-log/output/imagegen/muscle-group-icons-2026-06-19/muscle-group-filter-all.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 500000000
+      },
+      "estimated_cost_usd": 0.05,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 500000000
+        }
+      }
+    },
+    {
+      "slug": "muscle-group-filter-chest",
+      "title": "Chest",
+      "detail": "Show a front-facing upper-body torso silhouette with only the left and right pectoral chest muscles highlighted.",
+      "status": "ok",
+      "prompt": "Square 1:1 polished fitness app muscle-group infographic icon for a dark-mode iOS app. Centered simplified anatomical human silhouette, graphite gray body, bright teal/cyan target muscle highlight. High contrast, clean professional 3D anatomical render, rounded dark charcoal vignette background, legible at 24 px. Tasteful non-sexual fitness anatomy presentation. No gore, no exposed organs, no skeleton, no equipment. No text, no letters, no numbers, no logo, no watermark, no extra people, no cropped body parts. Show a front-facing upper-body torso silhouette with only the left and right pectoral chest muscles highlighted.",
+      "output_path": "/Users/S/logicione/production/coach-log/output/imagegen/muscle-group-icons-2026-06-19/muscle-group-filter-chest.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 500000000
+      },
+      "estimated_cost_usd": 0.05,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 500000000
+        }
+      }
+    },
+    {
+      "slug": "muscle-group-filter-back",
+      "title": "Back",
+      "detail": "Show a rear-facing upper-body torso silhouette with lats, traps, and upper back muscles highlighted.",
+      "status": "ok",
+      "prompt": "Square 1:1 polished fitness app muscle-group infographic icon for a dark-mode iOS app. Centered simplified anatomical human silhouette, graphite gray body, bright teal/cyan target muscle highlight. High contrast, clean professional 3D anatomical render, rounded dark charcoal vignette background, legible at 24 px. Tasteful non-sexual fitness anatomy presentation. No gore, no exposed organs, no skeleton, no equipment. No text, no letters, no numbers, no logo, no watermark, no extra people, no cropped body parts. Show a rear-facing upper-body torso silhouette with lats, traps, and upper back muscles highlighted.",
+      "output_path": "/Users/S/logicione/production/coach-log/output/imagegen/muscle-group-icons-2026-06-19/muscle-group-filter-back.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 500000000
+      },
+      "estimated_cost_usd": 0.05,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 500000000
+        }
+      }
+    },
+    {
+      "slug": "muscle-group-filter-legs",
+      "title": "Legs",
+      "detail": "Show a front-facing lower-body silhouette with quadriceps, hamstrings, and calves highlighted.",
+      "status": "ok",
+      "prompt": "Square 1:1 polished fitness app muscle-group infographic icon for a dark-mode iOS app. Centered simplified anatomical human silhouette, graphite gray body, bright teal/cyan target muscle highlight. High contrast, clean professional 3D anatomical render, rounded dark charcoal vignette background, legible at 24 px. Tasteful non-sexual fitness anatomy presentation. No gore, no exposed organs, no skeleton, no equipment. No text, no letters, no numbers, no logo, no watermark, no extra people, no cropped body parts. Show a front-facing lower-body silhouette with quadriceps, hamstrings, and calves highlighted.",
+      "output_path": "/Users/S/logicione/production/coach-log/output/imagegen/muscle-group-icons-2026-06-19/muscle-group-filter-legs.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 500000000
+      },
+      "estimated_cost_usd": 0.05,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 500000000
+        }
+      }
+    },
+    {
+      "slug": "muscle-group-filter-glutes",
+      "title": "Glutes",
+      "detail": "Show a rear-facing hips and upper-leg silhouette with only the glute muscles highlighted.",
+      "status": "ok",
+      "prompt": "Square 1:1 polished fitness app muscle-group infographic icon for a dark-mode iOS app. Centered simplified anatomical human silhouette, graphite gray body, bright teal/cyan target muscle highlight. High contrast, clean professional 3D anatomical render, rounded dark charcoal vignette background, legible at 24 px. Tasteful non-sexual fitness anatomy presentation. No gore, no exposed organs, no skeleton, no equipment. No text, no letters, no numbers, no logo, no watermark, no extra people, no cropped body parts. Show a rear-facing hips and upper-leg silhouette with only the glute muscles highlighted.",
+      "output_path": "/Users/S/logicione/production/coach-log/output/imagegen/muscle-group-icons-2026-06-19/muscle-group-filter-glutes.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 500000000
+      },
+      "estimated_cost_usd": 0.05,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 500000000
+        }
+      }
+    },
+    {
+      "slug": "muscle-group-filter-shoulders",
+      "title": "Shoulders",
+      "detail": "Show a front-facing upper-body silhouette with only the left and right deltoid shoulder caps highlighted.",
+      "status": "ok",
+      "prompt": "Square 1:1 polished fitness app muscle-group infographic icon for a dark-mode iOS app. Centered simplified anatomical human silhouette, graphite gray body, bright teal/cyan target muscle highlight. High contrast, clean professional 3D anatomical render, rounded dark charcoal vignette background, legible at 24 px. Tasteful non-sexual fitness anatomy presentation. No gore, no exposed organs, no skeleton, no equipment. No text, no letters, no numbers, no logo, no watermark, no extra people, no cropped body parts. Show a front-facing upper-body silhouette with only the left and right deltoid shoulder caps highlighted.",
+      "output_path": "/Users/S/logicione/production/coach-log/output/imagegen/muscle-group-icons-2026-06-19/muscle-group-filter-shoulders.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 500000000
+      },
+      "estimated_cost_usd": 0.05,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 500000000
+        }
+      }
+    },
+    {
+      "slug": "muscle-group-filter-biceps",
+      "title": "Biceps",
+      "detail": "Show a front-facing upper-body silhouette with only the front upper arm biceps highlighted.",
+      "status": "ok",
+      "prompt": "Square 1:1 polished fitness app muscle-group infographic icon for a dark-mode iOS app. Centered simplified anatomical human silhouette, graphite gray body, bright teal/cyan target muscle highlight. High contrast, clean professional 3D anatomical render, rounded dark charcoal vignette background, legible at 24 px. Tasteful non-sexual fitness anatomy presentation. No gore, no exposed organs, no skeleton, no equipment. No text, no letters, no numbers, no logo, no watermark, no extra people, no cropped body parts. Show a front-facing upper-body silhouette with only the front upper arm biceps highlighted.",
+      "output_path": "/Users/S/logicione/production/coach-log/output/imagegen/muscle-group-icons-2026-06-19/muscle-group-filter-biceps.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 500000000
+      },
+      "estimated_cost_usd": 0.05,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 500000000
+        }
+      }
+    },
+    {
+      "slug": "muscle-group-filter-triceps",
+      "title": "Triceps",
+      "detail": "Show a rear-facing upper-body silhouette with only the back upper arm triceps highlighted.",
+      "status": "ok",
+      "prompt": "Square 1:1 polished fitness app muscle-group infographic icon for a dark-mode iOS app. Centered simplified anatomical human silhouette, graphite gray body, bright teal/cyan target muscle highlight. High contrast, clean professional 3D anatomical render, rounded dark charcoal vignette background, legible at 24 px. Tasteful non-sexual fitness anatomy presentation. No gore, no exposed organs, no skeleton, no equipment. No text, no letters, no numbers, no logo, no watermark, no extra people, no cropped body parts. Show a rear-facing upper-body silhouette with only the back upper arm triceps highlighted.",
+      "output_path": "/Users/S/logicione/production/coach-log/output/imagegen/muscle-group-icons-2026-06-19/muscle-group-filter-triceps.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 500000000
+      },
+      "estimated_cost_usd": 0.05,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 500000000
+        }
+      }
+    },
+    {
+      "slug": "muscle-group-filter-core",
+      "title": "Core",
+      "detail": "Show a front-facing torso silhouette with abs and obliques highlighted.",
+      "status": "ok",
+      "prompt": "Square 1:1 polished fitness app muscle-group infographic icon for a dark-mode iOS app. Centered simplified anatomical human silhouette, graphite gray body, bright teal/cyan target muscle highlight. High contrast, clean professional 3D anatomical render, rounded dark charcoal vignette background, legible at 24 px. Tasteful non-sexual fitness anatomy presentation. No gore, no exposed organs, no skeleton, no equipment. No text, no letters, no numbers, no logo, no watermark, no extra people, no cropped body parts. Show a front-facing torso silhouette with abs and obliques highlighted.",
+      "output_path": "/Users/S/logicione/production/coach-log/output/imagegen/muscle-group-icons-2026-06-19/muscle-group-filter-core.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 500000000
+      },
+      "estimated_cost_usd": 0.05,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 500000000
+        }
+      }
+    },
+    {
+      "slug": "muscle-group-filter-chest-v2",
+      "title": "Chest retry",
+      "status": "ok",
+      "prompt": "Square 1:1 dark-mode fitness app icon. Simple front torso only, no head, no legs. Graphite gray anatomical torso on a charcoal background. Two large bright teal pectoral chest muscle shapes highlighted clearly on the upper front torso. Clean professional 3D render, high contrast, readable at tiny iOS filter-chip size. No text, no letters, no logo, no watermark, no organs, no skeleton, no gore, no equipment, no extra people.",
+      "output_path": "/Users/S/logicione/production/coach-log/output/imagegen/muscle-group-icons-2026-06-19/muscle-group-filter-chest-v2.jpeg",
+      "usage": {
+        "cost_in_usd_ticks": 500000000
+      },
+      "estimated_cost_usd": 0.05,
+      "response_metadata": {
+        "usage": {
+          "cost_in_usd_ticks": 500000000
+        }
+      },
+      "note": "Retry because the first Chest generation returned a blank black image."
+    }
+  ]
+}

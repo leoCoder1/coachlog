@@ -251,10 +251,13 @@ struct ExerciseLibraryView: View {
             VStack(spacing: 4) {
                 if let group {
                     MuscleGroupGlyph(group: group)
-                        .frame(width: 18, height: 18)
+                        .frame(width: 24, height: 24)
                 } else {
-                    Image(systemName: "line.3.horizontal.decrease.circle")
-                        .font(.caption.weight(.semibold))
+                    Image("muscle-group-filter-all")
+                        .resizable()
+                        .renderingMode(.original)
+                        .scaledToFit()
+                        .frame(width: 24, height: 24)
                 }
 
                 Text(title)
