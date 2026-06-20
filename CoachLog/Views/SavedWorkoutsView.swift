@@ -1194,14 +1194,22 @@ struct WeeklyWorkoutPlanBuilderView: View {
         total: Int,
         day: WorkoutWeekday
     ) -> [PlannedExercise] {
-        let definitions = exerciseDefinitions(
-            for: focusGroups(for: index, total: total),
-            count: selectedMinutes.exerciseCount
+        let focusGroups = focusGroups(for: index, total: total)
+        let warmUpExercises = warmUpDefinitions(for: focusGroups).map { definition in
+            plannedStretch(
+                from: definition,
+                targetRepsLower: 30,
+                targetRepsUpper: 45,
+                note: "Warm-up before lifting: move continuously and stay easy."
+            )
+        }
+        let mainDefinitions = exerciseDefinitions(
+            for: focusGroups,
+            count: strengthExerciseCount
         )
         let repRange = targetRepRange(for: selectedGoal)
         let targetSets = selectedMinutes == .twenty ? 2 : 3
-
-        return definitions.map { definition in
+        let mainExercises = mainDefinitions.map { definition in
             PlannedExercise(
                 name: definition.name,
                 muscleGroup: definition.primaryMuscleGroup,
@@ -1218,6 +1226,138 @@ struct WeeklyWorkoutPlanBuilderView: View {
                 coachingNote: "Planned for \(day.rawValue)'s \(focusTitle(for: index, total: total).lowercased()) session."
             )
         }
+        let cooldownExercises = cooldownDefinitions(for: focusGroups).map { definition in
+            plannedStretch(
+                from: definition,
+                targetRepsLower: 45,
+                targetRepsUpper: 60,
+                note: "Cooldown after lifting: breathe slowly and hold without forcing range."
+            )
+        }
+
+        return warmUpExercises + mainExercises + cooldownExercises
+    }
+
+    private var strengthExerciseCount: Int {
+        switch selectedMinutes {
+        case .twenty:
+            return 2
+        case .forty:
+            return 4
+        case .sixty:
+            return 6
+        }
+    }
+
+    private var warmUpCount: Int {
+        selectedMinutes == .sixty ? 3 : 2
+    }
+
+    private var cooldownCount: Int {
+        selectedMinutes == .sixty ? 3 : 2
+    }
+
+    private func warmUpDefinitions(for focusGroups: [MuscleGroup]) -> [ExerciseDefinition] {
+        var names: [String] = []
+
+        if focusGroups.contains(.legs) || focusGroups.contains(.glutes) {
+            names += ["Front and lateral leg swings", "Jog, side shuffle, back pedal"]
+        }
+
+        if focusGroups.contains(.chest) || focusGroups.contains(.shoulders) || focusGroups.contains(.triceps) {
+            names += ["Arm circles to scapular hugs", "Scapular wall slides or swimmers"]
+        }
+
+        if focusGroups.contains(.back) || focusGroups.contains(.core) {
+            names += ["Standing thoracic openers", "Thoracic rotations with reach"]
+        }
+
+        if focusGroups.contains(.biceps) || focusGroups.contains(.triceps) {
+            names += ["Wrist rolls and finger pumps"]
+        }
+
+        names += [
+            "Jog, side shuffle, back pedal",
+            "Arm circles to scapular hugs",
+            "Standing thoracic openers"
+        ]
+
+        return prioritizedStretchDefinitions(named: names, count: warmUpCount)
+    }
+
+    private func cooldownDefinitions(for focusGroups: [MuscleGroup]) -> [ExerciseDefinition] {
+        var names = ["Slow walk with nasal breathing"]
+
+        if focusGroups.contains(.legs) || focusGroups.contains(.glutes) {
+            names += ["Figure Four Glute Stretch", "Seated Hamstring Stretch", "Calf Wall Stretch"]
+        }
+
+        if focusGroups.contains(.chest) || focusGroups.contains(.shoulders) || focusGroups.contains(.triceps) {
+            names += ["Doorway Chest Stretch", "Cross-Body Shoulder Stretch"]
+        }
+
+        if focusGroups.contains(.back) || focusGroups.contains(.core) || focusGroups.contains(.biceps) {
+            names += ["Child's Pose", "Overhead lat and triceps side stretch", "Open-book trunk rotation"]
+        }
+
+        names += ["Child's Pose", "Figure Four Glute Stretch", "Doorway Chest Stretch"]
+
+        return prioritizedStretchDefinitions(named: names, count: cooldownCount)
+    }
+
+    private func prioritizedStretchDefinitions(
+        named names: [String],
+        count: Int
+    ) -> [ExerciseDefinition] {
+        var chosenDefinitions: [ExerciseDefinition] = []
+
+        for name in names {
+            guard chosenDefinitions.count < count,
+                  let definition = stretchDefinition(named: name),
+                  !chosenDefinitions.contains(where: { $0.name == definition.name }) else {
+                continue
+            }
+
+            chosenDefinitions.append(definition)
+        }
+
+        if chosenDefinitions.count < count {
+            for definition in ExerciseLibrary.definitions where definition.kind == .stretch && !chosenDefinitions.contains(where: { $0.name == definition.name }) {
+                guard chosenDefinitions.count < count else { break }
+                chosenDefinitions.append(definition)
+            }
+        }
+
+        return chosenDefinitions
+    }
+
+    private func stretchDefinition(named name: String) -> ExerciseDefinition? {
+        ExerciseLibrary.definitions.first {
+            $0.kind == .stretch && $0.name == name
+        }
+    }
+
+    private func plannedStretch(
+        from definition: ExerciseDefinition,
+        targetRepsLower: Int,
+        targetRepsUpper: Int,
+        note: String
+    ) -> PlannedExercise {
+        PlannedExercise(
+            name: definition.name,
+            muscleGroup: definition.primaryMuscleGroup,
+            secondaryMuscleGroups: definition.secondaryMuscleGroups,
+            primaryDetailedMuscle: definition.primaryDetailedMuscle,
+            secondaryDetailedMuscle: definition.secondaryDetailedMuscle,
+            detailedMuscles: definition.detailedMuscles,
+            equipment: definition.equipment,
+            station: definition.station,
+            kind: .stretch,
+            targetSets: 1,
+            targetRepsLower: targetRepsLower,
+            targetRepsUpper: targetRepsUpper,
+            coachingNote: note
+        )
     }
 
     private func exerciseDefinitions(
