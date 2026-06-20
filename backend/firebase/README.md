@@ -7,18 +7,27 @@ This backend currently exposes:
 - `health`: simple health check.
 - `aiCoach`: premium AI coaching proxy for the iOS app.
 
-The iOS app sends structured workout, recovery, freshness, progress, and measurement context. The function calls the configured LLM provider and returns:
+The iOS app sends structured workout, recovery, freshness, progress, and measurement context. For the daily advisor, the app sends a compact recent-history payload with recent sessions, recovery trend, weekly muscle loads, and local progression guardrails. The function calls the configured LLM provider and returns:
 
 ```json
 {
   "message": "Short coaching message",
+  "trainingMode": "push",
+  "exerciseAdvice": [
+    {
+      "exerciseName": "Dumbbell Bench Press",
+      "action": "increase",
+      "suggestedWeightPounds": 55,
+      "reason": "Clean reps last time and readiness is high."
+    }
+  ],
   "provider": "anthropic",
   "model": "claude-sonnet-4-6",
   "source": "premium"
 }
 ```
 
-If the provider fails, the function returns the app's local fallback message with `source: "fallback"`.
+For progress summaries and next-session advice, callers can still use the `message` field only. If the provider fails, the function returns the app's local fallback message and fallback guidance with `source: "fallback"`.
 
 Claude Sonnet is the default provider. The Anthropic request uses an explicit prompt-cache breakpoint on CoachLog's static coaching rubric so repeated requests can reuse the stable prefix. User workout, recovery, and measurement data stays outside that cached block.
 

@@ -26,6 +26,10 @@ struct LoadSuggestion: Identifiable, Hashable {
             return "Last time was \(weightUnit.formattedWeight(lastWeight)). Try \(weightUnit.formattedWeight(suggestedWeight)) if warm-ups feel clean."
         }
 
+        if suggestedWeight < lastWeight {
+            return "Last time was \(weightUnit.formattedWeight(lastWeight)). Use \(weightUnit.formattedWeight(suggestedWeight)) today. \(message)"
+        }
+
         return "Last time was \(weightUnit.formattedWeight(lastWeight)). \(message)"
     }
 }

@@ -6,13 +6,18 @@ struct WorkoutSessionView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \WorkoutSession.date, order: .reverse) private var sessions: [WorkoutSession]
     @State private var viewModel: WorkoutSessionViewModel
+    @State private var healthKitManager = HealthKitManager()
     @State private var saveError: String?
     @State private var isShowingMovementPicker = false
+    @State private var isFinishingWorkout = false
+    @AppStorage(HealthKitWorkoutSync.workoutWritingEnabledKey) private var healthKitWorkoutWritingEnabled = false
 
     let context: WorkoutContext
+    let guidance: TodayCoachGuidance?
 
-    init(plan: WorkoutPlan, context: WorkoutContext) {
+    init(plan: WorkoutPlan, context: WorkoutContext, guidance: TodayCoachGuidance? = nil) {
         self.context = context
+        self.guidance = guidance
         _viewModel = State(initialValue: WorkoutSessionViewModel(plan: plan))
     }
 
@@ -29,7 +34,8 @@ struct WorkoutSessionView: View {
                             viewModel: viewModel,
                             exercise: exercise,
                             sessions: sessions,
-                            context: context
+                            context: context,
+                            onSessionChanged: syncWorkoutToWatch
                         )
                     }
 
@@ -44,7 +50,9 @@ struct WorkoutSessionView: View {
                     .buttonStyle(CoachSecondaryButtonStyle())
 
                     Button {
-                        finishWorkout()
+                        Task {
+                            await finishWorkout()
+                        }
                     } label: {
                         Label("Finish Workout", systemImage: "checkmark.circle.fill")
                             .font(.headline)
@@ -52,7 +60,7 @@ struct WorkoutSessionView: View {
                             .padding()
                     }
                     .buttonStyle(CoachPrimaryButtonStyle())
-                    .disabled(!viewModel.hasLoggedSets)
+                    .disabled(!viewModel.hasLoggedSets || isFinishingWorkout)
                 }
                 .padding()
                 .padding(.bottom, CoachLayout.bottomScrollPadding)
@@ -65,10 +73,12 @@ struct WorkoutSessionView: View {
         .animation(CoachMotion.content, value: viewModel.hasLoggedSets)
         .task {
             viewModel.prepareFromHistory(sessions: sessions, context: context)
+            startWatchWorkoutSync()
         }
         .sheet(isPresented: $isShowingMovementPicker) {
             SessionMovementPickerSheet { exercise in
                 viewModel.addExercise(exercise, sessions: sessions, context: context)
+                syncWorkoutToWatch()
                 isShowingMovementPicker = false
             }
         }
@@ -104,16 +114,59 @@ struct WorkoutSessionView: View {
         }
     }
 
-    private func finishWorkout() {
+    private func finishWorkout() async {
+        guard !isFinishingWorkout else { return }
+        isFinishingWorkout = true
+        defer { isFinishingWorkout = false }
+
         let session = viewModel.makeWorkoutSession(context: context)
         modelContext.insert(session)
 
         do {
             try modelContext.save()
+            await saveToHealthIfNeeded(session)
+            ActiveWorkoutStore.shared.finishWorkout()
             dismiss()
         } catch {
             saveError = error.localizedDescription
         }
+    }
+
+    private func saveToHealthIfNeeded(_ session: WorkoutSession) async {
+        guard healthKitWorkoutWritingEnabled else { return }
+
+        let result = await healthKitManager.saveWorkoutToHealthIfNeeded(session)
+        guard let healthKitUUID = result.healthKitUUID else { return }
+
+        session.healthKitWorkoutUUID = healthKitUUID.uuidString
+        session.healthKitWorkoutSavedAt = .now
+
+        do {
+            try modelContext.save()
+        } catch {
+            saveError = error.localizedDescription
+        }
+    }
+
+    private func startWatchWorkoutSync() {
+        ActiveWorkoutStore.shared.activateConnectivity()
+        ActiveWorkoutStore.shared.beginWorkout(
+            snapshot: viewModel.activeWorkoutSnapshot(context: context),
+            onLogSet: { command in
+                guard viewModel.apply(command) else { return nil }
+                return viewModel.activeWorkoutSnapshot(context: context)
+            },
+            onUndoSet: { command in
+                guard viewModel.apply(command) else { return nil }
+                return viewModel.activeWorkoutSnapshot(context: context)
+            }
+        )
+    }
+
+    private func syncWorkoutToWatch() {
+        ActiveWorkoutStore.shared.refreshWorkout(
+            snapshot: viewModel.activeWorkoutSnapshot(context: context)
+        )
     }
 }
 
@@ -225,6 +278,7 @@ private struct ExerciseLoggingCard: View {
     let exercise: PlannedExercise
     let sessions: [WorkoutSession]
     let context: WorkoutContext
+    let onSessionChanged: () -> Void
 
     @State private var isShowingSubstitutions = false
     @AppStorage(UnitPreferenceKeys.weightUnit) private var weightUnitRaw = WeightUnitPreference.pounds.rawValue
@@ -297,7 +351,10 @@ private struct ExerciseLoggingCard: View {
                             values: durationOptions,
                             value: Binding(
                                 get: { viewModel.input(for: exercise.id).reps },
-                                set: { viewModel.updateReps($0, for: exercise.id) }
+                                set: {
+                                    viewModel.updateReps($0, for: exercise.id)
+                                    onSessionChanged()
+                                }
                             )
                         )
 
@@ -305,7 +362,10 @@ private struct ExerciseLoggingCard: View {
                             title: "Hold Timer",
                             durationSeconds: Binding(
                                 get: { viewModel.input(for: exercise.id).reps },
-                                set: { viewModel.updateReps($0, for: exercise.id) }
+                                set: {
+                                    viewModel.updateReps($0, for: exercise.id)
+                                    onSessionChanged()
+                                }
                             ),
                             tint: Color.coachAccent
                         )
@@ -316,7 +376,10 @@ private struct ExerciseLoggingCard: View {
                             poundsRange: 0...400,
                             pounds: Binding(
                                 get: { viewModel.input(for: exercise.id).weight },
-                                set: { viewModel.updateWeight($0, for: exercise.id) }
+                                set: {
+                                    viewModel.updateWeight($0, for: exercise.id)
+                                    onSessionChanged()
+                                }
                             )
                         )
 
@@ -326,7 +389,10 @@ private struct ExerciseLoggingCard: View {
                             values: viewModel.repOptions,
                             value: Binding(
                                 get: { viewModel.input(for: exercise.id).reps },
-                                set: { viewModel.updateReps($0, for: exercise.id) }
+                                set: {
+                                    viewModel.updateReps($0, for: exercise.id)
+                                    onSessionChanged()
+                                }
                             )
                         )
                     } else {
@@ -336,7 +402,10 @@ private struct ExerciseLoggingCard: View {
                             values: viewModel.repOptions,
                             value: Binding(
                                 get: { viewModel.input(for: exercise.id).reps },
-                                set: { viewModel.updateReps($0, for: exercise.id) }
+                                set: {
+                                    viewModel.updateReps($0, for: exercise.id)
+                                    onSessionChanged()
+                                }
                             )
                         )
                     }
@@ -357,6 +426,7 @@ private struct ExerciseLoggingCard: View {
                         if suggestion.suggestedWeight != viewModel.input(for: exercise.id).weight {
                             Button {
                                 viewModel.useSuggestedWeight(for: exercise.id)
+                                onSessionChanged()
                             } label: {
                                 Image(systemName: "checkmark")
                                     .font(.caption.weight(.semibold))
@@ -377,7 +447,10 @@ private struct ExerciseLoggingCard: View {
                             "RIR",
                             selection: Binding(
                                 get: { viewModel.input(for: exercise.id).rir },
-                                set: { viewModel.updateRIR($0, for: exercise.id) }
+                                set: {
+                                    viewModel.updateRIR($0, for: exercise.id)
+                                    onSessionChanged()
+                                }
                             )
                         ) {
                             Text("0 Max").tag(0)
@@ -390,6 +463,7 @@ private struct ExerciseLoggingCard: View {
 
                 Button {
                     viewModel.addSet(for: exercise.id)
+                    onSessionChanged()
                 } label: {
                     Label(logsDuration ? "Log Hold" : "Add Set", systemImage: "plus.circle")
                         .frame(maxWidth: .infinity)
@@ -431,6 +505,7 @@ private struct ExerciseLoggingCard: View {
                     sessions: sessions,
                     context: context
                 )
+                onSessionChanged()
                 isShowingSubstitutions = false
             }
         }

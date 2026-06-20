@@ -48,7 +48,8 @@ struct TodayCoachView: View {
                 TodayWorkoutSuggestionSheet(
                     viewModel: viewModel,
                     sessions: sessions,
-                    latestRecovery: recoverySnapshots.first
+                    recoverySnapshots: recoverySnapshots,
+                    measurements: bodyMeasurements
                 )
             }
             .sheet(isPresented: $isShowingWeeklyPlanBuilder) {
@@ -154,23 +155,33 @@ struct TodayCoachView: View {
                     Label("Today's Coaching", systemImage: "sparkles")
                         .font(.headline)
 
-                    Text(viewModel.explanation)
-                        .font(.subheadline)
-                        .foregroundStyle(Color.coachSecondaryText)
+                    if let guidance = viewModel.guidance {
+                        TodayGuidanceSummary(guidance: guidance)
+                    } else {
+                        Text(viewModel.explanation)
+                            .font(.subheadline)
+                            .foregroundStyle(Color.coachSecondaryText)
+                    }
 
                     Divider()
                         .overlay(Color.coachBorder)
 
                     ForEach(plan.exercises) { exercise in
-                        ExerciseVisualHeader(
-                            exercise: exercise,
-                            subtitle: "\(exercise.targetSets) sets · \(exercise.targetRepRange) reps · \(exercise.station.rawValue)",
-                            note: exercise.coachingNote
-                        )
+                        VStack(alignment: .leading, spacing: 8) {
+                            ExerciseVisualHeader(
+                                exercise: exercise,
+                                subtitle: "\(exercise.targetSets) sets · \(exercise.targetRepRange) reps · \(exercise.station.rawValue)",
+                                note: viewModel.guidance?.advice(for: exercise.name)?.reason ?? exercise.coachingNote
+                            )
+
+                            if let advice = viewModel.guidance?.advice(for: exercise.name) {
+                                TodayExerciseAdvicePill(advice: advice)
+                            }
+                        }
                     }
 
                     NavigationLink {
-                        WorkoutSessionView(plan: plan, context: context)
+                        WorkoutSessionView(plan: plan, context: context, guidance: viewModel.guidance)
                     } label: {
                         Label("Start Workout", systemImage: "play.fill")
                             .font(.headline)
@@ -340,7 +351,8 @@ private struct TodayWorkoutSuggestionSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Bindable var viewModel: TodayCoachViewModel
     var sessions: [WorkoutSession]
-    var latestRecovery: RecoverySnapshot?
+    var recoverySnapshots: [RecoverySnapshot]
+    var measurements: [BodyMeasurement]
 
     var body: some View {
         NavigationStack {
@@ -404,7 +416,8 @@ private struct TodayWorkoutSuggestionSheet: View {
                             Task {
                                 await viewModel.generateWorkout(
                                     sessions: sessions,
-                                    latestRecovery: latestRecovery
+                                    recoverySnapshots: recoverySnapshots,
+                                    measurements: measurements
                                 )
                                 dismiss()
                             }
@@ -446,6 +459,108 @@ private struct TodayWorkoutSuggestionSheet: View {
             Text(title)
                 .font(.headline)
             content()
+        }
+    }
+}
+
+private struct TodayGuidanceSummary: View {
+    var guidance: TodayCoachGuidance
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 10) {
+                Text(guidance.trainingMode.displayName)
+                    .font(.caption.weight(.black))
+                    .foregroundStyle(modeForeground)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(modeBackground, in: Capsule())
+
+                Text(guidance.source == "premium" ? "AI Coach" : "Local Coach")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Color.coachSecondaryText)
+            }
+
+            Text(guidance.message)
+                .font(.subheadline)
+                .foregroundStyle(Color.coachSecondaryText)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private var modeForeground: Color {
+        switch guidance.trainingMode {
+        case .push: Color.black.opacity(0.88)
+        case .normal: Color.coachAccent
+        case .hold: Color.coachWarm
+        case .deload, .rest: Color.freshness(.caution)
+        }
+    }
+
+    private var modeBackground: AnyShapeStyle {
+        switch guidance.trainingMode {
+        case .push:
+            AnyShapeStyle(CoachGradient.accent)
+        case .normal:
+            AnyShapeStyle(Color.coachAccent.opacity(0.14))
+        case .hold:
+            AnyShapeStyle(Color.coachWarm.opacity(0.16))
+        case .deload, .rest:
+            AnyShapeStyle(Color.freshness(.caution).opacity(0.16))
+        }
+    }
+}
+
+private struct TodayExerciseAdvicePill: View {
+    var advice: AICoachExerciseAdvice
+    @AppStorage(UnitPreferenceKeys.weightUnit) private var weightUnitRaw = WeightUnitPreference.pounds.rawValue
+
+    private var weightUnit: WeightUnitPreference {
+        WeightUnitPreference(rawValue: weightUnitRaw) ?? .pounds
+    }
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: iconName)
+                .font(.caption.weight(.semibold))
+
+            Text(title)
+                .font(.caption.weight(.semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
+        }
+        .foregroundStyle(tint)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 7)
+        .background(tint.opacity(0.12), in: Capsule())
+        .overlay {
+            Capsule()
+                .stroke(tint.opacity(0.22), lineWidth: 1)
+        }
+    }
+
+    private var title: String {
+        if advice.action == .increase, let weightText = advice.suggestedWeightText(unit: weightUnit) {
+            return "Try \(weightText)"
+        }
+
+        return advice.action.displayName
+    }
+
+    private var tint: Color {
+        switch advice.action {
+        case .increase: Color.coachAccent
+        case .hold: Color.coachWarm
+        case .reduce, .substitute: Color.freshness(.caution)
+        }
+    }
+
+    private var iconName: String {
+        switch advice.action {
+        case .increase: "arrow.up.forward"
+        case .hold: "pause.fill"
+        case .reduce: "arrow.down.forward"
+        case .substitute: "arrow.triangle.2.circlepath"
         }
     }
 }

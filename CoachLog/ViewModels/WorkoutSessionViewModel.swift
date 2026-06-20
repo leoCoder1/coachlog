@@ -25,6 +25,7 @@ struct ExerciseSubstitution: Identifiable, Hashable {
 @MainActor
 @Observable
 final class WorkoutSessionViewModel {
+    let activeWorkoutID: UUID
     var plan: WorkoutPlan
     let startedAt: Date
     var inputs: [UUID: SetInput]
@@ -32,13 +33,16 @@ final class WorkoutSessionViewModel {
     var loadSuggestions: [UUID: LoadSuggestion]
 
     @ObservationIgnored private let progressionEngine: ProgressionEngine
+    @ObservationIgnored private let guidance: TodayCoachGuidance?
     @ObservationIgnored private var didPrepareFromHistory = false
 
     init(
         plan: WorkoutPlan,
+        guidance: TodayCoachGuidance? = nil,
         startedAt: Date = .now,
         progressionEngine: ProgressionEngine = ProgressionEngine()
     ) {
+        self.activeWorkoutID = UUID()
         self.plan = plan
         self.startedAt = startedAt
         self.inputs = Dictionary(uniqueKeysWithValues: plan.exercises.map { exercise in
@@ -47,6 +51,7 @@ final class WorkoutSessionViewModel {
         self.loggedSets = Dictionary(uniqueKeysWithValues: plan.exercises.map { ($0.id, []) })
         self.loadSuggestions = [:]
         self.progressionEngine = progressionEngine
+        self.guidance = guidance
     }
 
     var hasLoggedSets: Bool {
@@ -122,6 +127,50 @@ final class WorkoutSessionViewModel {
             rir: input.rir
         )
         loggedSets[exerciseID, default: []].append(draft)
+    }
+
+    func apply(_ command: WatchLogSetCommand) -> Bool {
+        guard command.sessionID == activeWorkoutID,
+              plan.exercises.contains(where: { $0.id == command.exerciseID }) else {
+            return false
+        }
+
+        inputs[command.exerciseID] = SetInput(
+            weight: nearestWeightOption(to: command.weight),
+            reps: max(1, command.reps),
+            rir: max(0, min(3, command.rir))
+        )
+        loggedSets[command.exerciseID, default: []].append(
+            LoggedSetDraft(
+                id: command.commandID,
+                weight: nearestWeightOption(to: command.weight),
+                reps: max(1, command.reps),
+                rir: max(0, min(3, command.rir)),
+                timestamp: command.timestamp
+            )
+        )
+        return true
+    }
+
+    func apply(_ command: WatchUndoSetCommand) -> Bool {
+        guard command.sessionID == activeWorkoutID,
+              var exerciseSets = loggedSets[command.exerciseID],
+              !exerciseSets.isEmpty else {
+            return false
+        }
+
+        exerciseSets.removeLast()
+        loggedSets[command.exerciseID] = exerciseSets
+
+        if let previousSet = exerciseSets.last {
+            inputs[command.exerciseID] = SetInput(
+                weight: previousSet.weight,
+                reps: previousSet.reps,
+                rir: previousSet.rir
+            )
+        }
+
+        return true
     }
 
     func substitutionOptions(
@@ -224,19 +273,93 @@ final class WorkoutSessionViewModel {
         sessions: [WorkoutSession],
         context: WorkoutContext
     ) {
-        if let lastWeight = progressionEngine.lastWeight(for: exercise.name, in: sessions) {
+        let lastWeight = progressionEngine.lastWeight(for: exercise.name, in: sessions)
+
+        if let lastWeight {
             var input = input(for: exercise.id)
             input.weight = nearestWeightOption(to: lastWeight)
             inputs[exercise.id] = input
         }
 
+        var localSuggestion: LoadSuggestion?
         if let suggestion = progressionEngine.loadSuggestion(
             for: exercise,
             recentSessions: sessions,
             pain: context.painFlag
         ) {
             loadSuggestions[exercise.id] = suggestion
+            localSuggestion = suggestion
         }
+
+        applyAIGuidance(
+            to: exercise,
+            lastWeight: lastWeight,
+            localSuggestion: localSuggestion
+        )
+    }
+
+    private func applyAIGuidance(
+        to exercise: PlannedExercise,
+        lastWeight: Double?,
+        localSuggestion: LoadSuggestion?
+    ) {
+        guard let advice = guidance?.advice(for: exercise.name) else { return }
+
+        switch advice.action {
+        case .increase:
+            guard let localSuggestion,
+                  localSuggestion.suggestedWeight > localSuggestion.lastWeight else {
+                return
+            }
+
+            let suggestedWeight = min(
+                advice.suggestedWeightPounds ?? localSuggestion.suggestedWeight,
+                localSuggestion.suggestedWeight
+            )
+            setSuggestedWeight(
+                suggestedWeight,
+                lastWeight: localSuggestion.lastWeight,
+                exercise: exercise,
+                message: advice.reason
+            )
+        case .hold:
+            guard let lastWeight else { return }
+            setSuggestedWeight(
+                lastWeight,
+                lastWeight: lastWeight,
+                exercise: exercise,
+                message: advice.reason
+            )
+        case .reduce:
+            guard let lastWeight else { return }
+            let suggestedWeight = min(advice.suggestedWeightPounds ?? lastWeight * 0.9, lastWeight)
+            setSuggestedWeight(
+                suggestedWeight,
+                lastWeight: lastWeight,
+                exercise: exercise,
+                message: advice.reason
+            )
+        case .substitute:
+            return
+        }
+    }
+
+    private func setSuggestedWeight(
+        _ suggestedWeight: Double,
+        lastWeight: Double,
+        exercise: PlannedExercise,
+        message: String
+    ) {
+        let roundedSuggestion = nearestWeightOption(to: suggestedWeight)
+        var input = input(for: exercise.id)
+        input.weight = roundedSuggestion
+        inputs[exercise.id] = input
+        loadSuggestions[exercise.id] = LoadSuggestion(
+            exerciseName: exercise.name,
+            lastWeight: lastWeight,
+            suggestedWeight: roundedSuggestion,
+            message: message
+        )
     }
 
     private func plannedExercise(
@@ -341,5 +464,35 @@ final class WorkoutSessionViewModel {
             goal: context.goal,
             completedExercises: completed
         )
+    }
+
+    func activeWorkoutSnapshot(context: WorkoutContext) -> ActiveWorkoutSnapshot {
+        ActiveWorkoutSnapshot(
+            sessionID: activeWorkoutID,
+            workoutTitle: "\(context.goal.displayName) · \(context.availableMinutes.displayName)",
+            startedAt: startedAt,
+            updatedAt: .now,
+            exercises: plan.exercises.map { exercise in
+                let input = input(for: exercise.id)
+                return ActiveWorkoutExerciseSnapshot(
+                    id: exercise.id,
+                    name: exercise.name,
+                    targetSets: exercise.targetSets,
+                    targetRepRange: exercise.targetRepRange,
+                    loggedSetCount: sets(for: exercise.id).count,
+                    latestWeight: input.weight,
+                    latestReps: input.reps,
+                    latestRIR: input.rir,
+                    showsWeight: showsWeight(for: exercise)
+                )
+            }
+        )
+    }
+
+    private func showsWeight(for exercise: PlannedExercise) -> Bool {
+        exercise.kind == .strength
+        && exercise.equipment != .bodyweight
+        && exercise.station != .bodyweight
+        && exercise.station != .mat
     }
 }

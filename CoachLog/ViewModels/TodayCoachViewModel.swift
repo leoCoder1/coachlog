@@ -10,6 +10,7 @@ final class TodayCoachViewModel {
     var selectedGoal: FitnessGoal = .buildMuscle
     var generatedPlan: WorkoutPlan?
     var generatedContext: WorkoutContext?
+    var guidance: TodayCoachGuidance?
     var explanation = ""
     var isGenerating = false
 
@@ -26,7 +27,8 @@ final class TodayCoachViewModel {
 
     func generateWorkout(
         sessions: [WorkoutSession],
-        latestRecovery: RecoverySnapshot?
+        recoverySnapshots: [RecoverySnapshot],
+        measurements: [BodyMeasurement]
     ) async {
         isGenerating = true
         defer { isGenerating = false }
@@ -36,22 +38,29 @@ final class TodayCoachViewModel {
             energyLevel: selectedEnergy,
             painFlag: selectedPain,
             goal: selectedGoal,
-            recovery: latestRecovery.map(RecoverySnapshotSummary.init(snapshot:))
+            recovery: recoverySnapshots.first.map(RecoverySnapshotSummary.init(snapshot:))
         )
 
         let result = generator.generate(context: context, sessions: sessions)
         generatedPlan = result.plan
         generatedContext = context
-        explanation = await aiService.generateWorkoutExplanation(
+        let todayGuidance = await aiService.generateTodayGuidance(
             plan: result.plan,
             context: context,
-            freshness: result.freshness
+            freshness: result.freshness,
+            weeklyLoads: result.weeklyLoads,
+            sessions: sessions,
+            recoverySnapshots: recoverySnapshots,
+            measurements: measurements
         )
+        guidance = todayGuidance
+        explanation = todayGuidance.message
     }
 
     func clearGeneratedPlan() {
         generatedPlan = nil
         generatedContext = nil
+        guidance = nil
         explanation = ""
     }
 }

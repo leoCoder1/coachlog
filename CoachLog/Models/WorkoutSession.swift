@@ -10,6 +10,8 @@ final class WorkoutSession {
     var painFlagRaw: String
     var availableMinutesRaw: Int
     var goalRaw: String
+    var healthKitWorkoutUUID: String?
+    var healthKitWorkoutSavedAt: Date?
 
     @Relationship(deleteRule: .cascade)
     var completedExercises: [CompletedExercise]
@@ -22,7 +24,9 @@ final class WorkoutSession {
         painFlag: PainFlag,
         availableMinutes: AvailableMinutes,
         goal: FitnessGoal,
-        completedExercises: [CompletedExercise] = []
+        completedExercises: [CompletedExercise] = [],
+        healthKitWorkoutUUID: String? = nil,
+        healthKitWorkoutSavedAt: Date? = nil
     ) {
         self.id = id
         self.date = date
@@ -31,6 +35,8 @@ final class WorkoutSession {
         self.painFlagRaw = painFlag.rawValue
         self.availableMinutesRaw = availableMinutes.rawValue
         self.goalRaw = goal.rawValue
+        self.healthKitWorkoutUUID = healthKitWorkoutUUID
+        self.healthKitWorkoutSavedAt = healthKitWorkoutSavedAt
         self.completedExercises = completedExercises
     }
 
@@ -54,4 +60,3 @@ final class WorkoutSession {
         set { goalRaw = newValue.rawValue }
     }
 }
-

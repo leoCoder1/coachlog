@@ -22,6 +22,7 @@ struct SettingsView: View {
     @AppStorage(SportPreferenceKeys.defaultSport) private var defaultSportRaw = CoachSport.cricket.rawValue
     @AppStorage(HealthKitRecoverySync.autoImportEnabledKey) private var healthKitAutoImportEnabled = false
     @AppStorage(HealthKitRecoverySync.lastAutoImportDateKey) private var lastHealthKitAutoImportTime = 0.0
+    @AppStorage(HealthKitWorkoutSync.workoutWritingEnabledKey) private var healthKitWorkoutWritingEnabled = false
 
     var body: some View {
         NavigationStack {
@@ -278,6 +279,29 @@ struct SettingsView: View {
                 .onChange(of: healthKitAutoImportEnabled) { _, isEnabled in
                     if isEnabled {
                         HealthKitRecoverySync.scheduleBackgroundRefresh()
+                    }
+                }
+
+                Toggle(isOn: $healthKitWorkoutWritingEnabled) {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("Save completed workouts")
+                            .font(.subheadline.weight(.semibold))
+
+                        Text("Adds finished CoachLog sessions to Apple Health as strength workouts.")
+                            .font(.caption)
+                            .foregroundStyle(Color.coachSecondaryText)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                .tint(Color.coachAccent)
+                .onChange(of: healthKitWorkoutWritingEnabled) { _, isEnabled in
+                    guard isEnabled else { return }
+
+                    Task {
+                        let authorized = await healthKitManager.requestWorkoutWriteAuthorization()
+                        if !authorized {
+                            healthKitWorkoutWritingEnabled = false
+                        }
                     }
                 }
 

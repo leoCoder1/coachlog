@@ -22,6 +22,7 @@ enum LocalAccountDataStore {
         CoachAuthSession.signOut(defaults: defaults)
         defaults.removeObject(forKey: HealthKitRecoverySync.autoImportEnabledKey)
         defaults.removeObject(forKey: HealthKitRecoverySync.lastAutoImportDateKey)
+        defaults.removeObject(forKey: HealthKitWorkoutSync.workoutWritingEnabledKey)
         defaults.removeObject(forKey: UnitPreferenceKeys.weightUnit)
         defaults.removeObject(forKey: UnitPreferenceKeys.lengthUnit)
     }
