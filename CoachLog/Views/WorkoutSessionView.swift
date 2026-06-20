@@ -240,6 +240,22 @@ private struct ExerciseLoggingCard: View {
         && exercise.station != .mat
     }
 
+    private var logsDuration: Bool {
+        exercise.kind == .stretch
+    }
+
+    private var durationOptions: [Int] {
+        [15, 20, 30, 45, 60, 75, 90, 120]
+    }
+
+    private var exerciseSubtitle: String {
+        if logsDuration {
+            return "\(exercise.targetSets) \(exercise.targetSets == 1 ? "hold" : "holds") · \(exercise.targetRepRange) sec · \(exercise.station.rawValue)"
+        }
+
+        return "\(exercise.targetSets) sets · \(exercise.targetRepRange) reps · \(exercise.station.rawValue)"
+    }
+
     var body: some View {
         let loggedSets = viewModel.sets(for: exercise.id)
 
@@ -247,8 +263,8 @@ private struct ExerciseLoggingCard: View {
             VStack(alignment: .leading, spacing: 14) {
                 ExerciseVisualHeader(
                     exercise: exercise,
-                    subtitle: "\(exercise.targetSets) sets · \(exercise.targetRepRange) reps · \(exercise.station.rawValue)",
-                    note: nil
+                    subtitle: exerciseSubtitle,
+                    note: logsDuration ? exercise.coachingNote : nil
                 )
 
                 HStack(spacing: 10) {
@@ -274,7 +290,26 @@ private struct ExerciseLoggingCard: View {
                 }
 
                 HStack(spacing: 12) {
-                    if showsWeight {
+                    if logsDuration {
+                        WheelIntPickerButton(
+                            title: "Duration",
+                            unit: "sec",
+                            values: durationOptions,
+                            value: Binding(
+                                get: { viewModel.input(for: exercise.id).reps },
+                                set: { viewModel.updateReps($0, for: exercise.id) }
+                            )
+                        )
+
+                        CoachCountdownTimerButton(
+                            title: "Hold Timer",
+                            durationSeconds: Binding(
+                                get: { viewModel.input(for: exercise.id).reps },
+                                set: { viewModel.updateReps($0, for: exercise.id) }
+                            ),
+                            tint: Color.coachAccent
+                        )
+                    } else if showsWeight {
                         WheelWeightPickerButton(
                             title: "Weight",
                             unit: weightUnit,
@@ -284,17 +319,27 @@ private struct ExerciseLoggingCard: View {
                                 set: { viewModel.updateWeight($0, for: exercise.id) }
                             )
                         )
-                    }
 
-                    WheelIntPickerButton(
-                        title: "Reps",
-                        unit: "reps",
-                        values: viewModel.repOptions,
-                        value: Binding(
-                            get: { viewModel.input(for: exercise.id).reps },
-                            set: { viewModel.updateReps($0, for: exercise.id) }
+                        WheelIntPickerButton(
+                            title: "Reps",
+                            unit: "reps",
+                            values: viewModel.repOptions,
+                            value: Binding(
+                                get: { viewModel.input(for: exercise.id).reps },
+                                set: { viewModel.updateReps($0, for: exercise.id) }
+                            )
                         )
-                    )
+                    } else {
+                        WheelIntPickerButton(
+                            title: "Reps",
+                            unit: "reps",
+                            values: viewModel.repOptions,
+                            value: Binding(
+                                get: { viewModel.input(for: exercise.id).reps },
+                                set: { viewModel.updateReps($0, for: exercise.id) }
+                            )
+                        )
+                    }
                 }
 
                 if showsWeight, let suggestion = viewModel.loadSuggestion(for: exercise.id) {
@@ -322,29 +367,31 @@ private struct ExerciseLoggingCard: View {
                     }
                 }
 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("RIR")
-                        .font(.caption)
-                        .foregroundStyle(Color.coachSecondaryText)
+                if !logsDuration {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("RIR")
+                            .font(.caption)
+                            .foregroundStyle(Color.coachSecondaryText)
 
-                    Picker(
-                        "RIR",
-                        selection: Binding(
-                            get: { viewModel.input(for: exercise.id).rir },
-                            set: { viewModel.updateRIR($0, for: exercise.id) }
-                        )
-                    ) {
-                        Text("0 Max").tag(0)
-                        Text("1-2 Hard").tag(2)
-                        Text("3+ Easy").tag(3)
+                        Picker(
+                            "RIR",
+                            selection: Binding(
+                                get: { viewModel.input(for: exercise.id).rir },
+                                set: { viewModel.updateRIR($0, for: exercise.id) }
+                            )
+                        ) {
+                            Text("0 Max").tag(0)
+                            Text("1-2 Hard").tag(2)
+                            Text("3+ Easy").tag(3)
+                        }
+                        .pickerStyle(.segmented)
                     }
-                    .pickerStyle(.segmented)
                 }
 
                 Button {
                     viewModel.addSet(for: exercise.id)
                 } label: {
-                    Label("Add Set", systemImage: "plus.circle")
+                    Label(logsDuration ? "Log Hold" : "Add Set", systemImage: "plus.circle")
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
                 }
@@ -390,6 +437,10 @@ private struct ExerciseLoggingCard: View {
     }
 
     private func loggedSetSummary(_ set: LoggedSetDraft) -> String {
+        if logsDuration {
+            return "\(set.reps) sec hold"
+        }
+
         if showsWeight {
             return "\(weightUnit.formattedWeight(set.weight)) · \(set.reps) reps · RIR \(set.rir)"
         }

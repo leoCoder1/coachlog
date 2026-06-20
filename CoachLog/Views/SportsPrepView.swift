@@ -612,7 +612,7 @@ private struct SportsRoutineMovementRow: View {
                     )
                     .layoutPriority(1)
 
-                    SportsCountdownTimerButton(
+                    CoachCountdownTimerButton(
                         durationSeconds: $durationSeconds,
                         tint: tint
                     )
@@ -698,138 +698,6 @@ private struct SportsBucketBadge: View {
                     .stroke(bucket == .minimum ? tint.opacity(0.20) : Color.coachBorder, lineWidth: 1)
             }
             .clipShape(Capsule())
-    }
-}
-
-private struct SportsCountdownTimerButton: View {
-    @Binding var durationSeconds: Int
-    var tint: Color
-
-    @State private var remainingSeconds: Int
-    @State private var isRunning = false
-
-    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-
-    init(durationSeconds: Binding<Int>, tint: Color) {
-        _durationSeconds = durationSeconds
-        self.tint = tint
-        _remainingSeconds = State(initialValue: durationSeconds.wrappedValue)
-    }
-
-    private var actionTitle: String {
-        if isRunning {
-            return "Stop"
-        }
-
-        return remainingSeconds == 0 ? "Done" : "Start"
-    }
-
-    private var actionIcon: String {
-        if isRunning {
-            return "pause.fill"
-        }
-
-        return remainingSeconds == 0 ? "checkmark.circle.fill" : "play.fill"
-    }
-
-    private var formattedRemaining: String {
-        let minutes = remainingSeconds / 60
-        let seconds = remainingSeconds % 60
-
-        if minutes > 0 {
-            return String(format: "%d:%02d", minutes, seconds)
-        }
-
-        return "\(seconds)s"
-    }
-
-    var body: some View {
-        Button {
-            toggleTimer()
-        } label: {
-            HStack(spacing: 8) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Timer")
-                        .font(.caption)
-                        .foregroundStyle(Color.coachSecondaryText)
-
-                    Text(formattedRemaining)
-                        .font(.headline.monospacedDigit().weight(.bold))
-                        .foregroundStyle(.primary)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.75)
-                }
-
-                Spacer(minLength: 2)
-
-                VStack(spacing: 4) {
-                    Image(systemName: actionIcon)
-                        .font(.caption.weight(.bold))
-                        .foregroundStyle(remainingSeconds == 0 ? Color.black.opacity(0.86) : Color.black.opacity(0.84))
-                        .frame(width: 26, height: 26)
-                        .background(remainingSeconds == 0 ? AnyShapeStyle(tint) : AnyShapeStyle(CoachGradient.accent))
-                        .clipShape(Circle())
-
-                    Text(actionTitle)
-                        .font(.caption2.weight(.bold))
-                        .foregroundStyle(tint)
-                        .lineLimit(1)
-                }
-            }
-            .padding(12)
-            .frame(width: 132)
-            .frame(minHeight: 64)
-            .background(Color.coachSurfaceElevated)
-            .overlay {
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .stroke(isRunning ? tint.opacity(0.45) : Color.coachBorder, lineWidth: 1)
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel("Timer \(formattedRemaining), \(actionTitle)")
-        .onReceive(timer) { _ in
-            tick()
-        }
-        .onChange(of: durationSeconds) { _, newDuration in
-            updateDuration(newDuration)
-        }
-        .onDisappear {
-            isRunning = false
-        }
-    }
-
-    private func toggleTimer() {
-        if isRunning {
-            isRunning = false
-            return
-        }
-
-        if remainingSeconds == 0 {
-            remainingSeconds = durationSeconds
-        }
-
-        isRunning = true
-    }
-
-    private func tick() {
-        guard isRunning else { return }
-
-        if remainingSeconds > 0 {
-            remainingSeconds -= 1
-        }
-
-        if remainingSeconds == 0 {
-            isRunning = false
-        }
-    }
-
-    private func updateDuration(_ newDuration: Int) {
-        if isRunning {
-            remainingSeconds = min(remainingSeconds, newDuration)
-        } else {
-            remainingSeconds = newDuration
-        }
     }
 }
 

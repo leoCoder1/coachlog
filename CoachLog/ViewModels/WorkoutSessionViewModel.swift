@@ -42,7 +42,7 @@ final class WorkoutSessionViewModel {
         self.plan = plan
         self.startedAt = startedAt
         self.inputs = Dictionary(uniqueKeysWithValues: plan.exercises.map { exercise in
-            (exercise.id, SetInput(weight: 0, reps: exercise.targetRepsLower, rir: 2))
+            (exercise.id, Self.defaultInput(for: exercise))
         })
         self.loggedSets = Dictionary(uniqueKeysWithValues: plan.exercises.map { ($0.id, []) })
         self.loadSuggestions = [:]
@@ -201,9 +201,17 @@ final class WorkoutSessionViewModel {
         )
 
         plan.exercises.append(planned)
-        inputs[planned.id] = SetInput(weight: 0, reps: planned.targetRepsLower, rir: 2)
+        inputs[planned.id] = Self.defaultInput(for: planned)
         loggedSets[planned.id] = []
         prepareExerciseFromHistory(planned, sessions: sessions, context: context)
+    }
+
+    private static func defaultInput(for exercise: PlannedExercise) -> SetInput {
+        SetInput(
+            weight: 0,
+            reps: exercise.targetRepsLower,
+            rir: exercise.kind == .stretch ? 3 : 2
+        )
     }
 
     private func nearestWeightOption(to weight: Double) -> Double {

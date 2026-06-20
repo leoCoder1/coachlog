@@ -1,4 +1,6 @@
+import AudioToolbox
 import SwiftUI
+import UIKit
 
 extension Color {
     static let coachBackground = Color(red: 0.035, green: 0.038, blue: 0.040)
@@ -188,6 +190,191 @@ struct CoachSecondaryButtonStyle: ButtonStyle {
             }
             .scaleEffect(configuration.isPressed ? 0.985 : 1)
             .animation(.snappy(duration: 0.16), value: configuration.isPressed)
+    }
+}
+
+struct CoachCountdownTimerButton: View {
+    var title: String = "Timer"
+    @Binding var durationSeconds: Int
+    var tint: Color = .coachAccent
+    var width: CGFloat? = 132
+
+    @State private var remainingSeconds: Int
+    @State private var isRunning = false
+    @State private var didComplete = false
+    @State private var isFlashing = false
+
+    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+
+    init(
+        title: String = "Timer",
+        durationSeconds: Binding<Int>,
+        tint: Color = .coachAccent,
+        width: CGFloat? = 132
+    ) {
+        self.title = title
+        _durationSeconds = durationSeconds
+        self.tint = tint
+        self.width = width
+        _remainingSeconds = State(initialValue: durationSeconds.wrappedValue)
+    }
+
+    private var actionTitle: String {
+        if didComplete {
+            return "Done"
+        }
+
+        return isRunning ? "Stop" : "Start"
+    }
+
+    private var actionIcon: String {
+        if didComplete {
+            return "checkmark.circle.fill"
+        }
+
+        return isRunning ? "pause.fill" : "play.fill"
+    }
+
+    private var formattedRemaining: String {
+        let minutes = remainingSeconds / 60
+        let seconds = remainingSeconds % 60
+
+        if minutes > 0 {
+            return String(format: "%d:%02d", minutes, seconds)
+        }
+
+        return "\(seconds)s"
+    }
+
+    var body: some View {
+        Button {
+            toggleTimer()
+        } label: {
+            HStack(spacing: 8) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(didComplete ? "Time done" : title)
+                        .font(.caption)
+                        .foregroundStyle(didComplete ? tint : Color.coachSecondaryText)
+
+                    Text(formattedRemaining)
+                        .font(.headline.monospacedDigit().weight(.bold))
+                        .foregroundStyle(.primary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.75)
+                }
+
+                Spacer(minLength: 2)
+
+                VStack(spacing: 4) {
+                    Image(systemName: actionIcon)
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(Color.black.opacity(0.86))
+                        .frame(width: 26, height: 26)
+                        .background(didComplete ? AnyShapeStyle(tint) : AnyShapeStyle(CoachGradient.accent))
+                        .clipShape(Circle())
+
+                    Text(actionTitle)
+                        .font(.caption2.weight(.bold))
+                        .foregroundStyle(tint)
+                        .lineLimit(1)
+                }
+            }
+            .padding(12)
+            .frame(width: width)
+            .frame(minHeight: 64)
+            .background(timerBackground)
+            .overlay {
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .stroke(timerBorderColor, lineWidth: didComplete ? 2 : 1)
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("\(title) \(formattedRemaining), \(didComplete ? "time done" : actionTitle)")
+        .onReceive(timer) { _ in
+            tick()
+        }
+        .onChange(of: durationSeconds) { _, newDuration in
+            updateDuration(newDuration)
+        }
+        .onDisappear {
+            isRunning = false
+        }
+    }
+
+    private var timerBackground: some ShapeStyle {
+        if didComplete || isFlashing {
+            return AnyShapeStyle(tint.opacity(isFlashing ? 0.34 : 0.22))
+        }
+
+        return AnyShapeStyle(Color.coachSurfaceElevated)
+    }
+
+    private var timerBorderColor: Color {
+        if didComplete || isFlashing {
+            return tint.opacity(0.70)
+        }
+
+        return isRunning ? tint.opacity(0.45) : Color.coachBorder
+    }
+
+    private func toggleTimer() {
+        if isRunning {
+            isRunning = false
+            return
+        }
+
+        if remainingSeconds == 0 {
+            remainingSeconds = durationSeconds
+        }
+
+        didComplete = false
+        isFlashing = false
+        isRunning = true
+    }
+
+    private func tick() {
+        guard isRunning else { return }
+
+        if remainingSeconds > 0 {
+            remainingSeconds -= 1
+        }
+
+        if remainingSeconds == 0 {
+            completeTimer()
+        }
+    }
+
+    private func updateDuration(_ newDuration: Int) {
+        let clampedDuration = max(1, newDuration)
+
+        if isRunning {
+            remainingSeconds = min(remainingSeconds, clampedDuration)
+        } else {
+            remainingSeconds = clampedDuration
+        }
+
+        didComplete = false
+        isFlashing = false
+    }
+
+    private func completeTimer() {
+        isRunning = false
+        didComplete = true
+
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
+        AudioServicesPlaySystemSound(1005)
+
+        withAnimation(.easeInOut(duration: 0.16).repeatCount(6, autoreverses: true)) {
+            isFlashing = true
+        }
+
+        Task {
+            try? await Task.sleep(nanoseconds: 1_800_000_000)
+            await MainActor.run {
+                isFlashing = false
+            }
+        }
     }
 }
 
