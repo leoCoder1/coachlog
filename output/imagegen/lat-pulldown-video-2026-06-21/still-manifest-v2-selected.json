@@ -1,0 +1,28 @@
+{
+  "created_at": "2026-06-21T07:36:02.077Z",
+  "repo": "/private/tmp/coachlog-lat-pulldown-video-20260621",
+  "provider": "xAI",
+  "model": "grok-imagine-image-quality",
+  "endpoint": "/v1/images/edits",
+  "exercise": "Lat Pulldown",
+  "source_image": "/Users/S/Downloads/model_1.jpg",
+  "output_path": "/private/tmp/coachlog-lat-pulldown-rebuild-20260621/exercise-lat-pulldown-still-v2-start.jpeg",
+  "prompt": "Photorealistic fitness app instructional START POSITION still image of Lat Pulldown. Use the provided model reference only as the adult fitness model, outfit-style, body-type, and realism reference. Do not include the reference background. One adult athletic woman only. Tasteful fitness app instructional presentation. Natural realistic face, proportionate body, realistic hands and feet. Full body visible including feet. Neutral modern gym with a lat pulldown cable machine, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no mirrors showing extra people, no distorted hands, no distorted limbs, no unsafe posture. Model is seated at a lat pulldown machine with thighs secured under knee pads, feet flat on the floor, torso tall with a slight 10 degree lean back. This is the starting position: both arms extended upward overhead holding a wide lat pulldown bar in front of the body, elbows nearly straight but not locked, shoulders down away from ears. The bar is above and slightly in front of the forehead with the cable vertical; it is NOT behind the head or neck. Grip is wider than shoulder width, wrists neutral, chest lifted, spine neutral. Cable, bar, seat, knee pads, weight stack, and full body are visible from a clean three-quarter front angle. Make it clear she is about to pull the bar down in front to the upper chest. Never show behind-the-neck form.",
+  "status_code": 200,
+  "response": {
+    "data": [
+      {
+        "url": "https://imgen.x.ai/xai-imgen/xai-tmp-imgen-d4d17bb1-1c12-4cff-a957-36ccb141d1af.jpeg",
+        "mime_type": "image/jpeg"
+      }
+    ],
+    "usage": {
+      "cost_in_usd_ticks": 600000000
+    }
+  },
+  "usage": {
+    "cost_in_usd_ticks": 600000000
+  },
+  "estimated_cost_usd": 0.06,
+  "status": "downloaded"
+}

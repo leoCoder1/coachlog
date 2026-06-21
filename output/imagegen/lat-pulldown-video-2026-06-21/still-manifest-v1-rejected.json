@@ -1,0 +1,28 @@
+{
+  "created_at": "2026-06-21T07:34:58.506Z",
+  "repo": "/private/tmp/coachlog-lat-pulldown-video-20260621",
+  "provider": "xAI",
+  "model": "grok-imagine-image-quality",
+  "endpoint": "/v1/images/edits",
+  "exercise": "Lat Pulldown",
+  "source_image": "/Users/S/Downloads/model_1.jpg",
+  "output_path": "/private/tmp/coachlog-lat-pulldown-rebuild-20260621/exercise-lat-pulldown-still-v1.jpeg",
+  "prompt": "Photorealistic fitness app instructional still image of Lat Pulldown. Use the provided model reference only as the adult fitness model, outfit-style, body-type, and realism reference. Do not include the reference background. One adult athletic woman only. Tasteful fitness app instructional presentation. Natural realistic face, proportionate body, realistic hands and feet. Full body visible. Neutral modern gym with a lat pulldown cable machine, stable fixed camera, bright professional lighting. No text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture. Model is seated at a lat pulldown machine with thighs secured under knee pads, feet flat, torso tall with a slight 10-15 degree lean back. She holds a wide lat pulldown bar with both hands, arms pulling the bar down in FRONT of the face to the upper chest/collarbone. Elbows point down and slightly back toward the ribs, shoulders down away from ears, chest lifted, spine neutral. The bar must never be behind the neck and must not touch the back of the head. Show a correct front lat pulldown, not a behind-the-neck pulldown. Cable, bar, seat, knee pads, weight stack, and full body are visible from a three-quarter front angle.",
+  "status_code": 200,
+  "response": {
+    "data": [
+      {
+        "url": "https://imgen.x.ai/xai-imgen/xai-tmp-imgen-d31b12cb-819e-4240-984e-ea225e44fea1.jpeg",
+        "mime_type": "image/jpeg"
+      }
+    ],
+    "usage": {
+      "cost_in_usd_ticks": 600000000
+    }
+  },
+  "usage": {
+    "cost_in_usd_ticks": 600000000
+  },
+  "estimated_cost_usd": 0.06,
+  "status": "downloaded"
+}

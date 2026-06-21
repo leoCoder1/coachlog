@@ -1,0 +1,44 @@
+{
+  "created_at": "2026-06-21T07:38:11.437Z",
+  "model": "grok-imagine-video",
+  "duration": 8,
+  "repo": "/private/tmp/coachlog-lat-pulldown-video-20260621",
+  "out_dir": "/private/tmp/coachlog-lat-pulldown-rebuild-20260621/video-v2",
+  "jobs": [
+    {
+      "exercise": "Lat Pulldown",
+      "slug": "exercise-lat-pulldown",
+      "filename": "exercise-lat-pulldown.mp4",
+      "sourceImage": "/private/tmp/coachlog-lat-pulldown-rebuild-20260621/exercise-lat-pulldown-still-v2-start.jpeg",
+      "modelImage": null,
+      "prompt": "Create an 8 second muted seamless looping instructional fitness video using the uploaded Lat Pulldown start-position still image.\n\nOne adult athletic woman performs exactly one complete correct FRONT lat pulldown repetition on the same lat pulldown cable machine.\n\nThe first frame must match the uploaded starting position exactly: seated upright with thighs secured under knee pads, feet flat, torso tall with a slight lean back, both arms extended overhead holding a wide lat pulldown bar in front of the body, cable vertical, shoulders down away from ears.\n\nTiming must be complete: hold the overhead start for a brief moment, pull the bar down under control during the first half of the clip, reach the bottom position at the upper chest/collarbone around the middle of the clip, then return the bar all the way back overhead during the second half of the clip. The final frame must match the first frame with both arms fully extended overhead again. Do not end with elbows bent. Do not stop halfway.\n\nMovement sequence: pull the bar smoothly down in FRONT of the face to the upper chest/collarbone while keeping chest lifted, spine neutral, torso stable, elbows driving down and slightly back toward the ribs, wrists neutral, shoulder blades moving down and back. Then control the bar back upward until both arms are extended overhead again, returning to the exact same start position for a seamless loop.\n\nImportant safety/form constraints: front pulldown only. Do not pull behind the neck, do not move the bar behind the head, do not shrug, do not lean far backward, do not swing the torso, do not turn it into a row, do not bounce the weight stack. The bar path stays in front of the body for the entire rep.\n\nFixed camera, full body and machine visible, no cuts, no zoom. Preserve the same model, outfit, gym, lighting, camera angle, lat pulldown bar, cable, seat, knee pads, and weight stack throughout. No audio, no text, no logos, no watermark, no extra people, no distorted hands, no distorted limbs, no unsafe posture.",
+      "status": "downloaded",
+      "submit_status": 200,
+      "submit_response": {
+        "request_id": "29fe854d-3ec2-91c6-a62b-45ee80995295"
+      },
+      "request_id": "29fe854d-3ec2-91c6-a62b-45ee80995295",
+      "last_poll_status": 200,
+      "last_poll_response": {
+        "status": "done",
+        "video": {
+          "url": "https://vidgen.x.ai/xai-vidgen-bucket/xai-video-56ed61df-d655-497e-9f45-5ed595cc135b.mp4",
+          "duration": 8,
+          "respect_moderation": true
+        },
+        "model": "grok-imagine-video",
+        "usage": {
+          "cost_in_usd_ticks": 4020000000
+        },
+        "progress": 100
+      },
+      "video_url": "https://vidgen.x.ai/xai-vidgen-bucket/xai-video-56ed61df-d655-497e-9f45-5ed595cc135b.mp4",
+      "raw_path": "/private/tmp/coachlog-lat-pulldown-rebuild-20260621/video-v2/raw/exercise-lat-pulldown.mp4",
+      "app_ready_path": "/private/tmp/coachlog-lat-pulldown-rebuild-20260621/video-v2/app-ready/exercise-lat-pulldown.mp4",
+      "usage": {
+        "cost_in_usd_ticks": 4020000000
+      },
+      "estimated_cost_usd": 0.402
+    }
+  ]
+}

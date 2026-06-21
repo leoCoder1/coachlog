@@ -2,9 +2,9 @@
 
 This file tracks AI-generated exercise media for AI Coach. Entries before this file existed are reconstructed from local artifacts and are not billing-verified. Use the xAI console invoice as the source of truth for exact spend.
 
-Pricing basis checked on 2026-06-18:
+Pricing basis checked on 2026-06-21:
 - xAI pricing docs list `grok-imagine-image` at $0.02 per image output and `grok-imagine-image-quality` at $0.01 per input image plus $0.05 per 1K output image.
-- xAI pricing docs list `grok-imagine-video` at $0.002 per image input and $0.07/sec for 720p output. They list `grok-imagine-video-1.5` at $0.01 per image input and $0.14/sec for 720p output.
+- xAI pricing docs list `grok-imagine-video` at $0.002 per image input plus $0.05/sec for 480p output or $0.07/sec for 720p output. They list `grok-imagine-video-1.5` at $0.01 per image input plus $0.08/sec for 480p output or $0.14/sec for 720p output.
 - Source: https://docs.x.ai/developers/pricing
 - OpenAI image generation docs list `gpt-image-1.5` 1024x1024 high output at $0.133 per image; edit requests also include input text/image tokens.
 - Source: https://developers.openai.com/api/docs/guides/image-generation
@@ -27,8 +27,9 @@ Pricing basis checked on 2026-06-18:
 | 2026-06-18 | xAI `grok-imagine-image-quality` image edit | New exact exercise stills: Push-ups, Dumbbell Bench Press, Seated Row, Assisted Pull-up, Leg Press, Seated Leg Curl, Calf Raise, Dumbbell Lateral Raise, Dead Bug, Doorway Chest Stretch | 15 successful 1K image edit attempts; 10 selected and shipped | Generated in `/tmp/coachlog-xai-image-batch` using one local model reference per request. The API returned `cost_in_usd_ticks: 600000000` for each successful attempt, including form/camera retries for Leg Press, Dumbbell Lateral Raise, Dead Bug, and Doorway Chest Stretch. Total: 9,000,000,000 ticks at 1e10 ticks/USD. | $0.90 |
 | 2026-06-18 | xAI `grok-imagine-image-quality` image edit | New exact Sports routine stills for every remaining cricket mobility and strength movement | 37 successful 1K image edit attempts; 35 selected and shipped | Generated in `/tmp/coachlog-xai-sports-stills` using one local model reference per request. The API returned `cost_in_usd_ticks: 600000000` for each successful attempt, including clarity retries for Open-book trunk rotation and External rotation with band. Total: 22,200,000,000 ticks at 1e10 ticks/USD. | $2.22 |
 | 2026-06-19 | xAI `grok-imagine-image-quality` image generation | Muscle-group filter infographic icons: All, Chest, Back, Legs, Glutes, Shoulders, Biceps, Triceps, Core | 10 successful 1K image requests; 9 selected and shipped | Generated in `output/imagegen/muscle-group-icons-2026-06-19/`. The first Chest request returned a blank black image, so a second Chest request was generated and selected. API usage totaled `cost_in_usd_ticks: 5000000000`, treated as $0.50 at 1e10 ticks/USD. | $0.50 |
+| 2026-06-21 | xAI `grok-imagine-image-quality` image edit + `grok-imagine-video` | Lat Pulldown replacement thumbnail and instructional video | 2 image edits, 2 video candidates; 1 still and 1 video selected | Generated in `/private/tmp/coachlog-lat-pulldown-rebuild-20260621`; copied selected and rejected manifests/contact sheets to `output/imagegen/lat-pulldown-video-2026-06-21/`. Rejected still v1 because it seeded the finish position instead of the start. Rejected video v1 because it did not fully return to arms-overhead for the loop. Selected video request `29fe854d-3ec2-91c6-a62b-45ee80995295`; rejected video request `251e5790-9c28-92c0-af03-142e95f925d2`. API usage: 2 x `600000000` still ticks plus 2 x `4020000000` video ticks = `9240000000` ticks, treated as $0.924 at 1e10 ticks/USD. | $0.92 |
 
-Current billing-unverified reconstructed total: about **$17.65-$17.83 baseline**, plus OpenAI edit input-token charges not reflected here. If the original 2026-06-17 successful video jobs were billed as `grok-imagine-video-1.5`, the estimate is about **$28.32-$28.50**, plus OpenAI edit input-token charges.
+Current billing-unverified reconstructed total: about **$18.57-$18.75 baseline**, plus OpenAI edit input-token charges not reflected here. If the original 2026-06-17 successful video jobs were billed as `grok-imagine-video-1.5`, the estimate is about **$29.24-$29.42**, plus OpenAI edit input-token charges.
 
 ## Notes
 
