@@ -49,6 +49,12 @@ final class ActiveWorkoutStore {
         publish(snapshot)
     }
 
+    func resendActiveWorkoutSnapshot() {
+        guard let snapshot else { return }
+
+        publish(snapshot)
+    }
+
     func finishWorkout() {
         let sessionID = snapshot?.sessionID
         snapshot = nil
@@ -194,6 +200,10 @@ extension WatchWorkoutSyncCoordinator: WCSessionDelegate {
         if let error {
             Task { @MainActor in
                 ActiveWorkoutStore.shared.recordSyncError(error.localizedDescription)
+            }
+        } else {
+            Task { @MainActor in
+                ActiveWorkoutStore.shared.resendActiveWorkoutSnapshot()
             }
         }
     }
