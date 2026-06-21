@@ -170,8 +170,7 @@ struct TodayCoachView: View {
                         VStack(alignment: .leading, spacing: 8) {
                             ExerciseVisualHeader(
                                 exercise: exercise,
-                                subtitle: "\(exercise.targetSets) sets · \(exercise.targetRepRange) reps · \(exercise.station.rawValue)",
-                                note: viewModel.guidance?.advice(for: exercise.name)?.reason ?? exercise.coachingNote
+                                subtitle: "\(exercise.targetSets) sets · \(exercise.targetRepRange) reps · \(exercise.station.rawValue)"
                             )
 
                             if let advice = viewModel.guidance?.advice(for: exercise.name) {

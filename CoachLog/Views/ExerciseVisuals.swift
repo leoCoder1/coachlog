@@ -369,7 +369,6 @@ enum ExerciseMuscleTargetLibrary {
 struct ExerciseVisualHeader: View {
     var exercise: PlannedExercise
     var subtitle: String
-    var note: String?
     var thumbnailSize: CGFloat = 58
     var targetBadgeSize: CGFloat = 64
 
@@ -422,7 +421,7 @@ struct ExerciseVisualHeader: View {
             isShowingInstructions = true
         }
         .sheet(isPresented: $isShowingInstructions) {
-            ExerciseInstructionSheet(exercise: exercise, media: media, note: note)
+            ExerciseInstructionSheet(exercise: exercise, media: media)
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(exercise.name), primary muscle: \(exercise.primaryDetailedMuscle.rawValue), secondary muscle: \(exercise.secondaryDetailedMuscle?.rawValue ?? "none")")
@@ -538,7 +537,6 @@ private struct ExerciseInstructionSheet: View {
 
     var exercise: PlannedExercise
     var media: ExerciseMediaAsset
-    var note: String? = nil
 
     @State private var player: AVQueuePlayer?
     @State private var looper: AVPlayerLooper?
@@ -577,15 +575,6 @@ private struct ExerciseInstructionSheet: View {
                                 }
                         } else {
                             ExerciseInstructionMuscleMapCard(exercise: exercise)
-                        }
-
-                        if let note, !note.isEmpty {
-                            ExerciseGuidanceCallout(
-                                title: "Coach cue",
-                                message: note,
-                                systemImage: "scope",
-                                tint: Color.coachAccent
-                            )
                         }
 
                         ExerciseGuidanceView(guidance: guidance)

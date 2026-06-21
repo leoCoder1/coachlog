@@ -89,8 +89,7 @@ struct TodayWorkoutPlanCard: View {
                 } else if todaysTemplates.isEmpty {
                     NoWorkoutTodayView(
                         today: today,
-                        nextTemplate: nextScheduledTemplate,
-                        onManagePlan: onManagePlan
+                        nextTemplate: nextScheduledTemplate
                     )
                 } else {
                     VStack(spacing: 10) {
@@ -489,7 +488,6 @@ private struct WeeklyPlanSetupPrompt: View {
 private struct NoWorkoutTodayView: View {
     var today: WorkoutWeekday
     var nextTemplate: WorkoutTemplate?
-    var onManagePlan: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -521,14 +519,6 @@ private struct NoWorkoutTodayView: View {
                     }
                 }
             }
-
-            Button(action: onManagePlan) {
-                Label("Manage Plan", systemImage: "slider.horizontal.3")
-                    .font(.subheadline)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 10)
-            }
-            .buttonStyle(CoachSecondaryButtonStyle())
         }
         .padding(12)
         .background(Color.coachSurfaceElevated.opacity(0.72))
@@ -1557,8 +1547,7 @@ private struct SavedWorkoutDraftRow: View {
 
                     ExerciseVisualHeader(
                         exercise: draft.plannedExercise,
-                        subtitle: "\(draft.station.rawValue) · \(draft.kind.rawValue)",
-                        note: nil
+                        subtitle: "\(draft.station.rawValue) · \(draft.kind.rawValue)"
                     )
 
                     VStack(spacing: 6) {

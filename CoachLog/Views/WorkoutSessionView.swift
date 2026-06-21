@@ -310,6 +310,11 @@ private struct ExerciseLoggingCard: View {
         return "\(exercise.targetSets) sets · \(exercise.targetRepRange) reps · \(exercise.station.rawValue)"
     }
 
+    private var coachCue: String? {
+        let trimmedCue = exercise.coachingNote.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmedCue.isEmpty ? nil : trimmedCue
+    }
+
     var body: some View {
         let loggedSets = viewModel.sets(for: exercise.id)
 
@@ -317,8 +322,7 @@ private struct ExerciseLoggingCard: View {
             VStack(alignment: .leading, spacing: 14) {
                 ExerciseVisualHeader(
                     exercise: exercise,
-                    subtitle: exerciseSubtitle,
-                    note: logsDuration ? exercise.coachingNote : nil
+                    subtitle: exerciseSubtitle
                 )
 
                 HStack(spacing: 10) {
@@ -341,6 +345,10 @@ private struct ExerciseLoggingCard: View {
                     .buttonStyle(CoachSecondaryButtonStyle())
                     .disabled(!loggedSets.isEmpty)
                     .accessibilityHint(loggedSets.isEmpty ? "Choose another exercise for this muscle group" : "Finish or skip this exercise before swapping")
+                }
+
+                if let coachCue {
+                    ActiveCoachCueCallout(message: coachCue)
                 }
 
                 HStack(spacing: 12) {
@@ -521,6 +529,42 @@ private struct ExerciseLoggingCard: View {
         }
 
         return "\(set.reps) reps · RIR \(set.rir)"
+    }
+}
+
+private struct ActiveCoachCueCallout: View {
+    var message: String
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: "scope")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Color.coachAccent)
+                .frame(width: 24, height: 24)
+                .background(Color.coachAccent.opacity(0.14))
+                .clipShape(Circle())
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Coach cue")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(Color.coachAccent)
+
+                Text(message)
+                    .font(.subheadline)
+                    .foregroundStyle(.primary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.coachAccent.opacity(0.10))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .stroke(Color.coachAccent.opacity(0.24), lineWidth: 1)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Coach cue, \(message)")
     }
 }
 
