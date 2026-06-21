@@ -1,0 +1,4 @@
+interface:
+  display_name: "CoachLog Video Instructions"
+  short_description: "Generate and QA CoachLog exercise videos"
+  default_prompt: "Use $coachlog-video-instructions to generate, review, and wire CoachLog exercise instruction videos."
