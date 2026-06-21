@@ -4,6 +4,22 @@ All notable TestFlight and release-facing changes for AI Coach are tracked here.
 
 Format follows Keep a Changelog conventions, with entries grouped by app version and build number.
 
+## [1.0 (12)] - 2026-06-21
+
+### Changed
+- Made the Apple Watch workout entry flow more compact with stepper controls for weight and reps.
+- Removed the Watch-side RIR picker and defaulted Watch-logged sets to RIR 2 while keeping RIR controls on iPhone.
+- Removed the explicit Watch weight label so weighted entries show the value and unit directly.
+- Build number bumped to 12 for the next TestFlight upload.
+
+### Fixed
+- Added immediate Watch feedback and haptics after logging a set to reduce accidental repeated taps.
+- Resent the active workout snapshot after WatchConnectivity activation to avoid missing the first Watch sync when a session starts.
+
+### Verified
+- iOS and watchOS simulator builds pass with the embedded Watch app.
+- Local paired iPhone and Apple Watch simulators confirmed the active workout sync, compact weighted entry screen, and log feedback.
+
 ## [1.0 (11)] - 2026-06-20
 
 ### Changed
