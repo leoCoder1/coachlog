@@ -1,4 +1,4 @@
-# AI Trainer Log LLM coaching plan
+# AI Coach LLM coaching plan
 
 ## Goal
 

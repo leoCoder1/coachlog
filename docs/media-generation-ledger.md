@@ -1,6 +1,6 @@
 # Media Generation Ledger
 
-This file tracks AI-generated exercise media for CoachLog. Entries before this file existed are reconstructed from local artifacts and are not billing-verified. Use the xAI console invoice as the source of truth for exact spend.
+This file tracks AI-generated exercise media for AI Coach. Entries before this file existed are reconstructed from local artifacts and are not billing-verified. Use the xAI console invoice as the source of truth for exact spend.
 
 Pricing basis checked on 2026-06-18:
 - xAI pricing docs list `grok-imagine-image` at $0.02 per image output and `grok-imagine-image-quality` at $0.01 per input image plus $0.05 per 1K output image.

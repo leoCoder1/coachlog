@@ -1,4 +1,4 @@
-# CoachLog watchOS companion plan
+# AI Coach watchOS companion plan
 
 ## Summary
 
@@ -13,7 +13,7 @@ Default decisions:
 
 ## Key changes
 
-- Add a watchOS SwiftUI app target bundled with CoachLog.
+- Add a watchOS SwiftUI app target bundled with AI Coach.
 - Add a lightweight shared logging contract:
   - `ActiveWorkoutSnapshot`: workout title, exercises, targets, logged set counts, and current inputs.
   - `WatchLogSetCommand`: exercise id/name, weight, reps, RIR, timestamp, and command id.
@@ -41,14 +41,14 @@ Default decisions:
 
 - Request HealthKit write permissions for:
   - `HKObjectType.workoutType()`
-  - Active energy burned, when CoachLog has an estimate.
+  - Active energy burned, when AI Coach has an estimate.
   - Heart-rate samples only if reliable samples were captured or imported.
-- On `Finish Workout`, create an `HKWorkout` from the completed CoachLog session:
+- On `Finish Workout`, create an `HKWorkout` from the completed AI Coach session:
   - Workout type: default strength sessions to traditional or functional strength training.
   - Start/end time and duration from the active session.
-  - Active energy from CoachLog estimate when available.
-  - Metadata for app name and a concise CoachLog summary.
-- Keep detailed gym data in CoachLog:
+  - Active energy from AI Coach estimate when available.
+  - Metadata for app name and a concise AI Coach summary.
+- Keep detailed gym data in AI Coach:
   - Sets, reps, weights, RIR, substitutions, and exercise names remain in SwiftData/Firebase.
   - Apple Health/Fitness should receive the workout-level summary, because HealthKit does not model strength sets/reps/loads as a rich first-class gym log.
 - Store the saved `HKWorkout.uuid` against the local workout session to prevent duplicate Health writes.
@@ -70,9 +70,9 @@ Default decisions:
 
 ### Data ownership
 
-- CoachLog remains the source of truth for exercise-level logs and coaching analytics.
+- AI Coach remains the source of truth for exercise-level logs and coaching analytics.
 - HealthKit/Fitness receives completed workout summaries and health metrics.
-- Firebase can sync CoachLog logs across devices later, but it should not replace HealthKit for Apple Fitness visibility.
+- Firebase can sync AI Coach logs across devices later, but it should not replace HealthKit for Apple Fitness visibility.
 
 ## Test plan
 
@@ -86,7 +86,7 @@ Default decisions:
 - HealthKit tests:
   - On a real iPhone, finish a workout and verify it appears in Apple Health/Fitness.
   - Confirm duplicate finish/sync does not create duplicate Health workouts.
-  - Confirm HealthKit write permission can be declined without breaking CoachLog logging.
+  - Confirm HealthKit write permission can be declined without breaking AI Coach logging.
   - On Apple Watch, verify live heart rate updates during an active workout.
   - Finish on Watch and confirm the saved workout summary syncs back to iPhone.
 - Regression tests:

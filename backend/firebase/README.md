@@ -1,6 +1,6 @@
-# CoachLog Firebase Backend
+# AI Coach Firebase Backend
 
-Firebase is the preferred backend for CoachLog because it fits the app's likely next steps: Sign in with Apple via Firebase Auth, App Check, Cloud Functions secrets, Firestore sync, scheduled jobs, and TestFlight-safe server-side LLM calls.
+Firebase is the preferred backend for AI Coach because it fits the app's likely next steps: Sign in with Apple via Firebase Auth, App Check, Cloud Functions secrets, Firestore sync, scheduled jobs, and TestFlight-safe server-side LLM calls.
 
 This backend currently exposes:
 
@@ -29,7 +29,7 @@ The iOS app sends structured workout, recovery, freshness, progress, and measure
 
 For progress summaries and next-session advice, callers can still use the `message` field only. If the provider fails, the function returns the app's local fallback message and fallback guidance with `source: "fallback"`.
 
-Claude Sonnet is the default provider. The Anthropic request uses an explicit prompt-cache breakpoint on CoachLog's static coaching rubric so repeated requests can reuse the stable prefix. User workout, recovery, and measurement data stays outside that cached block.
+Claude Sonnet is the default provider. The Anthropic request uses an explicit prompt-cache breakpoint on AI Coach's static coaching rubric so repeated requests can reuse the stable prefix. User workout, recovery, and measurement data stays outside that cached block.
 
 ## Local Setup
 
@@ -83,6 +83,6 @@ firebase deploy --only functions
 
 ## iOS Configuration
 
-In a DEBUG build, open CoachLog Settings > AI Premium and paste the deployed `aiCoach` HTTPS URL.
+In a DEBUG build, open AI Coach Settings > AI Premium and paste the deployed `aiCoach` HTTPS URL.
 
 For production, the next step should be Firebase Auth + App Check enforcement before broad release. Do not expose a public unauthenticated LLM endpoint beyond limited internal testing.

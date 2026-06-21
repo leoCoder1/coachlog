@@ -83,7 +83,7 @@ struct SharedWorkoutPayload: Codable, Hashable, Identifiable {
     }
 
     var shareMessage: String {
-        "Open this CoachLog link to preview the workout, then add or discard it in your own account."
+        "Open this AI Coach link to preview the workout, then add or discard it in your own account."
     }
 
     static func workout(from url: URL) -> SharedWorkoutPayload? {

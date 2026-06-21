@@ -688,7 +688,7 @@ struct RuleBasedCoachService: AIService {
             return "Latest weight is \(WeightUnitPreference.current.formattedWeight(latestMeasurement.weight, fractionLength: 1...1)). Keep the trend slow enough that training performance stays steady."
         }
 
-        return "Log a few sessions and AI Trainer Log will start connecting training volume, recovery, and body measurements."
+        return "Log a few sessions and AI Coach will start connecting training volume, recovery, and body measurements."
     }
 
     func generateNextSessionAdvice(

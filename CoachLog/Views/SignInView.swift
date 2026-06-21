@@ -23,7 +23,7 @@ struct SignInView: View {
                             .foregroundStyle(Color.black.opacity(0.86))
                     }
 
-                    Text("AI Trainer Log")
+                    Text("AI Coach")
                         .font(.largeTitle.weight(.bold))
 
                     Text("Sign in with your Apple ID to keep your training, recovery, and measurements tied to your account.")
@@ -38,7 +38,7 @@ struct SignInView: View {
                         Label("Private by default", systemImage: "lock.shield")
                             .font(.headline)
 
-                        Text("AI Trainer Log uses Apple sign-in for account identity. Workout data stays on this device until cloud sync is added.")
+                        Text("AI Coach uses Apple sign-in for account identity. Workout data stays on this device until cloud sync is added.")
                             .font(.subheadline)
                             .foregroundStyle(Color.coachSecondaryText)
                             .fixedSize(horizontal: false, vertical: true)

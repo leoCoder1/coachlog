@@ -117,7 +117,7 @@ struct SharedWorkoutImportView: View {
                     Text("Sign in first")
                         .font(.headline)
 
-                    Text("Add this workout after opening your CoachLog account.")
+                    Text("Add this workout after opening your AI Coach account.")
                         .font(.subheadline)
                         .foregroundStyle(Color.coachSecondaryText)
                         .fixedSize(horizontal: false, vertical: true)

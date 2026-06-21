@@ -386,7 +386,7 @@ struct WorkoutShareSheet: View {
             if let shareURL {
                 ShareLink(
                     item: shareURL,
-                    subject: Text("CoachLog workout: \(template.name)"),
+                    subject: Text("AI Coach workout: \(template.name)"),
                     message: Text(sharedWorkout.shareMessage)
                 ) {
                     Label("Share Via...", systemImage: "square.and.arrow.up")

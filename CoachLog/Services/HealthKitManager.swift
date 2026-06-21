@@ -99,7 +99,7 @@ final class HealthKitManager {
         )
 
         guard !importedMetricKeys.isEmpty else {
-            lastImportMessage = "No HealthKit recovery samples were returned. Check Apple Health > Sharing > Apps > AI Trainer Log and confirm Sleep, Resting Heart Rate, and HRV are enabled."
+            lastImportMessage = "No HealthKit recovery samples were returned. Check Apple Health > Sharing > Apps > AI Coach and confirm Sleep, Resting Heart Rate, and HRV are enabled."
             return RecoveryImportResult(snapshot: nil, message: lastImportMessage, importedMetricCount: 0)
         }
 
@@ -168,13 +168,13 @@ final class HealthKitManager {
 
     func saveWorkoutToHealthIfNeeded(_ session: WorkoutSession) async -> HealthKitWorkoutSaveResult {
         guard HKHealthStore.isHealthDataAvailable() else {
-            let message = "HealthKit is unavailable, so this workout stayed in CoachLog only."
+            let message = "HealthKit is unavailable, so this workout stayed in AI Coach only."
             lastImportMessage = message
             return HealthKitWorkoutSaveResult(status: .unavailable, healthKitUUID: nil, message: message)
         }
 
         guard session.healthKitWorkoutUUID == nil else {
-            let message = "This CoachLog workout was already saved to Apple Health."
+            let message = "This AI Coach workout was already saved to Apple Health."
             lastImportMessage = message
             return HealthKitWorkoutSaveResult(status: .skippedDuplicate, healthKitUUID: nil, message: message)
         }
@@ -184,7 +184,7 @@ final class HealthKitManager {
             let authorized = await requestWorkoutWriteAuthorization()
             guard authorized,
                   healthStore.authorizationStatus(for: workoutType) == .sharingAuthorized else {
-                let message = "Apple Health workout write access is not enabled. The workout stayed in CoachLog only."
+                let message = "Apple Health workout write access is not enabled. The workout stayed in AI Coach only."
                 authorizationStatusText = "Workout write denied"
                 lastImportMessage = message
                 return HealthKitWorkoutSaveResult(status: .authorizationDenied, healthKitUUID: nil, message: message)
@@ -192,7 +192,7 @@ final class HealthKitManager {
         }
 
         if let existingWorkout = await existingHealthWorkout(for: session) {
-            let message = "Apple Health already has this CoachLog workout."
+            let message = "Apple Health already has this AI Coach workout."
             authorizationStatusText = "Workout already saved"
             lastImportMessage = message
             return HealthKitWorkoutSaveResult(

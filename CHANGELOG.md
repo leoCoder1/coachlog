@@ -1,8 +1,18 @@
 # Changelog
 
-All notable TestFlight and release-facing changes for AI Trainer Log are tracked here.
+All notable TestFlight and release-facing changes for AI Coach are tracked here.
 
 Format follows Keep a Changelog conventions, with entries grouped by app version and build number.
+
+## [1.0 (10)] - 2026-06-20
+
+### Changed
+- Standardized the user-facing app name to AI Coach across iOS, watchOS, HealthKit permission copy, workout sharing text, settings, progress guidance, and release documentation.
+- Kept the existing `com.machvect.CoachLog` bundle identifiers and internal code names unchanged to preserve TestFlight/App Store Connect, HealthKit, deep link, and installed-app update continuity.
+- Build number bumped to 10 for the next TestFlight upload.
+
+### Verified
+- iOS simulator build passes with the embedded watchOS app.
 
 ## [1.0 (9)] - 2026-06-20
 

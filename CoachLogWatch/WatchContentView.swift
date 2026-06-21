@@ -12,7 +12,7 @@ struct WatchContentView: View {
                     waitingView
                 }
             }
-            .navigationTitle("CoachLog")
+            .navigationTitle("AI Coach")
         }
     }
 
