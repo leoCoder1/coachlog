@@ -577,8 +577,7 @@ private struct SportsRoutineMovementRow: View {
         VStack(alignment: .leading, spacing: 12) {
             ExerciseVisualHeader(
                 exercise: item.exercise,
-                subtitle: item.routineSubtitle,
-                note: item.cue
+                subtitle: item.routineSubtitle
             )
 
             HStack(spacing: 8) {
