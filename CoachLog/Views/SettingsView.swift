@@ -104,7 +104,7 @@ struct SettingsView: View {
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(Color.coachSecondaryText)
 
-                    TextField("https://api.example.com/coachlog/ai", text: $aiCoachEndpointURL)
+                    TextField("https://api.example.com/ai-coach/ai", text: $aiCoachEndpointURL)
                         .textInputAutocapitalization(.never)
                         .keyboardType(.URL)
                         .autocorrectionDisabled()

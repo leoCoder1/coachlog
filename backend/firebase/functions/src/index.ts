@@ -86,7 +86,7 @@ export const health = onRequest(
   (_request, response) => {
     response.status(200).json({
       ok: true,
-      service: "coachlog-ai",
+      service: "ai-coach",
       time: new Date().toISOString()
     });
   }

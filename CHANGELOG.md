@@ -4,6 +4,17 @@ All notable TestFlight and release-facing changes for AI Coach are tracked here.
 
 Format follows Keep a Changelog conventions, with entries grouped by app version and build number.
 
+## [1.0 (11)] - 2026-06-20
+
+### Changed
+- Updated iOS and watchOS bundle metadata names so both `CFBundleDisplayName` and `CFBundleName` resolve to AI Coach while preserving existing bundle identifiers.
+- Updated the public Firebase health response service label to `ai-coach`.
+- Updated the DEBUG-only AI endpoint placeholder to use the AI Coach naming.
+- Build number bumped to 11 for the next TestFlight upload.
+
+### Verified
+- Agent-backed naming, backend, build/release, and UI smoke audits were run after the rename.
+
 ## [1.0 (10)] - 2026-06-20
 
 ### Changed
