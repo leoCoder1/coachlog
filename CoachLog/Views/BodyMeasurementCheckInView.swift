@@ -135,7 +135,7 @@ struct BodyMeasurementReminderCard: View {
         CoachCard {
             VStack(alignment: .leading, spacing: 14) {
                 HStack(spacing: 12) {
-                    Image(systemName: isDue ? "figure.stand.measurement.vertical" : "chart.line.uptrend.xyaxis")
+                    Image(systemName: isDue ? "ruler" : "chart.line.uptrend.xyaxis")
                         .font(.title3.weight(.semibold))
                         .foregroundStyle(Color.coachAccent)
                         .frame(width: 28)

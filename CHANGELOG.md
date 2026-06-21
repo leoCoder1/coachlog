@@ -12,6 +12,9 @@ Format follows Keep a Changelog conventions, with entries grouped by app version
 - Updated the DEBUG-only AI endpoint placeholder to use the AI Coach naming.
 - Build number bumped to 11 for the next TestFlight upload.
 
+### Fixed
+- Replaced an unavailable SF Symbol in the measurement check-in card.
+
 ### Verified
 - Agent-backed naming, backend, build/release, and UI smoke audits were run after the rename.
 
